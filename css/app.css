@@ -146,3 +146,23 @@ h1,h2,h3,h4{font-weight:400}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.bulb{opacity:.3}}
 .ws::before{content:"";position:absolute;left:50%;top:50%;width:300px;height:190px;transform:translate(-50%,-50%);z-index:-1;background:radial-gradient(closest-side,rgba(10,6,14,.82),rgba(10,6,14,.5) 55%,transparent)}
 .ws div.eyebrow{font-family:var(--sans);font-style:normal;font-size:10px;white-space:nowrap}
+
+/* ---------- mobiel: tikvlakken, geen blijvende hover, liggend ---------- */
+.seg button{padding:12px 2px 11px;min-height:40px}
+.pills button{min-height:36px;padding:9px 13px 8px}
+.stop{min-height:40px}
+.tog{min-height:40px;padding:8px 0}
+.label{min-height:34px}
+.link{min-height:36px}
+.x{width:40px;height:40px}
+@media (hover:none){
+  .ghost:hover,.btn:hover,.chip:hover,.tool:hover,.stop:hover,.mode-t:hover{color:inherit;transform:none;box-shadow:inherit}
+  .btn:hover{box-shadow:inset 0 0 0 1px rgba(236,199,127,.7),inset 0 1px 0 rgba(255,230,190,.35),0 0 30px rgba(255,150,90,.25),0 12px 26px rgba(40,5,10,.6)}
+  .ghost:hover{color:var(--cream-dim);box-shadow:inset 0 0 0 1px var(--hair-soft)}
+  .mode-t:hover{color:var(--cream-dim);box-shadow:inset 0 0 0 1px var(--hair-soft),0 10px 24px rgba(0,0,0,.45)}
+  .mode-t.on:hover{color:var(--gold);transform:translateY(-4px);box-shadow:inset 0 0 0 1px var(--gold),0 0 30px rgba(255,170,90,.35),0 14px 28px rgba(0,0,0,.5)}
+  .li:hover::before,.m-link:hover::before,.mode:hover::before{opacity:0}
+}
+button,.card,.mode-t,.chip,.li,.nav a{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.pills button{min-width:42px}
+@media (max-height:500px){ .quick .chip{min-height:36px} }

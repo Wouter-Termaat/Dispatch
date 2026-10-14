@@ -10,7 +10,7 @@ const VIEW_KEY = 'dispatch.rankview.v2';
 const FRESH = () => ({ parks: [], mans: [], top: 0, zeker: '', luca: '', uit: false });
 let view = (() => { try { return { tab: 'banen', q: '', sort: 'plek', f: FRESH(), ...JSON.parse(localStorage.getItem(VIEW_KEY) || '{}') }; } catch { return { tab: 'banen', q: '', sort: 'plek', f: FRESH() }; } })();
 view.f = { ...FRESH(), ...view.f };
-const saveView = () => { try { localStorage.setItem(VIEW_KEY, JSON.stringify({ tab: view.tab, sort: view.sort, f: view.f })); } catch { /* */ } };
+const saveView = () => { try { localStorage.setItem(VIEW_KEY, JSON.stringify({ sort: view.sort, f: view.f })); } catch { /* */ } };
 
 const SORTS = [['plek', 'Plek'], ['onzeker', 'Onzekerst eerst'], ['zeker', 'Zekerst eerst'], ['duels', 'Meeste duels'], ['winst', 'Hoogste winst%'], ['luca', 'Grootste verschil met de ander'], ['stijg', 'Stijgers'], ['daal', 'Dalers'], ['naam', 'Naam'], ['park', 'Park']];
 function beforeMap(key) { try { return JSON.parse(localStorage.getItem('dispatch.before.' + key) || 'null'); } catch { return null; } }
@@ -39,6 +39,7 @@ function rows(key) {
 export default {
   nav: 'programma', title: 'Ranking',
   mount({ bg, fg, params, go }) {
+    view.tab = 'banen'; view.q = '';
     let key = params.get('wie') || meKey();
     if (!profiles().some(p => p.key === key)) key = meKey();
     if (params.get('baan')) { view.tab = 'banen'; view.q = ''; view.f = FRESH(); view.sort = 'plek'; }

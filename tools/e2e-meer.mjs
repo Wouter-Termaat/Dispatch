@@ -57,8 +57,8 @@ ok((await page.textContent('body')).includes('tijdelijk gesloten wegens een tech
 
 // Witte Stip op het plein
 await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('dispatch.demo.v1')); d.profiles.find(p => p.key === 'wouter').settings = {}; localStorage.setItem('dispatch.demo.v1', JSON.stringify(d)); });
-await page.goto(base + '&nu=2026-10-14T20:30#/'); await page.reload(); await page.waitForSelector('.pb-hit'); await wait(800);
-const box = await page.$eval('.pb-hit', e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, vis: r.left + r.width / 2 < innerWidth - 4 && r.left >= 0 }; });
+await page.goto(base + '&nu=2026-10-14T20:30#/'); await page.reload(); await page.waitForSelector('#pb'); await wait(800);
+const box = await page.$eval('#pb', e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, vis: r.left + r.width / 2 < innerWidth - 4 && r.left >= 0 }; });
 ok(box.vis, 'bordje Point Blanc is zichtbaar en tikbaar');
 await page.mouse.click(box.x, box.y); await wait(1100); await shot('54-witte-stip');
 ok(await page.$('.ws.show') && (await settings()).musicUnlocked, 'Witte Stip op het plein: stip en muziek ontgrendeld');

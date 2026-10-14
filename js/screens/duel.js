@@ -51,7 +51,7 @@ export default {
     if (queue && !queue.length) { toast('Geen tegenstrijdigheden gevonden.'); setTimeout(() => go(''), 10); return; }
     if (filter && model().ids.filter(filter).length < 2) { toast('Te weinig banen in dit park.'); setTimeout(() => go(''), 10); return; }
 
-    const wide = () => innerWidth >= 900 && innerWidth / innerHeight >= 1.25;
+    const wide = () => (innerWidth >= 900 || (innerWidth >= 600 && innerHeight <= 600)) && innerWidth / innerHeight >= 1.25;
     backdrop(bg, 'stage');
     fg.innerHTML = `${rankTop(label, s.length)}
       <div class="r-q"><h2>Welke is beter?</h2></div>

@@ -103,14 +103,17 @@ export function toast(msg, ms = 2600) {
 export function buzz(p = 6) { try { if (navigator.vibrate && navigator.userActivation?.hasBeenActive !== false) navigator.vibrate(p); } catch { /* niet ondersteund */ } }
 
 // ---------- bottom sheet ----------
-let sheetClose = null;
+let sheetClose = null, sheetHist = false;
+addEventListener('popstate', () => { if (sheetHist) { sheetHist = false; closeSheet(false, true); } });
 export function openSheet(html, { onClose, cls = '' } = {}) {
-  closeSheet(true);
+  closeSheet(true, false, true);
   const wrap = document.getElementById('sheet');
   wrap.innerHTML = `<div class="sheet-back"></div><section class="sheet ${cls}" role="dialog" aria-modal="true"><div class="sheet-grip"></div><div class="sheet-body"></div></section>`;
   const body = wrap.querySelector('.sheet-body');
   if (typeof html === 'string') body.innerHTML = html; else body.appendChild(html);
   wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  // Android-terugknop sluit eerst het blad
+  if (!sheetHist) { try { history.pushState({ sheet: 1 }, ''); sheetHist = true; } catch { /* */ } }
   const close = () => closeSheet();
   wrap.querySelector('.sheet-back').onclick = close;
   wrap.querySelector('.sheet-grip').onclick = close;
@@ -124,8 +127,15 @@ export function openSheet(html, { onClose, cls = '' } = {}) {
   sheet.addEventListener('touchend', () => { if (y0 === null) return; y0 = null; sheet.style.transform = ''; if (dy > 90) close(); });
   return body;
 }
-export function closeSheet(instant = false) {
+export function closeSheet(instant = false, fromBack = false, keepHist = false) {
   const wrap = document.getElementById('sheet'); if (wrap.hidden) return;
+  // zelf gesloten (niet via terug): de extra geschiedenisstap weer opruimen, behalve bij een schermwissel
+  if (sheetHist && !fromBack && !instant) {
+    sheetHist = false; const h = location.hash;
+    // alleen terugstappen als er niet meteen daarna genavigeerd wordt (anders zou terug die navigatie ongedaan maken)
+    setTimeout(() => { if (location.hash === h && history.state?.sheet) history.back(); }, 0);
+  }
+  else if (instant && !keepHist) sheetHist = false;
   const fn = sheetClose; sheetClose = null;
   wrap.classList.remove('open');
   const done = () => { wrap.hidden = true; wrap.innerHTML = ''; };

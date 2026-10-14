@@ -107,3 +107,19 @@
 .scr-affiche{justify-content:center}
 .scr-affiche .aff-wrap{flex:0 1 auto}
 .scr-affiche .aff{height:min(calc(100dvh - 230px - var(--safe-t) - var(--safe-b)),calc((100vw - 36px) * 1.25),760px)}
+/* liggende telefoon */
+@media (max-height:500px){
+  .scr-affiche{flex-direction:row;align-items:center;justify-content:center;gap:24px}
+  .scr-affiche .aff{height:calc(100dvh - 40px)}
+  .scr-affiche .aff-wrap{padding:20px 0}
+  .scr-affiche .a-foot{padding:0}
+  .r-q h2{font-size:19px} .r-q p{display:none} .r-q{margin-top:4px}
+  .foot{padding:8px 16px 2px}
+  .d-line{padding-bottom:6px}
+}
+@media (min-width:600px) and (min-aspect-ratio:5/4) and (max-height:600px){
+  .d-wrap{padding:10px 40px 0;align-items:center}
+  .d-stage{max-width:760px;height:100%}
+  .d-stage .card{left:0;right:auto;top:0;bottom:0;width:calc(50% - 30px);height:auto}
+  .d-stage .card.b{left:auto;right:0;top:0}
+}
