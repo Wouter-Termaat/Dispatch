@@ -1,0 +1,91 @@
+/* Dispatch: ranken (La Rangée, Le Duel, Klopt dit?), het doek en de affiche */
+
+/* ---------- La Rangée ---------- */
+.r-title{text-align:center;margin-top:14px;padding:0 20px;position:relative;z-index:30}
+.r-title h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:24px;margin-top:8px}
+.r-title p{margin-top:6px;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--cream-dim)}
+.r-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:10px 12px 0;position:relative;z-index:20}
+.r-line{position:relative;width:100%;max-width:880px;height:clamp(240px,56vh,480px)}
+.r-line .card{top:0;height:100%;width:calc((100% - 24px)/4);transition:left .35s cubic-bezier(.5,0,.2,1),transform .2s,filter .2s,box-shadow .2s,opacity .25s}
+.r-line .card .cap{padding:50px 6px 11px}
+.r-line .card .nm{font-size:13.5px;text-align:center;font-style:italic}
+.r-line .card .mt{font-size:7.5px;letter-spacing:.12em;text-align:center;line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+@media (min-width:700px){ .r-line .card .nm{font-size:19px} .r-line .card .mt{font-size:9px;letter-spacing:.18em} .r-line .card .cap{padding:60px 12px 16px} .r-title h2{font-size:30px} }
+.num{position:absolute;top:10px;left:50%;transform:translateX(-50%) scale(.4);opacity:0;z-index:5;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--serif);font-style:italic;font-size:17px;color:#2a160a;background:radial-gradient(circle at 40% 35%,#fff3d6,#e8b866);box-shadow:0 0 0 3px rgba(14,8,20,.7),0 0 18px rgba(255,200,120,.7);transition:.15s}
+.picked .num{opacity:1;transform:translateX(-50%) scale(1)}
+.card.picked{box-shadow:0 0 0 1px var(--gold),0 0 30px rgba(255,190,110,.35),0 18px 34px rgba(0,0,0,.6)}
+.r-flash{text-align:center;z-index:30;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--gold);opacity:0;transition:opacity .2s;height:22px;margin:12px 0 4px;text-shadow:0 0 12px rgba(255,190,110,.5)}
+.r-flash.show{opacity:1}
+.r-foot{display:flex;justify-content:center;gap:10px;padding:6px 0 calc(26px + var(--safe-b));z-index:40;position:relative}
+
+/* Klopt dit? */
+.r-check{width:100%;max-width:460px;margin:0 auto;align-self:center}
+.ck-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ck-list li{display:grid;grid-template-columns:30px 64px 1fr;gap:12px;align-items:center;padding:8px 12px 8px 8px;border-radius:10px;background:rgba(20,12,28,.55);box-shadow:inset 0 0 0 1px var(--hair-soft);transition:box-shadow .2s,background .2s;animation:scrIn .3s both}
+.ck-list li.tap{cursor:pointer}
+.ck-list li.tap:hover{box-shadow:inset 0 0 0 1px var(--hair)}
+.ck-list li.picked{box-shadow:inset 0 0 0 1px var(--gold),0 0 20px rgba(255,190,110,.25);background:rgba(60,36,30,.45)}
+.ck-n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-style:normal;font-size:15px;color:#2a160a;background:radial-gradient(circle at 40% 35%,#fff3d6,#e8b866);box-shadow:0 0 12px rgba(255,200,120,.5)}
+.ck-list li.tap:not(.picked) .ck-n{background:none;box-shadow:inset 0 0 0 1px var(--hair-soft)}
+.ck-art{width:64px;height:44px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1px rgba(236,199,127,.25)}
+.ck-art svg,.ck-art img{width:100%;height:100%;display:block;object-fit:cover}
+.ck-list b{display:block;font-family:var(--serif);font-weight:400;font-size:16px;line-height:1.15}
+.ck-list small{display:block;margin-top:3px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim);opacity:.8}
+
+/* ---------- Le Duel ---------- */
+.d-head{text-align:center;margin-top:12px}
+.d-wrap{flex:1;min-height:0;padding:12px 30px 0;display:flex;justify-content:center;position:relative;z-index:20}
+.d-stage{position:relative;width:100%;max-width:520px;height:100%;max-height:640px}
+.d-stage .card{left:0;right:0;top:0;height:calc(50% - 18px)}
+.d-stage .card.b{top:calc(50% + 18px)}
+.d-stage .card .nm{font-size:23px}
+.or{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:25;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--gold);
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#130b1b;box-shadow:inset 0 0 0 1px var(--hair),0 0 20px rgba(0,0,0,.7)}
+.d-foot{display:flex;justify-content:center;gap:10px;padding:18px 0 8px;position:relative;z-index:40}
+.ghost.icon{font-size:15px;letter-spacing:0;padding:11px 14px 10px}
+.d-line{text-align:center;padding:0 24px calc(22px + var(--safe-b));font-family:var(--serif);font-style:italic;font-size:13px;color:var(--cream-dim);min-height:18px;position:relative;z-index:40}
+
+/* Titanenclash */
+.clash{position:absolute;left:0;right:0;top:38%;text-align:center;z-index:70;pointer-events:none;opacity:0;padding:0 20px}
+.clash b{display:block;font-family:var(--logo);font-weight:400;font-size:42px;color:#fff1d2;text-shadow:0 0 22px rgba(255,190,110,.9),0 0 60px rgba(255,150,80,.5),0 2px 12px #000}
+.clash span{display:block;margin-top:6px;font-family:var(--serif);font-style:italic;font-size:15px;text-shadow:0 1px 10px #000}
+.clash.show{animation:clash 1.7s ease-out both}
+@keyframes clash{0%{opacity:0;transform:scale(.92)}18%{opacity:1;transform:scale(1)}70%{opacity:1}100%{opacity:0;transform:scale(1.04)}}
+
+/* ---------- doek ---------- */
+.curtain{position:absolute;inset:0;z-index:75;pointer-events:none;overflow:hidden;overflow:clip}
+.curtain i{position:absolute;top:0;bottom:0;width:51%;transition:transform .85s cubic-bezier(.6,0,.3,1);
+  background:repeating-linear-gradient(90deg,#4a0c14 0,#7a1822 22px,#8f1f2a 34px,#5a0f18 52px,#3e0910 64px);box-shadow:0 0 40px rgba(0,0,0,.8)}
+.curtain i::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 20%,transparent 80%,rgba(0,0,0,.5)),radial-gradient(80% 50% at 50% 0%,rgba(255,190,110,.18),transparent)}
+.curtain i:first-child{left:0;transform:translateX(-102%)}
+.curtain i:last-child{right:0;transform:translateX(102%)}
+.curtain.close{pointer-events:auto}
+.curtain.close i{transform:none}
+.curtain.open i:first-child{animation:curtL 1.4s .25s cubic-bezier(.6,0,.3,1) both}
+.curtain.open i:last-child{animation:curtR 1.4s .25s cubic-bezier(.6,0,.3,1) both}
+@keyframes curtL{from{transform:none}to{transform:translateX(-102%)}}
+@keyframes curtR{from{transform:none}to{transform:translateX(102%)}}
+
+/* ---------- affiche ---------- */
+.aff-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:calc(22px + var(--safe-t)) 18px 10px}
+.aff{position:relative;height:min(100%,calc((100vw - 36px) * 1.25),760px);aspect-ratio:4/5;border-radius:3px;overflow:hidden;
+  box-shadow:0 0 0 1px var(--hair),0 0 0 6px #120a18,0 0 0 7px var(--hair-soft),0 30px 60px rgba(0,0,0,.7)}
+.aff .art{position:absolute;inset:0;background:var(--mill) center 30%/cover;animation:affArt 2.4s .6s ease-out both}
+@keyframes affArt{from{filter:brightness(.25) saturate(.6)}to{filter:none}}
+.aff .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,10,26,.92) 0%,rgba(18,10,26,.2) 30%,rgba(18,10,26,.15) 55%,rgba(14,8,20,.96) 78%)}
+.aff .t{position:absolute;top:6%;left:0;right:0;text-align:center}
+.aff .t .eyebrow{font-size:9px;letter-spacing:.4em}
+.aff .t h1{font-family:var(--logo);font-weight:400;font-size:clamp(30px,10.5vw,52px);line-height:1.02;margin-top:8px;color:#fff1d2;text-shadow:0 0 18px rgba(255,200,120,.6),0 2px 10px #000;animation:lightsOn 1.8s 1.2s ease-out both}
+@keyframes lightsOn{0%{opacity:.12;text-shadow:none}30%{opacity:.7}38%{opacity:.35}55%{opacity:1}100%{opacity:1}}
+.aff .t p{margin-top:6px;font-family:var(--serif);font-style:italic;font-size:14px;color:var(--cream);text-shadow:0 0 6px #120a18,0 1px 12px #000,0 0 22px rgba(18,10,26,.9)}
+.aff .rows{position:absolute;left:5%;right:5%;bottom:3%}
+.aff .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-top:1px solid var(--hair-soft);animation:rowIn .6s calc(1.7s + var(--i) * .22s) ease-out both}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.aff .row span{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-dim);white-space:nowrap}
+.aff .row b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:16px;text-align:right}
+.aff .row small{font-family:var(--sans);font-style:normal;font-size:10px;margin-left:6px}
+.aff .curtain{z-index:5}
+.a-foot{padding:6px 0 calc(16px + var(--safe-b));position:relative;z-index:40}
+.a-foot .row-btns{margin-top:8px}
+.row-btns.small{gap:18px;margin-top:4px}

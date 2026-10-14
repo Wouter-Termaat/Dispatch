@@ -39,6 +39,9 @@ class BaseStore extends EventTarget {
     }
   }
 
+  /** Nooit em dashes of en dashes in de app: ook niet uit de catalogus. */
+  normalize() { for (const c of this.data.coasters) for (const k of ['name', 'park', 'manufacturer']) if (c[k]) c[k] = c[k].replace(/\s*[–—]\s*/g, ' - '); }
+
   async write(op) { this.apply(op); this.emit('change', op); await this.persist(op); }
   async persist() { }
 
@@ -70,6 +73,7 @@ export class LocalStore extends BaseStore {
       };
       this.save();
     }
+    this.normalize();
     const key = localStorage.getItem(DEMO_ME);
     this.userId = this.data.profiles.find(p => p.key === key)?.id || null;
     return this;
@@ -138,6 +142,7 @@ export class SupabaseStore extends BaseStore {
       if (!cached) throw e;
       this.data = cached; this.offline = true;
     }
+    this.normalize();
     // wijzigingen die nog in de wachtrij staan, opnieuw toepassen bovenop de verse data
     for (const op of this.queue) this.apply(op);
     this.flush();

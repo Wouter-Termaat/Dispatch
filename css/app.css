@@ -19,7 +19,8 @@ a{color:inherit}
 ::selection{background:rgba(236,199,127,.35)}
 :focus-visible{outline:1px solid var(--gold);outline-offset:3px}
 
-#app{position:fixed;inset:0;overflow:hidden;isolation:isolate;background:var(--plum)}
+#app{position:fixed;inset:0;overflow:hidden;overflow:clip;isolation:isolate;background:var(--plum)}
+.layer,.scr,.bgset{overflow:hidden;overflow:clip}
 .layer{position:absolute;inset:0}
 #bg{z-index:0}
 #screen{z-index:20}
