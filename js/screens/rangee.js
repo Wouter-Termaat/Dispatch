@@ -98,7 +98,7 @@ export default {
       const ms = performance.now() - shownAt;
       const ordered = ord.map(e => e.dataset.id);
       commit(rowToComparisons(ordered), cmode, { ms, type: 'row', ids: ordered });
-      sound.bell(); buzz(10);
+      sound.confirm(); buzz(10);
       ord.forEach(e => e.classList.add('win'));
       flash.textContent = pick(GENOTEERD); flash.classList.add('show');
       progress();
@@ -165,7 +165,7 @@ export default {
 
     async function finish() {
       if (ended) return; ended = true; locked = true;
-      fg.querySelector('.lightsout').classList.add('on');
+      fg.querySelector('.lightsout').classList.add('on'); sound.drumroll(.8);
       await Promise.all([endSession(), new Promise(r => setTimeout(r, 750))]);
       go('affiche');
     }

@@ -30,12 +30,14 @@ await page.click('[data-set=sessionLength] [data-v="5"]'); await wait(200);
 await page.click('[data-tog=sound]'); await wait(200);
 const s1 = await settings();
 ok(s1.sessionLength === 5 && s1.sound === false, 'sessielengte en geluid bewaard');
-ok(!(await page.$('[data-set=music]')), 'muziekoptie nog verborgen');
-await page.click('#stip'); await wait(700);
-ok((await settings()).musicUnlocked && await page.$('[data-set=music]') && await page.$('#music:not([hidden]) iframe'), 'witte stip in de instellingen ontgrendelt de muziek');
+ok(await page.$('[data-set=music] [data-v=orgel].on') && !(await page.$('[data-set=music] [data-v=wittestip]')), 'draaiorgel is standaard, Witte Stip-muziek nog verborgen');
+await page.click('[data-dot=instellingen]'); await wait(900); await shot('51-stip-gevonden');
+ok((await settings()).dots?.includes('instellingen') && await page.$('#dotfound.show'), 'witte stip bij de instellingen gevonden (1 van 10)');
+await wait(2800);
+ok((await page.$eval('.dotgrid', e => e.querySelectorAll('i.got').length)) === 1, 'voortgang in Meer: 1 van 10');
 await shot('51-muziek');
 await page.click('[data-set=music] [data-v=none]'); await wait(300);
-ok(await page.$eval('#music', e => e.hidden), 'muziek uit verbergt de speler');
+ok(await page.$eval('#music', e => e.hidden), 'muziek uit verbergt de knop');
 
 // export
 await page.click('#xls'); await page.waitForSelector('.sheet [data-k=wouter]');
@@ -60,8 +62,10 @@ await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('dispatch.
 await page.goto(base + '&nu=2026-10-14T20:30#/'); await page.reload(); await page.waitForSelector('#pb'); await wait(800);
 const box = await page.$eval('#pb', e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, vis: r.left + r.width / 2 < innerWidth - 4 && r.left >= 0 }; });
 ok(box.vis, 'bordje Point Blanc is zichtbaar en tikbaar');
-await page.mouse.click(box.x, box.y); await wait(1100); await shot('54-witte-stip');
-ok(await page.$('.ws.show') && (await settings()).musicUnlocked, 'Witte Stip op het plein: stip en muziek ontgrendeld');
+await page.mouse.click(box.x, box.y); await wait(700); const overlay = !!(await page.$('#dotfound.show')); await shot('54-witte-stip');
+ok(overlay && (await settings()).dots?.includes('pointblanc') && (await settings()).musicUnlocked, 'Point Blanc op Spelen: witte stip gevonden en Witte Stip-muziek ontgrendeld');
+await page.click('.idot .wdot'); await wait(900);
+ok((await settings()).dots?.includes('logo-i'), 'witte stip op de i van het logo');
 
 // park gesloten en halloween
 await page.goto(base + '&nu=2026-10-14T23:40#/'); await page.reload(); await wait(6000); await shot('55-gesloten');

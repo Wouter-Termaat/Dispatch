@@ -4,6 +4,7 @@ import { compare } from '../model.js';
 import { esc, meta, pick, buzz, reduceMotion } from '../ui.js';
 import { ROAST, fill } from '../copy.js';
 import { openCoaster } from '../baankaart.js';
+import { dot } from '../stippen.js';
 
 const AN = 27; let tab = 'verhalen';
 
@@ -19,7 +20,7 @@ export default {
     }
     fg.innerHTML = `<div class="page samen">
       <header class="c-head"><h1>${esc(nameOf(A))}<em>&amp;</em>${esc(nameOf(B))}</h1><div class="eyebrow" id="shared"></div></header>
-      <button class="arc" id="arc" aria-label="Smaakmatch opnieuw afspelen"><svg viewBox="0 0 250 140" id="arcsvg"></svg><div class="pct"><b id="pct">0%</b><span class="eyebrow">smaakmatch</span></div></button>
+      <button class="arc" id="arc" aria-label="Smaakmatch opnieuw afspelen"><svg viewBox="0 0 250 140" id="arcsvg"></svg><div class="pct"><b id="pct">0%</b><span class="eyebrow">smaakmatch</span></div>${dot('boog', 'arcdot', 'span')}</button>
       <nav class="seg center" id="seg"><button data-t="verhalen">Verhalen</button><button data-t="samen">Gezamenlijk</button><button data-t="bucket">Nog te rijden</button></nav>
       <div class="notes-c" id="notes"></div></div>`;
     const svg = fg.querySelector('#arcsvg'), pctEl = fg.querySelector('#pct'), notes = fg.querySelector('#notes');
@@ -70,13 +71,16 @@ export default {
       }).join('') + '</div>';
     }
     function bucket() {
-      const block = (who, other, ids) => `<h3 class="eyebrow b-h">Voor ${esc(nameOf(who))}: uit de top 30 van ${esc(nameOf(other))}</h3>` + (ids.length
+      const block = (who, other, ids) => `<h3 class="eyebrow b-h">Voor ${esc(nameOf(who))}: ${ids.length} ${ids.length === 1 ? 'baan' : 'banen'} van ${esc(nameOf(other))}</h3>` + (ids.length
         ? `<div class="mini-list">${ids.map(id => { const c = coaster(id); const om = model(other); return `<button class="li" data-id="${esc(id)}" data-k="${other}"><div class="rk">${om.position[om.idx.get(id)] + 1}</div><div><div class="nm">${esc(c.name)}</div><div class="pk">${meta(c)}</div></div><div></div></button>`; }).join('')}</div>`
-        : `<p class="sheet-text">Niets. ${esc(nameOf(who))} heeft de hele top 30 van ${esc(nameOf(other))} al gereden.</p>`);
+        : `<p class="sheet-text">Niets. ${esc(nameOf(who))} heeft alles van ${esc(nameOf(other))} al gereden.</p>`);
       return block(A, B, C.bucketA) + block(B, A, C.bucketB);
     }
     function render(replay = false) {
       C = compare(model(A), model(B), catalog());
+      // nog te rijden: alles van de ander dat jij nog niet hebt (niet alleen de top 30), op hun volgorde
+      C.bucketA = model(B).ranking.filter(id => !model(A).idx.has(id));
+      C.bucketB = model(A).ranking.filter(id => !model(B).idx.has(id));
       fg.querySelector('#shared').textContent = `${C.shared.length} banen samen gereden`;
       fg.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
       notes.innerHTML = tab === 'verhalen' ? stories() : tab === 'samen' ? joint() : bucket();

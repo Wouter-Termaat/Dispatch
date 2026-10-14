@@ -5,6 +5,7 @@ import { session } from './session.js';
 import { initStage, light } from './stage.js';
 import { closeSheet, toast } from './ui.js';
 import * as sound from './sound.js';
+import './stippen.js';
 
 const ROUTES = {
   '': () => import('./screens/plein.js'),
@@ -62,6 +63,7 @@ async function route() {
   try { cleanup = await mod.mount({ bg, fg, params, go }); } catch (e) { console.error(e); toast('Er ging iets mis bij het openen van dit scherm.'); }
   if (token !== navToken) { try { cleanup?.(); } catch (e) { console.error(e); } return; }  // intussen al verder genavigeerd
   current = { cleanup, fast: mod.fast };
+  import('./music.js').then(m => m.duck(!mod.nav)).catch(() => {});
   document.title = mod.title ? `${mod.title} · Dispatch` : 'Dispatch';
 }
 
@@ -79,6 +81,7 @@ async function boot() {
   on(w => { if (w === 'settings') syncSound(); });
   syncSound();
   addEventListener('pointerdown', () => sound.unlock(), { once: true });
+  document.addEventListener('click', e => { if (e.target.closest('.seg button, .pills button, .chip, .mode-t, .label, #nav a, .tool')) sound.select(); });
 
   if (!S.store.needsLogin) await fitAll();
   S.store.addEventListener('error', e => toast('Opslaan lukte niet: ' + (e.detail?.message || 'onbekende fout')));

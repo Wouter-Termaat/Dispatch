@@ -1,6 +1,7 @@
 // De baankaart: bottom sheet met alles over één baan in iemands lijst.
 import { model, me, meKey, otherKey, nameOf, coaster, compsOf, entriesOf, refit, S, emit } from './state.js';
 import { coasterInfo } from './model.js';
+import { isFound } from './stippen.js';
 import { esc, meta, artFor, openSheet, closeSheet, confirmSheet, toast, buzz } from './ui.js';
 
 export function openCoaster(id, key = meKey()) {
@@ -20,7 +21,7 @@ export function openCoaster(id, key = meKey()) {
     const lo = (info.lo - 1) / span * 100, hi = (info.hi - 1) / span * 100, at = (info.rank - 1) / span * 100;
     body += `<div class="bk-rank"><div><span class="eyebrow">Plek</span><b>${info.rank}</b><small>van ${n}</small></div>
       <dl class="bk-stats"><div><dt>duels</dt><dd>${info.duels}</dd></div><div><dt>gewonnen</dt><dd>${info.wins.length}</dd></div><div><dt>verloren</dt><dd>${info.losses.length}</dd></div><div><dt>gelijk</dt><dd>${info.ties.length}</dd></div></dl></div>
-      <div class="bk-range"><div class="bar"><i style="left:${lo}%;width:${Math.max(1.2, hi - lo)}%"></i><b style="left:${at}%"></b></div>
+      <div class="bk-range"><div class="bar"><i style="left:${lo}%;width:${Math.max(1.2, hi - lo)}%"></i><b class="wdot-bar${isFound('bereik') ? ' got' : ''}" data-dot="bereik" role="button" tabindex="0" aria-label="Een witte stip" style="left:${at}%"></b></div>
       <p>${info.lo === info.hi ? `Zeker op plek ${info.rank}.` : `Waarschijnlijk tussen plek ${info.lo} en ${info.hi}.`}</p></div>`;
     const pos = x => m.position[m.idx.get(x)] ?? 9999;
     const uniq = a => [...new Set(a)].filter(x => m.idx.has(x));
