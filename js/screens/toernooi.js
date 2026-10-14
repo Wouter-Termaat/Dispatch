@@ -109,8 +109,9 @@ export default {
         <div class="champ-card">${cardHtml(c, 'win', 320, 420)}<div class="champ-ring"></div></div>
         <div class="row-btns"><button class="ghost" id="again">Nog een toernooi</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
       const ring = root.querySelector('.champ-ring'); let h = '';
-      for (let i = 0; i < 22; i++) { const a = i / 22 * Math.PI * 2; h += `<i style="left:${50 + 54 * Math.cos(a)}%;top:${50 + 50 * Math.sin(a)}%;animation-delay:${(i * .09).toFixed(2)}s"></i>`; }
-      ring.innerHTML = h + dot('kampioen', 'ringdot', 'span');
+      // één lamp in de ring (rechts, halverwege) is een witte stip
+      for (let i = 0; i < 22; i++) { const a = i / 22 * Math.PI * 2; const st = `left:${50 + 54 * Math.cos(a)}%;top:${50 + 50 * Math.sin(a)}%;animation-delay:${(i * .09).toFixed(2)}s`; h += i === 0 ? dot('kampioen', 'ringdot', 'span').replace('class=', `style="${st}" class=`) : `<i style="${st}"></i>`; }
+      ring.innerHTML = h;
       sound.fanfare(true); setTimeout(() => sound.applause(2.6), 700); buzz([12, 50, 12, 50, 30]);
       root.querySelector('#aff').onclick = finish;
       root.querySelector('#again').onclick = async () => { await endSession(); s = null; setup(); };
