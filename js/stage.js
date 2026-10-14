@@ -17,7 +17,9 @@ export function initStage() {
 export function backdrop(bg, variant = '') {
   let stars = '';
   for (let i = 0; i < 46; i++) stars += `<i style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;animation-delay:${(Math.random() * 6).toFixed(1)}s"></i>`;
-  bg.innerHTML = `<div class="backdrop ${variant}"><div class="bd-rays"></div><div class="bd-sun"></div><div class="bd-stars">${stars}</div><div class="bd-floor"></div></div>`;
+  bg.innerHTML = `<div class="backdrop ${variant}"><div class="bd-rays"></div><div class="bd-sun"></div><div class="bd-stars">${stars}</div>
+    <div class="bd-beam l"></div><div class="bd-beam r"></div><div class="bd-flare"><i class="core"></i><i class="streak"></i><i class="ring r1"></i><i class="ring r2"></i></div>
+    <div class="bd-floor"></div></div>`;
 }
 
 // oude API (licht via WebGL): bewust leeg

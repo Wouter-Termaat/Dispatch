@@ -1,7 +1,7 @@
 // De baankaart: bottom sheet met alles over één baan in iemands lijst.
 import { model, me, meKey, otherKey, nameOf, coaster, compsOf, entriesOf, refit, S, emit } from './state.js';
 import { coasterInfo } from './model.js';
-import { esc, meta, artFor, openSheet, closeSheet, confirmSheet, toast, buzz, dateShort } from './ui.js';
+import { esc, meta, artFor, openSheet, closeSheet, confirmSheet, toast, buzz } from './ui.js';
 
 export function openCoaster(id, key = meKey()) {
   const c = coaster(id); if (!c) return;
@@ -37,14 +37,13 @@ export function openCoaster(id, key = meKey()) {
     const notes = [];
     if (oi !== undefined) notes.push(`Bij ${esc(nameOf(otherK))}: plek ${om.position[oi] + 1} van ${om.n}.`);
     else notes.push(`${esc(nameOf(otherK))} heeft hem nog niet gereden.`);
-    if (entry.reridden_at) notes.push(`Herreden op ${dateShort(new Date(entry.reridden_at))}. Oudere duels tellen voor de helft.`);
     body += `<p class="bk-note">${notes.join(' ')}</p>`;
     if (entry.note) body += `<blockquote class="bk-quote">${esc(entry.note)}</blockquote>`;
   } else {
     body += `<p class="sheet-text">${esc(nameOf(key))} heeft deze baan niet op de lijst.${oi !== undefined ? ` Bij ${esc(nameOf(otherK))} staat hij op plek ${om.position[oi] + 1}.` : ''}</p>`;
   }
   body += '<div class="bk-actions">';
-  if (mine && entry) body += `<button class="ghost" data-a="reride">${entry.reridden_at ? 'Herreden wissen' : 'Herreden'}</button><button class="ghost" data-a="note">Notitie</button><button class="ghost" data-a="edit">Wijzig</button><button class="ghost danger" data-a="remove">Uit mijn lijst</button>`;
+  if (mine && entry) body += `<button class="ghost" data-a="note">Notitie</button><button class="ghost" data-a="edit">Wijzig</button><button class="ghost danger" data-a="remove">Uit mijn lijst</button>`;
   else body += `<button class="ghost" data-a="edit">Wijzig</button>${iHave ? '' : '<button class="btn" data-a="add">Op mijn lijst zetten</button>'}`;
   body += '</div><div id="bk-form"></div></div>';
 
@@ -53,11 +52,7 @@ export function openCoaster(id, key = meKey()) {
     const chip = e.target.closest('.chip[data-id]'); if (chip) { openCoaster(chip.dataset.id, key); return; }
     const b = e.target.closest('[data-a]'); if (!b) return; buzz(4);
     const a = b.dataset.a, form = el.querySelector('#bk-form');
-    if (a === 'reride') {
-      await S.store.upsertEntry({ user_id: me().id, coaster_id: id, reridden_at: entry.reridden_at ? null : new Date().toISOString() });
-      await refit(); toast(entry.reridden_at ? 'Herreden gewist.' : 'Gemarkeerd als herreden. Oudere duels met deze baan tellen nu voor de helft.', 3600);
-      openCoaster(id, key);
-    } else if (a === 'note') {
+    if (a === 'note') {
       form.innerHTML = `<label class="field"><span>Notitie</span><textarea id="nt" maxlength="500" placeholder="Wat moet je onthouden over deze baan?">${esc(entry.note || '')}</textarea></label><div class="row-btns"><button class="btn" id="ntok">Bewaar</button></div>`;
       form.querySelector('#nt').focus();
       form.querySelector('#ntok').onclick = async () => { await S.store.upsertEntry({ user_id: me().id, coaster_id: id, note: form.querySelector('#nt').value.trim() || null }); emit('data'); toast('Notitie bewaard.'); openCoaster(id, key); };

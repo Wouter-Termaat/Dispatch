@@ -21,7 +21,8 @@ export default {
 
         <section class="m-sec"><h2 class="eyebrow">Instellingen <button class="stip${st.musicUnlocked ? ' found' : ''}" id="stip" aria-label="Een witte stip"></button></h2>
           <div class="m-row"><div><b>Ankersterkte</b><small>Hoe zwaar je startvolgorde (je Excel) meetelt.</small></div>${pills('anchorDuels', [[1, 'Licht'], [3, 'Gemiddeld'], [8, 'Sterk']], st.anchorDuels)}</div>
-          <div class="m-row"><div><b>Sessielengte</b><small>Rijen of duels per voorstelling.</small></div>${pills('sessionLength', [[5, '5'], [10, '10'], [20, '20']], st.sessionLength)}</div>
+          <div class="m-row"><div><b>Duels per ronde</b><small>Le Duel en de andere duelspellen.</small></div>${pills('sessionLength', [[5, '5'], [10, '10'], [20, '20']], st.sessionLength)}</div>
+          <div class="m-row"><div><b>Rijen per ronde</b><small>La Rangée, vier banen per rij.</small></div>${pills('rowLength', [[3, '3'], [5, '5'], [10, '10']], st.rowLength)}</div>
           <div class="m-row"><div><b>Geluid</b><small>Stationsbel, liftheuvel en applaus.</small></div><button class="tog${st.sound ? ' on' : ''}" data-tog="sound"><i></i>${st.sound ? 'Aan' : 'Uit'}</button></div>
           <div class="m-row"><div><b>Uitgebreide ranking</b><small>Bereik, duels, winst% en de plek bij de ander per baan.</small></div><button class="tog${st.showCertainty ? ' on' : ''}" data-tog="showCertainty"><i></i>${st.showCertainty ? 'Aan' : 'Uit'}</button></div>
           ${st.musicUnlocked ? `<div class="m-row"><div><b>Achtergrondmuziek</b><small>Spotify, in een kleine speler die blijft staan.</small></div>${pills('music', [['none', 'Geen'], ['wittestip', 'Witte Stip.']], st.music)}</div>` : ''}

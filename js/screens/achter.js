@@ -22,7 +22,7 @@ export default {
       <p>Mijn oude volgorde is niet waardeloos. Elke baan begint op zijn plek uit de Excel, en die plek telt als een paar virtuele duels (de ankersterkte, standaard drie). Vind je dat je Excel er helemaal naast zat, zet het anker dan op licht. Vertrouw je hem, zet hem op sterk.</p>
 
       <h2>Elke keuze telt, steeds opnieuw</h2>
-      <p>Het model (een Bradley-Terry-model, voor wie het wil weten) rekent bij elke keuze alles opnieuw door. De volgorde waarin je kiest maakt niet uit, en je dagvorm ook niet echt: een verrassende uitslag weegt zwaarder dan een verwachte, gelijk telt als een half, en "weet niet" telt niet mee. Heb je een baan opnieuw gereden, markeer hem dan als herreden: oudere duels met die baan tellen dan nog maar half.</p>
+      <p>Het model (een Bradley-Terry-model, voor wie het wil weten) rekent bij elke keuze alles opnieuw door. De volgorde waarin je kiest maakt niet uit, en je dagvorm ook niet echt: een verrassende uitslag weegt zwaarder dan een verwachte, gelijk telt als een half, en "weet niet" telt niet mee.</p>
 
       <h2>Hoe zeker is het?</h2>
       <p>Bij elke baan houdt Dispatch bij tussen welke plekken hij waarschijnlijk staat. Is dat bereik klein genoeg, dan heet hij zeker. Dispatch kiest zelf de banen waar de meeste twijfel over is, tegen banen die er dichtbij staan. Daardoor leer je per tik zo veel mogelijk.</p>

@@ -148,3 +148,22 @@
 .sp-extra li:nth-child(1) i{color:var(--top1);text-shadow:0 0 12px rgba(255,200,120,.6)}.sp-extra li:nth-child(2) i{color:var(--top2)}.sp-extra li:nth-child(3) i{color:var(--top3)}
 .sp-extra li b{font-family:var(--serif);font-weight:400;font-size:17px}
 .sp-extra li small{display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim);margin-top:2px}
+
+/* achtergrond: lichtbundels met flare (zoals Wouter op Samen mooi vond, met meer gloed) */
+.backdrop .bd-beam{position:absolute;top:-12vh;width:min(46vw,520px);height:135vh;transform-origin:50% 0;mix-blend-mode:screen;filter:blur(22px);opacity:.42;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,226,170,.55),rgba(255,206,140,.16) 55%,transparent 90%);clip-path:polygon(46% 0,54% 0,100% 100%,0 100%)}
+.backdrop .bd-beam.l{left:2%;animation:bdl 16s ease-in-out infinite}
+.backdrop .bd-beam.r{right:2%;animation:bdr 19s ease-in-out infinite}
+@keyframes bdl{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(-10deg)}}
+@keyframes bdr{0%,100%{transform:rotate(28deg)}50%{transform:rotate(12deg)}}
+.backdrop .bd-flare{position:absolute;left:50%;top:-2vh;width:0;height:0;pointer-events:none;mix-blend-mode:screen}
+.backdrop .bd-flare i{position:absolute;left:0;top:0;transform:translate(-50%,-50%);border-radius:50%}
+.backdrop .bd-flare .core{width:300px;height:300px;background:radial-gradient(circle,rgba(255,246,220,.75) 0,rgba(255,214,150,.28) 18%,rgba(255,190,110,.08) 45%,transparent 70%);animation:flick 7s ease-in-out infinite}
+.backdrop .bd-flare .streak{width:min(140vw,1600px);height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,228,180,.55) 35%,rgba(255,250,235,.95) 50%,rgba(255,228,180,.55) 65%,transparent);filter:blur(1px);opacity:.7;animation:flick 7s ease-in-out infinite}
+.backdrop .bd-flare .ring{border:1px solid rgba(255,214,150,.18);box-shadow:0 0 30px rgba(255,200,130,.08) inset}
+.backdrop .bd-flare .r1{display:none}
+.backdrop .bd-flare .r2{width:60px;height:60px;left:30vw;top:36vh;background:radial-gradient(circle,rgba(255,214,150,.18),transparent 70%);border:0}
+@keyframes flick{0%,100%{opacity:.75}30%{opacity:1}55%{opacity:.82}80%{opacity:.95}}
+.backdrop.dim .bd-beam{opacity:.3}
+.backdrop.stage .bd-flare{display:none}
+@media (prefers-reduced-motion:reduce){ .backdrop .bd-beam{animation:none} }
