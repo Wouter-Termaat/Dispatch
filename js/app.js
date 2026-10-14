@@ -1,6 +1,7 @@
 // Dispatch: opstart, router en navigatie.
 import { createStore } from './store.js';
-import { S, fitAll, mySettings, meKey, on } from './state.js';
+import { S, fitAll, mySettings, meKey, on, emit } from './state.js';
+import { session } from './session.js';
 import { initStage, light } from './stage.js';
 import { closeSheet, toast } from './ui.js';
 import * as sound from './sound.js';
@@ -80,12 +81,33 @@ async function boot() {
 
   if (!S.store.needsLogin) await fitAll();
   S.store.addEventListener('error', e => toast('Opslaan lukte niet: ' + (e.detail?.message || 'onbekende fout')));
+  S.store.addEventListener('signedout', () => go('login'));
+  watchQueue();
+  // terug in de app na een tijdje weg: verse data ophalen (zo zie je wat Luca intussen deed)
+  document.addEventListener('visibilitychange', async () => {
+    const st = S.store;
+    if (document.hidden || st.kind !== 'supabase' || st.needsLogin || session.current) return;
+    if (Date.now() - (st.loadedAt || 0) < 120000) return;
+    try { await st.load(); await fitAll(); emit('data'); } catch (e) { console.warn(e); }
+  });
   addEventListener('hashchange', route);
   await route();
   document.getElementById('boot').classList.add('gone');
   setTimeout(() => document.getElementById('boot')?.remove(), 700);
   import('./music.js').then(m => m.initMusic()).catch(() => {});
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// Kleine indicator als er wijzigingen wachten op verbinding
+function watchQueue() {
+  const pill = document.createElement('div'); pill.className = 'netpill'; pill.hidden = true;
+  document.getElementById('app').appendChild(pill);
+  const upd = () => {
+    const n = S.store.pending;
+    pill.hidden = !(n && S.store.offline);
+    pill.textContent = `${n} ${n === 1 ? 'wijziging wacht' : 'wijzigingen wachten'} op verbinding`;
+  };
+  S.store.addEventListener('queue', upd); upd();
 }
 
 /** Na inloggen of profielkeuze: modellen fitten en naar het plein. */

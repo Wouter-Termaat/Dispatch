@@ -99,6 +99,10 @@ export class SupabaseStore extends BaseStore {
     const { data } = await this.sb.auth.getSession();
     this.userId = data.session?.user?.id || null;
     if (this.userId) await this.load();
+    this.sb.auth.onAuthStateChange((ev, sess) => {
+      if (ev === 'SIGNED_OUT' && this.userId) { this.userId = null; this.emit('signedout'); }
+      else if (sess?.user?.id && ev === 'TOKEN_REFRESHED') this.flush();
+    });
     addEventListener('online', () => this.flush());
     setInterval(() => this.flush(), 20000);
     return this;
@@ -136,7 +140,7 @@ export class SupabaseStore extends BaseStore {
         this.selectAll('coasters', 'id'), this.selectAll('profiles', 'id'), this.selectAll('entries', 'coaster_id'), this.selectAll('comparisons', 'id')]);
       this.data = { coasters, profiles: profiles.map(p => ({ ...p, settings: p.settings || {} })), entries, comparisons };
       try { localStorage.setItem(CACHE_KEY, JSON.stringify(this.data)); } catch { /* te groot: dan zonder kopie */ }
-      this.offline = false;
+      this.offline = false; this.loadedAt = Date.now();
     } catch (e) {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (!cached) throw e;
@@ -153,7 +157,7 @@ export class SupabaseStore extends BaseStore {
 
   async flush() {
     if (this.flushing || !this.queue.length || !this.userId) return;
-    this.flushing = true;
+    this.flushing = true; let again = false;
     try {
       while (this.queue.length) {
         await this.send(this.queue[0]);
@@ -161,13 +165,18 @@ export class SupabaseStore extends BaseStore {
       }
       this.offline = false;
     } catch (e) {
-      console.warn('Opslaan mislukt, later opnieuw', e?.message || e);
-      this.offline = true; this.emit('queue', this.queue.length);
-      // een fout die niet door het netwerk komt (bijv. RLS) mag de wachtrij niet eeuwig blokkeren
-      if (e && e.code && !String(e.message || '').match(/fetch|network/i)) {
+      if (isPermanent(e)) {
+        // de database weigert dit echt (bijv. ongeldige data of geen rechten): niet eeuwig blijven proberen
+        console.warn('Opslaan geweigerd', e);
         this.queue.shift(); this.saveQueue(); this.emit('error', e);
+        again = true;
+      } else {
+        console.warn('Opslaan mislukt, later opnieuw', e?.message || e);
+        this.offline = true; this.emit('queue', this.queue.length);
+        if (/JWT|token/i.test(e?.message || '') || e?.code === 'PGRST301') this.sb.auth.refreshSession().catch(() => {});
       }
     } finally { this.flushing = false; }
+    if (again) return this.flush();
   }
 
   async send(op) {
@@ -175,9 +184,17 @@ export class SupabaseStore extends BaseStore {
     switch (op.t) {
       case 'comps': r = await sb.from('comparisons').insert(op.rows.map(({ a, b, outcome, mode, batch, created_at, user_id }) => ({ a, b, outcome, mode, batch, created_at, user_id }))); break;
       case 'delBatch': r = await sb.from('comparisons').delete().eq('user_id', op.user_id).eq('batch', op.batch); break;
-      case 'entry': r = await sb.from('entries').upsert(op.row, { onConflict: 'user_id,coaster_id' }); break;
+      case 'entry': {
+        const e = this.data.entries.find(x => x.user_id === op.row.user_id && x.coaster_id === op.row.coaster_id) || op.row;
+        const { user_id, coaster_id, initial_rank, prior_strength = 1, reridden_at = null, note = null } = { ...e, ...op.row };
+        r = await sb.from('entries').upsert({ user_id, coaster_id, initial_rank, prior_strength, reridden_at, note }, { onConflict: 'user_id,coaster_id' }); break;
+      }
       case 'delEntry': r = await sb.from('entries').delete().eq('user_id', op.user_id).eq('coaster_id', op.coaster_id); break;
-      case 'coaster': r = await sb.from('coasters').upsert(op.row, { onConflict: 'id' }); break;
+      case 'coaster': {
+        const c = { ...(this.data.coasters.find(x => x.id === op.row.id) || {}), ...op.row };
+        const { id, name, park, manufacturer = null, operational = true, photo_url = null } = c;
+        r = await sb.from('coasters').upsert({ id, name, park, manufacturer, operational, photo_url, ...(c.created_by ? { created_by: c.created_by } : {}) }, { onConflict: 'id' }); break;
+      }
       case 'settings': {
         const p = this.data.profiles.find(p => p.id === op.user_id);
         r = await sb.from('profiles').update({ settings: p?.settings || op.settings }).eq('id', op.user_id); break;
@@ -188,6 +205,9 @@ export class SupabaseStore extends BaseStore {
 }
 
 export function newBatch() { return uuid(); }
+
+/** Postgres-fouten die bij opnieuw proberen niet verdwijnen (data, constraints, rechten). */
+export function isPermanent(e) { return !!e?.code && /^(22|23|42|P0)/.test(String(e.code)); }
 
 export async function createStore() {
   const demo = new URLSearchParams(location.search).has('demo');

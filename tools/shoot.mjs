@@ -6,6 +6,7 @@ import { mkdir } from 'node:fs/promises';
 
 const routes = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const extra = process.argv.find(a => a.startsWith('--q='))?.slice(4) || '';
+const live = process.argv.includes('--live');
 const only = process.argv.find(a => a.startsWith('--size='))?.slice(7);
 const out = 'test-results/shots'; await mkdir(out, { recursive: true });
 const server = await serve(8123);
@@ -22,7 +23,7 @@ for (const [name, s] of Object.entries(sizes)) {
   page.on('pageerror', e => errors.push(`[${name}] pageerror: ${e.message}`));
   page.on('requestfailed', r => errors.push(`[${name}] requestfailed: ${r.url()}`));
   for (const r of routes) {
-    await page.goto(`http://localhost:8123/?demo=1${extra ? '&' + extra : ''}${r}`);
+    await page.goto(live ? `http://localhost:8123/${extra ? '?' + extra : ''}${r}` : `http://localhost:8123/?demo=1${extra ? '&' + extra : ''}${r}`);
     await page.waitForTimeout(2200);
     const file = `${out}/${name}-${(r.replace(/[#/?=&]+/g, '_').replace(/^_|_$/g, '') || 'plein')}.png`;
     await page.screenshot({ path: file });
