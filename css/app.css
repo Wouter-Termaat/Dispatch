@@ -23,7 +23,8 @@ a{color:inherit}
 .layer,.scr,.bgset{overflow:hidden;overflow:clip}
 .layer{position:absolute;inset:0}
 #bg{z-index:0}
-#screen{z-index:20}
+#screen{z-index:20;pointer-events:none}
+.scr{pointer-events:auto}
 .fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;mix-blend-mode:screen}
 .grain{position:absolute;inset:0;z-index:80;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
@@ -102,7 +103,7 @@ h1,h2,h3,h4{font-weight:400}
   .plein-bg::before{content:"";position:absolute;inset:0;background:var(--sky) center 40%/cover;opacity:.18;filter:blur(8px)}
 }
 @media (min-width:700px){ .plate{top:-40px} }
-@media (max-aspect-ratio:3/4){ .plate{top:auto;bottom:64px;height:94%;--plate-shift-x:-14px} }
+@media (max-aspect-ratio:3/4){ .plate{top:auto;bottom:64px;height:94%;--plate-shift-x:-24px} }
 .bulb{position:absolute;width:var(--s);height:var(--s);transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,#fff8e2 0 18%,rgba(255,214,140,.85) 32%,rgba(255,180,90,0) 70%);mix-blend-mode:screen;opacity:0;animation:bulb var(--d,4s) var(--dl,0s) ease-in-out infinite}
 @keyframes bulb{0%,100%{opacity:0}50%{opacity:.5}}
@@ -155,3 +156,5 @@ h1,h2,h3,h4{font-weight:400}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.bulb{opacity:.3}}
+.ws::before{content:"";position:absolute;left:50%;top:50%;width:300px;height:190px;transform:translate(-50%,-50%);z-index:-1;background:radial-gradient(closest-side,rgba(10,6,14,.82),rgba(10,6,14,.5) 55%,transparent)}
+.ws div.eyebrow{font-family:var(--sans);font-style:normal;font-size:10px;white-space:nowrap}
