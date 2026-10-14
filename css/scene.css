@@ -1,0 +1,122 @@
+/* Dispatch: de scène (poster in lagen) en de achtergronden van de andere schermen */
+
+@property --r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --p { syntax: '<length>'; inherits: false; initial-value: -200px; }
+
+.scene{position:relative;overflow:hidden;overflow:clip;isolation:isolate}
+.scene .world{position:absolute;left:0;top:0;width:1134px;height:1417px;transform-origin:0 0}
+.scene .lyr{position:absolute;inset:0;will-change:transform;transition:opacity .9s calc(var(--i,0) * 60ms) ease-out,translate 1.3s calc(var(--i,0) * 60ms) cubic-bezier(.2,.8,.2,1)}
+.scene.enter .lyr{opacity:0;translate:0 70px}
+.scene .lyr img{position:absolute;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}
+
+/* lucht: zonnestralen uit de poster, eigen lichtstralen en sterren */
+.scene .sunburst{opacity:.8;-webkit-mask:radial-gradient(50% 58% at 50% 72%,#000 26%,transparent 76%);mask:radial-gradient(50% 58% at 50% 72%,#000 26%,transparent 76%);animation:breathe2 9s ease-in-out infinite}
+@keyframes breathe2{50%{filter:brightness(1.12) saturate(1.1)}}
+.scene .rays{position:absolute;width:1900px;height:1900px;margin:-950px 0 0 -950px;border-radius:50%;mix-blend-mode:screen;opacity:.55;
+  background:repeating-conic-gradient(from 0deg,rgba(255,220,160,0) 0deg 9deg,rgba(255,220,160,.22) 11deg,rgba(255,220,160,0) 14deg 22.5deg);
+  -webkit-mask:radial-gradient(circle,#000 4%,rgba(0,0,0,.6) 22%,transparent 46%);mask:radial-gradient(circle,#000 4%,rgba(0,0,0,.6) 22%,transparent 46%);animation:spin 160s linear infinite}
+.scene .stars i{position:absolute;transform:translate(-50%,-50%);opacity:.3;animation:tw 5s ease-in-out infinite;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 0 L21.3 18.7 L40 20 L21.3 21.3 L20 40 L18.7 21.3 L0 20 L18.7 18.7Z' fill='%23fff4dc'/%3E%3Ccircle cx='20' cy='20' r='2.4' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat}
+.scene .beam{position:absolute;bottom:0;width:180px;height:1500px;transform-origin:50% 100%;mix-blend-mode:screen;filter:blur(18px);opacity:.5;
+  background:linear-gradient(0deg,rgba(255,214,150,.0),rgba(255,214,150,.30) 20%,rgba(255,214,150,.12) 70%,transparent);clip-path:polygon(44% 100%,56% 100%,100% 0,0 0)}
+.scene .beam.b1{left:40px;animation:sweep1 14s ease-in-out infinite}
+.scene .beam.b2{right:40px;animation:sweep2 17s ease-in-out infinite}
+@keyframes sweep1{0%,100%{transform:rotate(18deg)}50%{transform:rotate(38deg)}}
+@keyframes sweep2{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(-40deg)}}
+
+/* molen */
+.scene .sails{position:absolute;inset:0;animation:spin 46s linear infinite reverse}
+.scene.enter .sails{animation-duration:6s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scene .glow{mix-blend-mode:screen;filter:blur(2.2px) brightness(1.9) saturate(1.2);opacity:.95}
+.scene .wave-r{-webkit-mask:radial-gradient(circle at var(--hx) var(--hy),transparent calc(var(--r) - 70px),#000 var(--r),transparent calc(var(--r) + 50px));
+  mask:radial-gradient(circle at var(--hx) var(--hy),transparent calc(var(--r) - 70px),#000 var(--r),transparent calc(var(--r) + 50px));animation:waveR 3.2s cubic-bezier(.4,0,.6,1) infinite}
+@keyframes waveR{from{--r:0px}to{--r:330px}}
+.scene .wave-x{-webkit-mask:linear-gradient(90deg,transparent calc(var(--p) - 140px),#000 var(--p),transparent calc(var(--p) + 140px));
+  mask:linear-gradient(90deg,transparent calc(var(--p) - 140px),#000 var(--p),transparent calc(var(--p) + 140px));animation:waveX 2.8s linear infinite}
+@keyframes waveX{from{--p:-160px}to{--p:760px}}
+
+/* licht uit de deur, lantaarns */
+.scene .doorlight{position:absolute;width:820px;height:360px;transform:translate(-50%,-50%);border-radius:50%;mix-blend-mode:screen;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,196,120,.55),rgba(255,160,80,.16) 55%,transparent);animation:candle 6s ease-in-out infinite}
+.scene .halo{position:absolute;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;mix-blend-mode:screen;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,226,160,.85),rgba(255,190,110,.18) 55%,transparent);animation:candle 4.3s ease-in-out infinite}
+@keyframes candle{0%,100%{opacity:.85}22%{opacity:.7}41%{opacity:1}63%{opacity:.78}80%{opacity:.95}}
+
+/* park gesloten: alles dooft, sterren blijven */
+.scene .lyr:not(.stars){transition:opacity .9s calc(var(--i,0) * 60ms) ease-out,translate 1.3s calc(var(--i,0) * 60ms) cubic-bezier(.2,.8,.2,1),filter 6s}
+.scene.closed .glow,.scene.closed .rays,.scene.closed .beam,.scene.closed .halo{opacity:0;transition:opacity 5s}
+.scene.closed .lyr:not(.stars):not(.d0){filter:brightness(.55) saturate(.8)}
+.scene.closed .doorlight{opacity:.25;animation:none}
+.scene.closed .sails{animation-duration:240s}
+
+/* randen laten opgaan in de pagina */
+.scene::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:linear-gradient(180deg,var(--night) 0%,rgba(13,8,20,0) 18%,rgba(13,8,20,0) 72%,var(--page) 100%),
+             linear-gradient(90deg,var(--page) 0%,rgba(13,8,20,0) 10%,rgba(13,8,20,0) 90%,var(--page) 100%)}
+
+/* ---------- achtergrond van de andere schermen ---------- */
+.backdrop{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 70% at 50% -10%,#2c1d3c 0%,#1b1226 45%,#100a17 100%)}
+.backdrop .bd-sun{position:absolute;left:50%;top:-34vh;width:max(820px,140vw);aspect-ratio:1134/945;transform:translateX(-50%);opacity:.24;
+  background:url(../assets/scene/sunburst.webp) center/contain no-repeat;-webkit-mask:radial-gradient(50% 50% at 50% 70%,#000 20%,transparent 75%);mask:radial-gradient(50% 50% at 50% 70%,#000 20%,transparent 75%);animation:breathe2 12s ease-in-out infinite}
+.backdrop .bd-rays{position:absolute;left:50%;top:-8vh;width:200vmax;height:200vmax;margin-left:-100vmax;margin-top:-100vmax;border-radius:50%;opacity:.5;
+  background:repeating-conic-gradient(from 0deg,rgba(236,199,127,0) 0 4deg,rgba(236,199,127,.07) 4.4deg,rgba(236,199,127,0) 4.8deg 9deg);
+  -webkit-mask:radial-gradient(circle,#000 0,transparent 42%);mask:radial-gradient(circle,#000 0,transparent 42%);animation:spin 300s linear infinite}
+.backdrop .bd-stars{position:absolute;inset:0 0 50% 0}
+.backdrop .bd-stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff3d6;box-shadow:0 0 6px rgba(255,236,190,.9);opacity:.2;animation:tw2 6s ease-in-out infinite}
+@keyframes tw2{50%{opacity:.85}}
+.backdrop .bd-floor{display:none;position:absolute;left:-10%;right:-10%;bottom:-6%;height:42%;
+  background:radial-gradient(60% 50% at 50% 30%,rgba(255,190,120,.16),transparent 70%),linear-gradient(180deg,transparent,rgba(8,4,12,.7))}
+.backdrop.stage .bd-floor{display:block}
+.backdrop .bd-floor::before{content:"";position:absolute;inset:0;opacity:.18;background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(236,199,127,.35) 58px 59px);
+  transform:perspective(400px) rotateX(62deg);transform-origin:50% 0;-webkit-mask:linear-gradient(180deg,#000,transparent 85%);mask:linear-gradient(180deg,#000,transparent 85%)}
+.backdrop.dim .bd-sun{opacity:.14}
+
+/* ---------- Spelen ---------- */
+:root{--page:#140c1c;--night:#120a18}
+.page-night{position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 0%,#24172f 0%,#140c1c 55%,#0f0915 100%)}
+.spelen{position:absolute;inset:0 0 var(--nav-h) 0;display:flex;flex-direction:column}
+.sp-scene{flex:1;min-height:0}
+.sp-head{position:absolute;top:calc(14px + var(--safe-t));left:0;right:0;text-align:center;z-index:10;pointer-events:none}
+.neon{font-family:var(--logo);font-weight:400;font-size:clamp(50px,15vw,92px);line-height:1;letter-spacing:.05em;color:#fff4dc;
+  text-shadow:0 0 6px rgba(255,236,200,.9),0 0 22px rgba(255,190,110,.75),0 0 60px rgba(255,150,80,.45);animation:neonOn 2.2s .3s ease-out both}
+@keyframes neonOn{0%{opacity:.08;text-shadow:none}12%{opacity:.9}16%{opacity:.25}24%{opacity:1}30%{opacity:.4}38%,100%{opacity:1}}
+.sp-head .eyebrow{margin-top:8px;color:#ecd3a0;text-shadow:0 1px 8px #000}
+.sp-greet{margin-top:10px;font-family:var(--serif);font-style:italic;font-size:14px;color:var(--cream);opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.9);padding:0 20px}
+.pb-hit{position:absolute;z-index:9;background:none;border:0;cursor:pointer;border-radius:6px}
+.sp-play{flex:none;position:relative;z-index:6;display:flex;flex-direction:column;align-items:center;gap:8px;padding:2px 0 14px;margin-top:-26px}
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .spelen{flex-direction:row;inset:0 0 var(--nav-h) 0}
+  .sp-scene{flex:1.25}
+  .sp-play{flex:1;margin:0;justify-content:center;padding:0 4vw 0 1vw;gap:14px}
+  .sp-label{padding:0}
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:12px 4px;overflow:visible;max-width:430px}
+  .modes .mode-t{width:auto;height:118px}
+  .sp-scene::before{content:"";position:absolute;right:0;top:8%;bottom:8%;width:1px;background:linear-gradient(180deg,transparent,var(--hair-soft),transparent);z-index:8}
+}
+.sp-label{width:100%;max-width:760px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:0 20px}
+.sp-status{font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--cream-dim);text-align:right}
+.modes{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 20px 12px;width:100%;max-width:980px;scrollbar-width:none;overscroll-behavior-x:contain}
+.modes::-webkit-scrollbar{display:none}
+@media (min-width:820px){.modes{justify-content:center;overflow:visible}}
+.mode-t{position:relative;flex:none;width:104px;height:112px;scroll-snap-align:center;border:0;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  color:var(--cream-dim);background:linear-gradient(180deg,rgba(44,30,58,.92),rgba(20,12,28,.96));box-shadow:inset 0 0 0 1px var(--hair-soft),0 10px 24px rgba(0,0,0,.45);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,color .25s,background .25s}
+.mode-t:hover{color:var(--cream);transform:translateY(-2px)}
+.mode-t .mi svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:filter .3s}
+.mode-t b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:14.5px;color:var(--cream)}
+.mode-t small{font-size:8px;letter-spacing:.2em;text-transform:uppercase;opacity:.8}
+.mode-t.on{color:var(--gold);transform:translateY(-4px);background:radial-gradient(120% 90% at 50% 0%,rgba(255,200,130,.25),transparent 62%),linear-gradient(180deg,#43161c,#220a0e);
+  box-shadow:inset 0 0 0 1px var(--gold),0 0 30px rgba(255,170,90,.35),0 14px 28px rgba(0,0,0,.5)}
+.mode-t.on .mi svg{filter:drop-shadow(0 0 6px rgba(255,200,120,.8))}
+.mode-t.on::after{content:"";position:absolute;inset:-6px;border-radius:16px;padding:3px;pointer-events:none;
+  background:radial-gradient(circle,#ffe7b0 0 1.3px,rgba(255,200,120,.5) 2px,transparent 2.6px) 0 0/9px 9px;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  animation:chase 1.1s linear infinite;filter:drop-shadow(0 0 3px rgba(255,200,120,.9))}
+@keyframes chase{to{background-position:9px 0}}
+.mode-desc{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--cream-dim);min-height:20px;text-align:center;padding:0 20px}
+.btn.big{padding:17px 40px 15px;font-size:12.5px;margin-top:4px}
+.btn.big span{font-size:16px;margin-left:2px}
+.spelen .ws{top:30%;z-index:20}
+
+@media (max-height:700px){ .mode-t{height:96px} .mode-t .mi svg{width:28px;height:28px} .neon{font-size:44px} }
