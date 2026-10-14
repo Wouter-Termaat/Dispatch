@@ -1,0 +1,2961 @@
+{
+"coasters": [
+{
+"id": "der-schwur-des-karnan-hansa-park",
+"name": "Der Schwur des Kärnan",
+"park": "Hansa-Park",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "hyperion-energylandia",
+"name": "Hyperion",
+"park": "Energylandia",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "zadra-energylandia",
+"name": "Zadra",
+"park": "Energylandia",
+"manufacturer": "RMC",
+"operational": true
+},
+{
+"id": "the-ride-to-happiness-plopsaland-belgium",
+"name": "The Ride to Happiness",
+"park": "Plopsaland Belgium",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "untamed-walibi-holland",
+"name": "Untamed",
+"park": "Walibi Holland",
+"manufacturer": "RMC",
+"operational": true
+},
+{
+"id": "taron-phantasialand",
+"name": "Taron",
+"park": "Phantasialand",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "voltron-europa-park",
+"name": "Voltron",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "shambhala-portaventura",
+"name": "Shambhala",
+"park": "PortAventura",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "batman-gotham-city-escape-parque-warner",
+"name": "Batman Gotham City Escape",
+"park": "Parque Warner",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "kondaa-walibi-belgium",
+"name": "Kondaa",
+"park": "Walibi Belgium",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "red-force-ferrari-land",
+"name": "Red Force",
+"park": "Ferrari Land",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "troy-toverland",
+"name": "Troy",
+"park": "Toverland",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "f-l-y-phantasialand",
+"name": "F.L.Y.",
+"park": "Phantasialand",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "flucht-von-novgorod-hansa-park",
+"name": "Flucht von Novgorod",
+"park": "Hansa-Park",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "fenix-toverland",
+"name": "Fēnix",
+"park": "Toverland",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "superman-la-atraccion-de-acero-parque-warner",
+"name": "Superman / la Atracción de Acero",
+"park": "Parque Warner",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "hyperia-thorpe-park",
+"name": "Hyperia",
+"park": "Thorpe Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "furius-baco-portaventura",
+"name": "Furius Baco",
+"park": "PortAventura",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "colossos-kampf-der-giganten-heide-park",
+"name": "Colossos - Kampf der Giganten",
+"park": "Heide Park",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "abyssus-energylandia",
+"name": "Abyssus",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "flug-der-damonen-heide-park",
+"name": "Flug der Dämonen",
+"park": "Heide Park",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "dragon-khan-portaventura",
+"name": "Dragon Khan",
+"park": "PortAventura",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "wodan-timburcoaster-europa-park",
+"name": "Wodan Timburcoaster",
+"park": "Europa-Park",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "wickerman-alton-towers",
+"name": "Wickerman",
+"park": "Alton Towers",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "stealth-thorpe-park",
+"name": "Stealth",
+"park": "Thorpe Park",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "black-mamba-phantasialand",
+"name": "Black Mamba",
+"park": "Phantasialand",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "nemesis-reborn-alton-towers",
+"name": "Nemesis Reborn",
+"park": "Alton Towers",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "karacho-erlebnispark-tripsdrill",
+"name": "Karacho",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "anubis-the-ride-plopsaland-belgium",
+"name": "Anubis The Ride",
+"park": "Plopsaland Belgium",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "hals-uber-kopf-erlebnispark-tripsdrill",
+"name": "Hals-über-Kopf",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "saw-the-ride-thorpe-park",
+"name": "Saw - The Ride",
+"park": "Thorpe Park",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "rita-alton-towers",
+"name": "Rita",
+"park": "Alton Towers",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "goliath-walibi-holland",
+"name": "Goliath",
+"park": "Walibi Holland",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "blue-fire-megacoaster-europa-park",
+"name": "Blue Fire Megacoaster",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "lost-gravity-walibi-holland",
+"name": "Lost Gravity",
+"park": "Walibi Holland",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "abismo-parque-de-atracciones-de-madrid",
+"name": "Abismo",
+"park": "Parque de Atracciones de Madrid",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "nemesis-inferno-thorpe-park",
+"name": "Nemesis Inferno",
+"park": "Thorpe Park",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "shadows-of-arkham-parque-warner",
+"name": "Shadows of Arkham",
+"park": "Parque Warner",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "baron-1898-efteling",
+"name": "Baron 1898",
+"park": "Efteling",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "van-helsing-s-factory-moviepark-germany",
+"name": "Van Helsing's Factory",
+"park": "Moviepark Germany",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "olympia-looping-prater",
+"name": "Olympia Looping",
+"park": "Prater",
+"manufacturer": "Schwarzkopf",
+"operational": true
+},
+{
+"id": "smiler-alton-towers",
+"name": "Smiler",
+"park": "Alton Towers",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "swarm-thorpe-park",
+"name": "Swarm",
+"park": "Thorpe Park",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "gold-rush-slagharen",
+"name": "Gold Rush",
+"park": "Slagharen",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "fury-bobbejaanland",
+"name": "Fury",
+"park": "Bobbejaanland",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "de-vliegende-hollander-efteling",
+"name": "De Vliegende Hollander",
+"park": "Efteling",
+"manufacturer": "KumbaK",
+"operational": true
+},
+{
+"id": "icon-pleasure-beach-resort",
+"name": "Icon",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "joris-en-de-draak-water-efteling",
+"name": "Joris en de draak - Water",
+"park": "Efteling",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "joris-en-de-draak-vuur-efteling",
+"name": "Joris en de draak - Vuur",
+"park": "Efteling",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "eurosat-cancan-coaster-europa-park",
+"name": "Eurosat - CanCan Coaster",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "formula-energylandia",
+"name": "Formula",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "silver-star-europa-park",
+"name": "Silver Star",
+"park": "Europa-Park",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "yoy-thrill-walibi-holland",
+"name": "YOY Thrill",
+"park": "Walibi Holland",
+"manufacturer": "RMC",
+"operational": true
+},
+{
+"id": "stuntfall-parque-warner",
+"name": "Stuntfall",
+"park": "Parque Warner",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "big-one-pleasure-beach-resort",
+"name": "Big One",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Arrow Dynamics",
+"operational": true
+},
+{
+"id": "revolution-bobbejaanland",
+"name": "Revolution",
+"park": "Bobbejaanland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "yoy-chill-walibi-holland",
+"name": "YOY Chill",
+"park": "Walibi Holland",
+"manufacturer": "RMC",
+"operational": true
+},
+{
+"id": "nessie-hansa-park",
+"name": "Nessie",
+"park": "Hansa-Park",
+"manufacturer": "Schwarzkopf",
+"operational": true
+},
+{
+"id": "speed-energylandia",
+"name": "Speed",
+"park": "Energylandia",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "tarantula-parque-de-atracciones-de-madrid",
+"name": "Tarántula",
+"park": "Parque de Atracciones de Madrid",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "heidi-the-ride-plopsaland-belgium",
+"name": "Heidi The Ride",
+"park": "Plopsaland Belgium",
+"manufacturer": "GCI",
+"operational": true
+},
+{
+"id": "xpress-platform-13-walibi-holland",
+"name": "Xpress: Platform 13",
+"park": "Walibi Holland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "arthur-europa-park",
+"name": "Arthur",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "th13teen-alton-towers",
+"name": "Th13teen",
+"park": "Alton Towers",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "uncharted-the-enigma-of-penitence-portaventura",
+"name": "Uncharted: The Enigma of Penitence",
+"park": "PortAventura",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "galactica-alton-towers",
+"name": "Galactica",
+"park": "Alton Towers",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "dwervelwind-toverland",
+"name": "Dwervelwind",
+"park": "Toverland",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "oblivion-alton-towers",
+"name": "Oblivion",
+"park": "Alton Towers",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "colorado-adventure-phantasialand",
+"name": "Colorado Adventure",
+"park": "Phantasialand",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "winja-s-fear-phantasialand",
+"name": "Winja's - Fear",
+"park": "Phantasialand",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "winja-s-force-phantasialand",
+"name": "Winja's - Force",
+"park": "Phantasialand",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "dragon-roller-coaster-energylandia",
+"name": "Dragon Roller Coaster",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "de-bob-efteling",
+"name": "De Bob",
+"park": "Efteling",
+"manufacturer": "Intamin",
+"operational": false
+},
+{
+"id": "g-sengte-sau-erlebnispark-tripsdrill",
+"name": "G'sengte Sau",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "pulsar-walibi-belgium",
+"name": "Pulsar",
+"park": "Walibi Belgium",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "correcaminos-bip-bip-parque-warner",
+"name": "Correcaminos Bip, Bip",
+"park": "Parque Warner",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "tornado-parque-de-atracciones-de-madrid",
+"name": "Tornado",
+"park": "Parque de Atracciones de Madrid",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "robin-hood-walibi-holland",
+"name": "Robin Hood",
+"park": "Walibi Holland",
+"manufacturer": "Vekoma",
+"operational": false
+},
+{
+"id": "euro-mir-europa-park",
+"name": "Euro-Mir",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "falcon-duinrell",
+"name": "Falcon",
+"park": "Duinrell",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "typhoon-bobbejaanland",
+"name": "Typhoon",
+"park": "Bobbejaanland",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "revolution-pleasure-beach-resort",
+"name": "Revolution",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Arrow Dynamics",
+"operational": true
+},
+{
+"id": "tiki-waka-walibi-belgium",
+"name": "Tiki-Waka",
+"park": "Walibi Belgium",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "stampida-portaventura",
+"name": "Stampida",
+"park": "PortAventura",
+"manufacturer": "CCI",
+"operational": true
+},
+{
+"id": "krake-heide-park",
+"name": "Krake",
+"park": "Heide Park",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "el-diablo-tren-de-la-mina-portaventura",
+"name": "El Diablo - Tren de la Mina",
+"park": "PortAventura",
+"manufacturer": "Arrow Dynamics",
+"operational": true
+},
+{
+"id": "crazy-bats-phantasialand",
+"name": "Crazy Bats",
+"park": "Phantasialand",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "balagos-flying-flame-hellendoorn",
+"name": "Balagos – Flying Flame",
+"park": "Hellendoorn",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "thunder-loop-slagharen",
+"name": "Thunder Loop",
+"park": "Slagharen",
+"manufacturer": "Schwarzkopf",
+"operational": false
+},
+{
+"id": "steeplechase-pleasure-beach-resort",
+"name": "Steeplechase",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Arrow Dynamics",
+"operational": true
+},
+{
+"id": "spinball-whizzer-alton-towers",
+"name": "Spinball Whizzer",
+"park": "Alton Towers",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "bobbahn-heide-park",
+"name": "Bobbahn",
+"park": "Heide Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "calamity-mine-walibi-belgium",
+"name": "Calamity Mine",
+"park": "Walibi Belgium",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "poseidon-europa-park",
+"name": "Poseidon",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "tnt-tren-de-la-mina-parque-de-atracciones-de-madrid",
+"name": "TNT Tren de la Mina",
+"park": "Parque de Atracciones de Madrid",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "naga-bay-bobbejaanland",
+"name": "Naga Bay",
+"park": "Bobbejaanland",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "speed-of-sound-walibi-holland",
+"name": "Speed of Sound",
+"park": "Walibi Holland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "cobra-walibi-belgium",
+"name": "Cobra",
+"park": "Walibi Belgium",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "tomahawk-portaventura",
+"name": "Tomahawk",
+"park": "PortAventura",
+"manufacturer": "CCI",
+"operational": true
+},
+{
+"id": "booster-bike-toverland",
+"name": "Booster Bike",
+"park": "Toverland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "raik-phantasialand",
+"name": "Raik",
+"park": "Phantasialand",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "volldampf-erlebnispark-tripsdrill",
+"name": "Volldampf",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "max-moritz-efteling",
+"name": "Max & Moritz",
+"park": "Efteling",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "colossus-thorpe-park",
+"name": "Colossus",
+"park": "Thorpe Park",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "boomerang-energylandia",
+"name": "Boomerang",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "vogelrok-efteling",
+"name": "Vogelrok",
+"park": "Efteling",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "light-explorers-energylandia",
+"name": "Light Explorers",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "avalanche-pleasure-beach-resort",
+"name": "Avalanche",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "dream-catcher-bobbejaanland",
+"name": "Dream Catcher",
+"park": "Bobbejaanland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "jimmy-neutron-s-atomic-flyer-moviepark-germany",
+"name": "Jimmy Neutron's Atomic Flyer",
+"park": "Moviepark Germany",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "vampire-walibi-belgium",
+"name": "Vampire",
+"park": "Walibi Belgium",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "condor-walibi-holland",
+"name": "Condor",
+"park": "Walibi Holland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "infusion-pleasure-beach-resort",
+"name": "Infusion",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "roller-coaster-mayan-energylandia",
+"name": "Roller Coaster Mayan",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "limit-heide-park",
+"name": "Limit",
+"park": "Heide Park",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "mp-xpress-moviepark-germany",
+"name": "MP Xpress",
+"park": "Moviepark Germany",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "python-efteling",
+"name": "Python",
+"park": "Efteling",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "big-loop-heide-park",
+"name": "Big Loop",
+"park": "Heide Park",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "rioolrat-hellendoorn",
+"name": "Rioolrat",
+"park": "Hellendoorn",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "pegasus-efteling",
+"name": "Pegasus",
+"park": "Efteling",
+"manufacturer": "Intamin",
+"operational": false
+},
+{
+"id": "psyke-underground-walibi-belgium",
+"name": "Psyké Underground",
+"park": "Walibi Belgium",
+"manufacturer": "Schwarzkopf",
+"operational": true
+},
+{
+"id": "walking-dead-the-ride-thorpe-park",
+"name": "Walking Dead - The Ride",
+"park": "Thorpe Park",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "coaster-express-parque-warner",
+"name": "Coaster Express",
+"park": "Parque Warner",
+"manufacturer": "RCCA",
+"operational": true
+},
+{
+"id": "royal-scotsman-hansa-park",
+"name": "Royal Scotsman",
+"park": "Hansa-Park",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "mammut-erlebnispark-tripsdrill",
+"name": "Mammut",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "flying-dutchman-gold-mine-walibi-holland",
+"name": "Flying Dutchman Gold Mine",
+"park": "Walibi Holland",
+"manufacturer": "Vekoma",
+"operational": false
+},
+{
+"id": "crazy-mine-hansa-park",
+"name": "Crazy Mine",
+"park": "Hansa-Park",
+"manufacturer": "Maurer Rides",
+"operational": true
+},
+{
+"id": "speedy-bob-bobbejaanland",
+"name": "Speedy Bob",
+"park": "Bobbejaanland",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "vertigo-parque-de-atracciones-de-madrid",
+"name": "Vertigo",
+"park": "Parque de Atracciones de Madrid",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "ghost-chasers-moviepark-germany",
+"name": "Ghost Chasers",
+"park": "Moviepark Germany",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "matterhorn-blitz-europa-park",
+"name": "Matterhorn-Blitz",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "atlantica-supersplash-europa-park",
+"name": "Atlantica SuperSplash",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "loup-garou-walibi-belgium",
+"name": "Loup Garou",
+"park": "Walibi Belgium",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "bandit-moviepark-germany",
+"name": "Bandit",
+"park": "Moviepark Germany",
+"manufacturer": "RCCA",
+"operational": true
+},
+{
+"id": "schweizer-bobbahn-europa-park",
+"name": "Schweizer Bobbahn",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "schlange-von-midgard-hansa-park",
+"name": "Schlange von Midgard",
+"park": "Hansa-Park",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "mine-train-slagharen",
+"name": "Mine Train",
+"park": "Slagharen",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "frida-energylandia",
+"name": "Frida",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "tom-y-jerry-parque-warner",
+"name": "Tom y Jerry",
+"park": "Parque Warner",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "pegasus-europa-park",
+"name": "Pegasus",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "kikkerachtbaan-duinrell",
+"name": "Kikkerachtbaan",
+"park": "Duinrell",
+"manufacturer": "Zierer",
+"operational": false
+},
+{
+"id": "rasender-tausendfuler-erlebnispark-tripsdrill",
+"name": "Rasender Tausendfüßler",
+"park": "Erlebnispark Tripsdrill",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "energus-energylandia",
+"name": "Energus",
+"park": "Energylandia",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "dragonfly-duinrell",
+"name": "Dragonfly",
+"park": "Duinrell",
+"manufacturer": "Gerstlauer",
+"operational": true
+},
+{
+"id": "jul-s-rollerskates-juliana-toren",
+"name": "Jul's RollerSkates",
+"park": "Juliana Toren",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "fun-pilot-walibi-belgium",
+"name": "Fun Pilot",
+"park": "Walibi Belgium",
+"manufacturer": "Zamperla",
+"operational": true
+},
+{
+"id": "donderstenen-hellendoorn",
+"name": "Donderstenen",
+"park": "Hellendoorn",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "oki-doki-bobbejaanland",
+"name": "Oki doki",
+"park": "Bobbejaanland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "blue-flyer-pleasure-beach-resort",
+"name": "Blue Flyer",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Philadelphia Toboggan Coasters",
+"operational": true
+},
+{
+"id": "bluey-the-ride-here-come-the-grannies-alton-towers",
+"name": "Bluey the Ride: Here come the grannies!",
+"park": "Alton Towers",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "nickelodeon-streak-pleasure-beach-resort",
+"name": "Nickelodeon Streak",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Charles Paige",
+"operational": true
+},
+{
+"id": "tami-tami-portaventura",
+"name": "Tami-Tami",
+"park": "PortAventura",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "toos-express-toverland",
+"name": "Toos-Express",
+"park": "Toverland",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "backyardigans-misson-to-mars-moviepark-germany",
+"name": "Backyardigans: Misson to Mars",
+"park": "Moviepark Germany",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "runaway-mine-train-alton-towers",
+"name": "Runaway Mine Train",
+"park": "Alton Towers",
+"manufacturer": "SBF Visa",
+"operational": true
+},
+{
+"id": "flying-fish-thorpe-park",
+"name": "Flying Fish",
+"park": "Thorpe Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "drako-walibi-holland",
+"name": "Drako",
+"park": "Walibi Holland",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "grottenblitz-heide-park",
+"name": "Grottenblitz",
+"park": "Heide Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "indy-blitz-heide-park",
+"name": "Indy-Blitz",
+"park": "Heide Park",
+"manufacturer": "Zierer",
+"operational": true
+},
+{
+"id": "draak-plopsaland-belgium",
+"name": "Draak",
+"park": "Plopsaland Belgium",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "junior-red-force-ferrari-land",
+"name": "Junior Red Force",
+"park": "Ferrari Land",
+"manufacturer": "SBF Visa",
+"operational": true
+},
+{
+"id": "grand-national-pleasure-beach-resort",
+"name": "Grand National",
+"park": "Pleasure Beach Resort",
+"manufacturer": "Philadelphia Toboggan Coasters",
+"operational": true
+},
+{
+"id": "ba-a-a-express-europa-park",
+"name": "Ba-a-a Express",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "kleine-zar-hansa-park",
+"name": "Kleine Zar",
+"park": "Hansa-Park",
+"manufacturer": "Preston & Bareiri",
+"operational": true
+},
+{
+"id": "bob-express-bobbejaanland",
+"name": "Bob express",
+"park": "Bobbejaanland",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "alpenexpress-enzian-europa-park",
+"name": "Alpenexpress Enzian",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "achterbahn-wunderland-kalkar",
+"name": "Achterbahn",
+"park": "Wunderland Kalkar",
+"manufacturer": "Zamperla",
+"operational": true
+},
+{
+"id": "volare-prater",
+"name": "Volare",
+"park": "Prater",
+"manufacturer": "Zamperla",
+"operational": true
+},
+{
+"id": "viking-roller-coaster-energylandia",
+"name": "Viking Roller Coaster",
+"park": "Energylandia",
+"manufacturer": "SBF Visa",
+"operational": true
+},
+{
+"id": "rutschebanen-tivoli-gardens",
+"name": "Rutschebanen",
+"park": "Tivoli Gardens",
+"manufacturer": "Valdemar Lebech",
+"operational": true
+},
+{
+"id": "vertigo-walibi-belgium",
+"name": "Vertigo",
+"park": "Walibi Belgium",
+"manufacturer": "Doppelmayr",
+"operational": false
+},
+{
+"id": "expedition-geforce-holiday-park",
+"name": "Expedition GeForce",
+"park": "Holiday Park",
+"manufacturer": "Intamin",
+"operational": true
+},
+{
+"id": "turbine-walibi-belgium",
+"name": "Turbine",
+"park": "Walibi Belgium",
+"manufacturer": "Schwarzkopf",
+"operational": false
+},
+{
+"id": "cop-car-chase-moviepark-germany",
+"name": "Cop Car Chase",
+"park": "Moviepark Germany",
+"manufacturer": "Intamin",
+"operational": false
+},
+{
+"id": "eurosat-europa-park",
+"name": "Eurosat",
+"park": "Europa-Park",
+"manufacturer": "Mack Rides",
+"operational": false
+},
+{
+"id": "sky-scream-holiday-park",
+"name": "Sky Scream",
+"park": "Holiday Park",
+"manufacturer": "Premier Rides",
+"operational": true
+},
+{
+"id": "star-trek-operation-enterprise-moviepark-germany",
+"name": "Star Trek: Operation Enterprise",
+"park": "Moviepark Germany",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "the-milky-way-express-tivoli-gardens",
+"name": "The Milky Way Express",
+"park": "Tivoli Gardens",
+"manufacturer": "Mack Rides",
+"operational": true
+},
+{
+"id": "dmonen-tivoli-gardens",
+"name": "Dæmonen",
+"park": "Tivoli Gardens",
+"manufacturer": "B&M",
+"operational": true
+},
+{
+"id": "temple-of-the-night-hawk-phantasialand",
+"name": "Temple of the Night Hawk",
+"park": "Phantasialand",
+"manufacturer": "Vekoma",
+"operational": true
+},
+{
+"id": "familieachtbaan-billybird-park-hemelrijk",
+"name": "Familieachtbaan",
+"park": "BillyBird Park Hemelrijk",
+"manufacturer": "ABC Rides",
+"operational": true
+}
+],
+"profiles": [
+{
+"id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"key": "wouter",
+"name": "Wouter",
+"dynamics": {
+"labels": [
+"Punten factor",
+"Punten max",
+"Operatief",
+"Niet operatief",
+"Favo Gemiddeld",
+"Favo Totaal"
+],
+"values": [
+1.0,
+100.0,
+1.0,
+0.0,
+7.0,
+40.0
+]
+}
+},
+{
+"id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"key": "luca",
+"name": "Luca",
+"dynamics": {
+"labels": [
+"Punten factor",
+"Punten max",
+"Gesloopt niet",
+"Gesloopt wel",
+"Favo Gemiddeld",
+"Favo Totaal"
+],
+"values": [
+2.1,
+102.0,
+1.0,
+0.0,
+7.0,
+40.0
+]
+}
+}
+],
+"entries": [
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "der-schwur-des-karnan-hansa-park",
+"initial_rank": 1
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "hyperion-energylandia",
+"initial_rank": 2
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "zadra-energylandia",
+"initial_rank": 3
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "the-ride-to-happiness-plopsaland-belgium",
+"initial_rank": 4
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "untamed-walibi-holland",
+"initial_rank": 5
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "taron-phantasialand",
+"initial_rank": 6
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "voltron-europa-park",
+"initial_rank": 7
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "shambhala-portaventura",
+"initial_rank": 8
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "batman-gotham-city-escape-parque-warner",
+"initial_rank": 9
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "kondaa-walibi-belgium",
+"initial_rank": 10
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "red-force-ferrari-land",
+"initial_rank": 11
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "troy-toverland",
+"initial_rank": 12
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "f-l-y-phantasialand",
+"initial_rank": 13
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "flucht-von-novgorod-hansa-park",
+"initial_rank": 14
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "fenix-toverland",
+"initial_rank": 15
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "superman-la-atraccion-de-acero-parque-warner",
+"initial_rank": 16
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "hyperia-thorpe-park",
+"initial_rank": 17
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "furius-baco-portaventura",
+"initial_rank": 18
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "colossos-kampf-der-giganten-heide-park",
+"initial_rank": 19
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "abyssus-energylandia",
+"initial_rank": 20
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "flug-der-damonen-heide-park",
+"initial_rank": 21
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "dragon-khan-portaventura",
+"initial_rank": 22
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "wodan-timburcoaster-europa-park",
+"initial_rank": 23
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "wickerman-alton-towers",
+"initial_rank": 24
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "stealth-thorpe-park",
+"initial_rank": 25
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "black-mamba-phantasialand",
+"initial_rank": 26
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "nemesis-reborn-alton-towers",
+"initial_rank": 27
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "karacho-erlebnispark-tripsdrill",
+"initial_rank": 28
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "anubis-the-ride-plopsaland-belgium",
+"initial_rank": 29
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "hals-uber-kopf-erlebnispark-tripsdrill",
+"initial_rank": 30
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "saw-the-ride-thorpe-park",
+"initial_rank": 31
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "rita-alton-towers",
+"initial_rank": 32
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "goliath-walibi-holland",
+"initial_rank": 33
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "blue-fire-megacoaster-europa-park",
+"initial_rank": 34
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "lost-gravity-walibi-holland",
+"initial_rank": 35
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "abismo-parque-de-atracciones-de-madrid",
+"initial_rank": 36
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "nemesis-inferno-thorpe-park",
+"initial_rank": 37
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "shadows-of-arkham-parque-warner",
+"initial_rank": 38
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "baron-1898-efteling",
+"initial_rank": 39
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "van-helsing-s-factory-moviepark-germany",
+"initial_rank": 40
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "olympia-looping-prater",
+"initial_rank": 41
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "smiler-alton-towers",
+"initial_rank": 42
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "swarm-thorpe-park",
+"initial_rank": 43
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "gold-rush-slagharen",
+"initial_rank": 44
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "fury-bobbejaanland",
+"initial_rank": 45
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "de-vliegende-hollander-efteling",
+"initial_rank": 46
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "icon-pleasure-beach-resort",
+"initial_rank": 47
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "joris-en-de-draak-water-efteling",
+"initial_rank": 48
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "joris-en-de-draak-vuur-efteling",
+"initial_rank": 49
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "eurosat-cancan-coaster-europa-park",
+"initial_rank": 50
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "formula-energylandia",
+"initial_rank": 51
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "silver-star-europa-park",
+"initial_rank": 52
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "yoy-thrill-walibi-holland",
+"initial_rank": 53
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "stuntfall-parque-warner",
+"initial_rank": 54
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "big-one-pleasure-beach-resort",
+"initial_rank": 55
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "revolution-bobbejaanland",
+"initial_rank": 56
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "yoy-chill-walibi-holland",
+"initial_rank": 57
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "nessie-hansa-park",
+"initial_rank": 58
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "speed-energylandia",
+"initial_rank": 59
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tarantula-parque-de-atracciones-de-madrid",
+"initial_rank": 60
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "heidi-the-ride-plopsaland-belgium",
+"initial_rank": 61
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "xpress-platform-13-walibi-holland",
+"initial_rank": 62
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "arthur-europa-park",
+"initial_rank": 63
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "th13teen-alton-towers",
+"initial_rank": 64
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "uncharted-the-enigma-of-penitence-portaventura",
+"initial_rank": 65
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "galactica-alton-towers",
+"initial_rank": 66
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "dwervelwind-toverland",
+"initial_rank": 67
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "oblivion-alton-towers",
+"initial_rank": 68
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "colorado-adventure-phantasialand",
+"initial_rank": 69
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "winja-s-fear-phantasialand",
+"initial_rank": 70
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "winja-s-force-phantasialand",
+"initial_rank": 71
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "dragon-roller-coaster-energylandia",
+"initial_rank": 72
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "de-bob-efteling",
+"initial_rank": 73
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "g-sengte-sau-erlebnispark-tripsdrill",
+"initial_rank": 74
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "pulsar-walibi-belgium",
+"initial_rank": 75
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "correcaminos-bip-bip-parque-warner",
+"initial_rank": 76
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tornado-parque-de-atracciones-de-madrid",
+"initial_rank": 77
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "robin-hood-walibi-holland",
+"initial_rank": 78
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "euro-mir-europa-park",
+"initial_rank": 79
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "falcon-duinrell",
+"initial_rank": 80
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "typhoon-bobbejaanland",
+"initial_rank": 81
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "revolution-pleasure-beach-resort",
+"initial_rank": 82
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tiki-waka-walibi-belgium",
+"initial_rank": 83
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "stampida-portaventura",
+"initial_rank": 84
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "krake-heide-park",
+"initial_rank": 85
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "el-diablo-tren-de-la-mina-portaventura",
+"initial_rank": 86
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "crazy-bats-phantasialand",
+"initial_rank": 87
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "balagos-flying-flame-hellendoorn",
+"initial_rank": 88
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "thunder-loop-slagharen",
+"initial_rank": 89
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "steeplechase-pleasure-beach-resort",
+"initial_rank": 90
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "spinball-whizzer-alton-towers",
+"initial_rank": 91
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "bobbahn-heide-park",
+"initial_rank": 92
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "calamity-mine-walibi-belgium",
+"initial_rank": 93
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "poseidon-europa-park",
+"initial_rank": 94
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tnt-tren-de-la-mina-parque-de-atracciones-de-madrid",
+"initial_rank": 95
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "naga-bay-bobbejaanland",
+"initial_rank": 96
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "speed-of-sound-walibi-holland",
+"initial_rank": 97
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "cobra-walibi-belgium",
+"initial_rank": 98
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tomahawk-portaventura",
+"initial_rank": 99
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "booster-bike-toverland",
+"initial_rank": 100
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "raik-phantasialand",
+"initial_rank": 101
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "volldampf-erlebnispark-tripsdrill",
+"initial_rank": 102
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "max-moritz-efteling",
+"initial_rank": 103
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "colossus-thorpe-park",
+"initial_rank": 104
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "boomerang-energylandia",
+"initial_rank": 105
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "vogelrok-efteling",
+"initial_rank": 106
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "light-explorers-energylandia",
+"initial_rank": 107
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "avalanche-pleasure-beach-resort",
+"initial_rank": 108
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "dream-catcher-bobbejaanland",
+"initial_rank": 109
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "jimmy-neutron-s-atomic-flyer-moviepark-germany",
+"initial_rank": 110
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "vampire-walibi-belgium",
+"initial_rank": 111
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "condor-walibi-holland",
+"initial_rank": 112
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "infusion-pleasure-beach-resort",
+"initial_rank": 113
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "roller-coaster-mayan-energylandia",
+"initial_rank": 114
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "limit-heide-park",
+"initial_rank": 115
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "mp-xpress-moviepark-germany",
+"initial_rank": 116
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "python-efteling",
+"initial_rank": 117
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "big-loop-heide-park",
+"initial_rank": 118
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "rioolrat-hellendoorn",
+"initial_rank": 119
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "pegasus-efteling",
+"initial_rank": 120
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "psyke-underground-walibi-belgium",
+"initial_rank": 121
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "walking-dead-the-ride-thorpe-park",
+"initial_rank": 122
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "coaster-express-parque-warner",
+"initial_rank": 123
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "royal-scotsman-hansa-park",
+"initial_rank": 124
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "mammut-erlebnispark-tripsdrill",
+"initial_rank": 125
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "flying-dutchman-gold-mine-walibi-holland",
+"initial_rank": 126
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "crazy-mine-hansa-park",
+"initial_rank": 127
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "speedy-bob-bobbejaanland",
+"initial_rank": 128
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "vertigo-parque-de-atracciones-de-madrid",
+"initial_rank": 129
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "ghost-chasers-moviepark-germany",
+"initial_rank": 130
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "matterhorn-blitz-europa-park",
+"initial_rank": 131
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "atlantica-supersplash-europa-park",
+"initial_rank": 132
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "loup-garou-walibi-belgium",
+"initial_rank": 133
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "bandit-moviepark-germany",
+"initial_rank": 134
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "schweizer-bobbahn-europa-park",
+"initial_rank": 135
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "schlange-von-midgard-hansa-park",
+"initial_rank": 136
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "mine-train-slagharen",
+"initial_rank": 137
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "frida-energylandia",
+"initial_rank": 138
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tom-y-jerry-parque-warner",
+"initial_rank": 139
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "pegasus-europa-park",
+"initial_rank": 140
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "kikkerachtbaan-duinrell",
+"initial_rank": 141
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "rasender-tausendfuler-erlebnispark-tripsdrill",
+"initial_rank": 142
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "energus-energylandia",
+"initial_rank": 143
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "dragonfly-duinrell",
+"initial_rank": 144
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "jul-s-rollerskates-juliana-toren",
+"initial_rank": 145
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "fun-pilot-walibi-belgium",
+"initial_rank": 146
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "donderstenen-hellendoorn",
+"initial_rank": 147
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "oki-doki-bobbejaanland",
+"initial_rank": 148
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "blue-flyer-pleasure-beach-resort",
+"initial_rank": 149
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "bluey-the-ride-here-come-the-grannies-alton-towers",
+"initial_rank": 150
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "nickelodeon-streak-pleasure-beach-resort",
+"initial_rank": 151
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "tami-tami-portaventura",
+"initial_rank": 152
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "toos-express-toverland",
+"initial_rank": 153
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "backyardigans-misson-to-mars-moviepark-germany",
+"initial_rank": 154
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "runaway-mine-train-alton-towers",
+"initial_rank": 155
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "flying-fish-thorpe-park",
+"initial_rank": 156
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "drako-walibi-holland",
+"initial_rank": 157
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "grottenblitz-heide-park",
+"initial_rank": 158
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "indy-blitz-heide-park",
+"initial_rank": 159
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "draak-plopsaland-belgium",
+"initial_rank": 160
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "junior-red-force-ferrari-land",
+"initial_rank": 161
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "grand-national-pleasure-beach-resort",
+"initial_rank": 162
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "ba-a-a-express-europa-park",
+"initial_rank": 163
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "kleine-zar-hansa-park",
+"initial_rank": 164
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "bob-express-bobbejaanland",
+"initial_rank": 165
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "alpenexpress-enzian-europa-park",
+"initial_rank": 166
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "achterbahn-wunderland-kalkar",
+"initial_rank": 167
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "volare-prater",
+"initial_rank": 168
+},
+{
+"user_id": "e5aeb32f-c2d0-45cb-bd25-13a785fa07e5",
+"coaster_id": "viking-roller-coaster-energylandia",
+"initial_rank": 169
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "der-schwur-des-karnan-hansa-park",
+"initial_rank": 1
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "troy-toverland",
+"initial_rank": 2
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "the-ride-to-happiness-plopsaland-belgium",
+"initial_rank": 3
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "taron-phantasialand",
+"initial_rank": 4
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "hyperion-energylandia",
+"initial_rank": 5
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "voltron-europa-park",
+"initial_rank": 6
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "shambhala-portaventura",
+"initial_rank": 7
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "colossos-kampf-der-giganten-heide-park",
+"initial_rank": 8
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "zadra-energylandia",
+"initial_rank": 9
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "red-force-ferrari-land",
+"initial_rank": 10
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "kondaa-walibi-belgium",
+"initial_rank": 11
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "flucht-von-novgorod-hansa-park",
+"initial_rank": 12
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "untamed-walibi-holland",
+"initial_rank": 13
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "rutschebanen-tivoli-gardens",
+"initial_rank": 14
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "f-l-y-phantasialand",
+"initial_rank": 15
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "hyperia-thorpe-park",
+"initial_rank": 16
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "baron-1898-efteling",
+"initial_rank": 17
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "vertigo-walibi-belgium",
+"initial_rank": 18
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "black-mamba-phantasialand",
+"initial_rank": 19
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "abyssus-energylandia",
+"initial_rank": 20
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "karacho-erlebnispark-tripsdrill",
+"initial_rank": 21
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "eurosat-cancan-coaster-europa-park",
+"initial_rank": 22
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "wodan-timburcoaster-europa-park",
+"initial_rank": 23
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "wickerman-alton-towers",
+"initial_rank": 24
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "flug-der-damonen-heide-park",
+"initial_rank": 25
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "fenix-toverland",
+"initial_rank": 26
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "stealth-thorpe-park",
+"initial_rank": 27
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "smiler-alton-towers",
+"initial_rank": 28
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "expedition-geforce-holiday-park",
+"initial_rank": 29
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "van-helsing-s-factory-moviepark-germany",
+"initial_rank": 30
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "dragon-khan-portaventura",
+"initial_rank": 31
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "anubis-the-ride-plopsaland-belgium",
+"initial_rank": 32
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "rita-alton-towers",
+"initial_rank": 33
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "nemesis-reborn-alton-towers",
+"initial_rank": 34
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "turbine-walibi-belgium",
+"initial_rank": 35
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "blue-fire-megacoaster-europa-park",
+"initial_rank": 36
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "silver-star-europa-park",
+"initial_rank": 37
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "hals-uber-kopf-erlebnispark-tripsdrill",
+"initial_rank": 38
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "heidi-the-ride-plopsaland-belgium",
+"initial_rank": 39
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "gold-rush-slagharen",
+"initial_rank": 40
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "cop-car-chase-moviepark-germany",
+"initial_rank": 41
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "olympia-looping-prater",
+"initial_rank": 42
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "arthur-europa-park",
+"initial_rank": 43
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "furius-baco-portaventura",
+"initial_rank": 44
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "nessie-hansa-park",
+"initial_rank": 45
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "goliath-walibi-holland",
+"initial_rank": 46
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "swarm-thorpe-park",
+"initial_rank": 47
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "de-vliegende-hollander-efteling",
+"initial_rank": 48
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "nemesis-inferno-thorpe-park",
+"initial_rank": 49
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "galactica-alton-towers",
+"initial_rank": 50
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "krake-heide-park",
+"initial_rank": 51
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "booster-bike-toverland",
+"initial_rank": 52
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "dwervelwind-toverland",
+"initial_rank": 53
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "speed-energylandia",
+"initial_rank": 54
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "lost-gravity-walibi-holland",
+"initial_rank": 55
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "g-sengte-sau-erlebnispark-tripsdrill",
+"initial_rank": 56
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "joris-en-de-draak-water-efteling",
+"initial_rank": 57
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "joris-en-de-draak-vuur-efteling",
+"initial_rank": 58
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "euro-mir-europa-park",
+"initial_rank": 59
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "uncharted-the-enigma-of-penitence-portaventura",
+"initial_rank": 60
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "icon-pleasure-beach-resort",
+"initial_rank": 61
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "fury-bobbejaanland",
+"initial_rank": 62
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "saw-the-ride-thorpe-park",
+"initial_rank": 63
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "oblivion-alton-towers",
+"initial_rank": 64
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "schweizer-bobbahn-europa-park",
+"initial_rank": 65
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "tiki-waka-walibi-belgium",
+"initial_rank": 66
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "speedy-bob-bobbejaanland",
+"initial_rank": 67
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "eurosat-europa-park",
+"initial_rank": 68
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "steeplechase-pleasure-beach-resort",
+"initial_rank": 69
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "matterhorn-blitz-europa-park",
+"initial_rank": 70
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "atlantica-supersplash-europa-park",
+"initial_rank": 71
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "colorado-adventure-phantasialand",
+"initial_rank": 72
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "calamity-mine-walibi-belgium",
+"initial_rank": 73
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "revolution-pleasure-beach-resort",
+"initial_rank": 74
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "pegasus-efteling",
+"initial_rank": 75
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "yoy-thrill-walibi-holland",
+"initial_rank": 76
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "poseidon-europa-park",
+"initial_rank": 77
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "th13teen-alton-towers",
+"initial_rank": 78
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "dragon-roller-coaster-energylandia",
+"initial_rank": 79
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "sky-scream-holiday-park",
+"initial_rank": 80
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "schlange-von-midgard-hansa-park",
+"initial_rank": 81
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "star-trek-operation-enterprise-moviepark-germany",
+"initial_rank": 82
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "the-milky-way-express-tivoli-gardens",
+"initial_rank": 83
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "typhoon-bobbejaanland",
+"initial_rank": 84
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "python-efteling",
+"initial_rank": 85
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "yoy-chill-walibi-holland",
+"initial_rank": 86
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "big-loop-heide-park",
+"initial_rank": 87
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "vampire-walibi-belgium",
+"initial_rank": 88
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "loup-garou-walibi-belgium",
+"initial_rank": 89
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "stampida-portaventura",
+"initial_rank": 90
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "vogelrok-efteling",
+"initial_rank": 91
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "dream-catcher-bobbejaanland",
+"initial_rank": 92
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "revolution-bobbejaanland",
+"initial_rank": 93
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "big-one-pleasure-beach-resort",
+"initial_rank": 94
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "winja-s-fear-phantasialand",
+"initial_rank": 95
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "winja-s-force-phantasialand",
+"initial_rank": 96
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "toos-express-toverland",
+"initial_rank": 97
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "xpress-platform-13-walibi-holland",
+"initial_rank": 98
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "de-bob-efteling",
+"initial_rank": 99
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "colossus-thorpe-park",
+"initial_rank": 100
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "speed-of-sound-walibi-holland",
+"initial_rank": 101
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "max-moritz-efteling",
+"initial_rank": 102
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "robin-hood-walibi-holland",
+"initial_rank": 103
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "formula-energylandia",
+"initial_rank": 104
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "dmonen-tivoli-gardens",
+"initial_rank": 105
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "alpenexpress-enzian-europa-park",
+"initial_rank": 106
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "mammut-erlebnispark-tripsdrill",
+"initial_rank": 107
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "el-diablo-tren-de-la-mina-portaventura",
+"initial_rank": 108
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "temple-of-the-night-hawk-phantasialand",
+"initial_rank": 109
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "raik-phantasialand",
+"initial_rank": 110
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "volldampf-erlebnispark-tripsdrill",
+"initial_rank": 111
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "boomerang-energylandia",
+"initial_rank": 112
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "cobra-walibi-belgium",
+"initial_rank": 113
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "bobbahn-heide-park",
+"initial_rank": 114
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "psyke-underground-walibi-belgium",
+"initial_rank": 115
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "walking-dead-the-ride-thorpe-park",
+"initial_rank": 116
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "roller-coaster-mayan-energylandia",
+"initial_rank": 117
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "condor-walibi-holland",
+"initial_rank": 118
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "limit-heide-park",
+"initial_rank": 119
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "mp-xpress-moviepark-germany",
+"initial_rank": 120
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "infusion-pleasure-beach-resort",
+"initial_rank": 121
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "tomahawk-portaventura",
+"initial_rank": 122
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "rioolrat-hellendoorn",
+"initial_rank": 123
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "spinball-whizzer-alton-towers",
+"initial_rank": 124
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "naga-bay-bobbejaanland",
+"initial_rank": 125
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "avalanche-pleasure-beach-resort",
+"initial_rank": 126
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "bandit-moviepark-germany",
+"initial_rank": 127
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "light-explorers-energylandia",
+"initial_rank": 128
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "blue-flyer-pleasure-beach-resort",
+"initial_rank": 129
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "nickelodeon-streak-pleasure-beach-resort",
+"initial_rank": 130
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "crazy-mine-hansa-park",
+"initial_rank": 131
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "ghost-chasers-moviepark-germany",
+"initial_rank": 132
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "mine-train-slagharen",
+"initial_rank": 133
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "jul-s-rollerskates-juliana-toren",
+"initial_rank": 134
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "royal-scotsman-hansa-park",
+"initial_rank": 135
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "donderstenen-hellendoorn",
+"initial_rank": 136
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "grottenblitz-heide-park",
+"initial_rank": 137
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "indy-blitz-heide-park",
+"initial_rank": 138
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "familieachtbaan-billybird-park-hemelrijk",
+"initial_rank": 139
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "rasender-tausendfuler-erlebnispark-tripsdrill",
+"initial_rank": 140
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "fun-pilot-walibi-belgium",
+"initial_rank": 141
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "tami-tami-portaventura",
+"initial_rank": 142
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "bluey-the-ride-here-come-the-grannies-alton-towers",
+"initial_rank": 143
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "runaway-mine-train-alton-towers",
+"initial_rank": 144
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "ba-a-a-express-europa-park",
+"initial_rank": 145
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "frida-energylandia",
+"initial_rank": 146
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "drako-walibi-holland",
+"initial_rank": 147
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "pegasus-europa-park",
+"initial_rank": 148
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "grand-national-pleasure-beach-resort",
+"initial_rank": 149
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "achterbahn-wunderland-kalkar",
+"initial_rank": 150
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "junior-red-force-ferrari-land",
+"initial_rank": 151
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "flying-fish-thorpe-park",
+"initial_rank": 152
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "energus-energylandia",
+"initial_rank": 153
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "draak-plopsaland-belgium",
+"initial_rank": 154
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "bob-express-bobbejaanland",
+"initial_rank": 155
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "oki-doki-bobbejaanland",
+"initial_rank": 156
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "kleine-zar-hansa-park",
+"initial_rank": 157
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "volare-prater",
+"initial_rank": 158
+},
+{
+"user_id": "9d9ab8e2-7489-4c24-8291-8f2cd7e840fa",
+"coaster_id": "viking-roller-coaster-energylandia",
+"initial_rank": 159
+}
+]
+}

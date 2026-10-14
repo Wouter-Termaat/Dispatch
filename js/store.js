@@ -1,0 +1,192 @@
+// Opslag: één interface, twee implementaties.
+//   LocalStore    (?demo=1): data/seed.json + localStorage, geen login.
+//   SupabaseStore (normaal): Supabase met e-mail + wachtwoord, schrijfacties optimistisch via een wachtrij.
+// Alle schrijfacties zijn "ops". Een op wordt eerst lokaal toegepast (direct zichtbaar), daarna bewaard.
+//   { t:'comps', rows }                    vergelijkingen toevoegen
+//   { t:'delBatch', user_id, batch }       een batch (rij of duel) terugdraaien
+//   { t:'entry', row }                     lijstregel toevoegen of wijzigen
+//   { t:'delEntry', user_id, coaster_id }  baan uit een lijst halen
+//   { t:'coaster', row }                   catalogus: baan toevoegen of wijzigen
+//   { t:'settings', user_id, settings }    instellingen van een profiel
+
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { uuid } from './ui.js';
+
+const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm';
+
+class BaseStore extends EventTarget {
+  constructor() { super(); this.data = { coasters: [], profiles: [], entries: [], comparisons: [] }; }
+  emit(type, detail) { this.dispatchEvent(new CustomEvent(type, { detail })); }
+  get pending() { return 0; }
+
+  apply(op) {
+    const d = this.data;
+    switch (op.t) {
+      case 'comps': d.comparisons.push(...op.rows); break;
+      case 'delBatch': d.comparisons = d.comparisons.filter(c => !(c.batch === op.batch && c.user_id === op.user_id)); break;
+      case 'entry': {
+        const i = d.entries.findIndex(e => e.user_id === op.row.user_id && e.coaster_id === op.row.coaster_id);
+        if (i >= 0) d.entries[i] = { ...d.entries[i], ...op.row }; else d.entries.push({ prior_strength: 1, reridden_at: null, note: null, ...op.row });
+        break;
+      }
+      case 'delEntry': d.entries = d.entries.filter(e => !(e.user_id === op.user_id && e.coaster_id === op.coaster_id)); break;
+      case 'coaster': {
+        const i = d.coasters.findIndex(c => c.id === op.row.id);
+        if (i >= 0) d.coasters[i] = { ...d.coasters[i], ...op.row }; else d.coasters.push({ operational: true, photo_url: null, ...op.row });
+        break;
+      }
+      case 'settings': { const p = d.profiles.find(p => p.id === op.user_id); if (p) p.settings = { ...(p.settings || {}), ...op.settings }; break; }
+    }
+  }
+
+  async write(op) { this.apply(op); this.emit('change', op); await this.persist(op); }
+  async persist() { }
+
+  // handige wrappers
+  addComparisons(rows) { return this.write({ t: 'comps', rows }); }
+  deleteBatch(user_id, batch) { return this.write({ t: 'delBatch', user_id, batch }); }
+  upsertEntry(row) { return this.write({ t: 'entry', row }); }
+  deleteEntry(user_id, coaster_id) { return this.write({ t: 'delEntry', user_id, coaster_id }); }
+  upsertCoaster(row) { return this.write({ t: 'coaster', row }); }
+  saveSettings(user_id, settings) { return this.write({ t: 'settings', user_id, settings }); }
+}
+
+// ---------------------------------------------------------------- demo
+const DEMO_KEY = 'dispatch.demo.v1', DEMO_ME = 'dispatch.demo.me';
+
+export class LocalStore extends BaseStore {
+  constructor() { super(); this.kind = 'demo'; }
+  async init() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(DEMO_KEY) || 'null'); } catch { saved = null; }
+    if (saved && saved.coasters?.length) this.data = saved;
+    else {
+      const seed = await (await fetch('data/seed.json')).json();
+      this.data = {
+        coasters: seed.coasters.map(c => ({ photo_url: null, ...c })),
+        profiles: seed.profiles.map(p => ({ settings: {}, ...p })),
+        entries: seed.entries.map(e => ({ prior_strength: 1, reridden_at: null, note: null, ...e })),
+        comparisons: [],
+      };
+      this.save();
+    }
+    const key = localStorage.getItem(DEMO_ME);
+    this.userId = this.data.profiles.find(p => p.key === key)?.id || null;
+    return this;
+  }
+  save() { try { localStorage.setItem(DEMO_KEY, JSON.stringify(this.data)); } catch (e) { console.warn('Demo-opslag vol', e); } }
+  async persist() { clearTimeout(this._t); this._t = setTimeout(() => this.save(), 150); }
+  get needsLogin() { return !this.userId; }
+  async chooseProfile(key) { localStorage.setItem(DEMO_ME, key); this.userId = this.data.profiles.find(p => p.key === key).id; }
+  async signOut() { localStorage.removeItem(DEMO_ME); this.userId = null; }
+  async reset() { localStorage.removeItem(DEMO_KEY); await this.init(); }
+}
+
+// ---------------------------------------------------------------- Supabase
+const QUEUE_KEY = 'dispatch.queue.v1', CACHE_KEY = 'dispatch.cache.v1';
+
+export class SupabaseStore extends BaseStore {
+  constructor() { super(); this.kind = 'supabase'; this.queue = []; this.flushing = false; }
+
+  async init() {
+    const { createClient } = await import(SUPABASE_JS);
+    this.sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'dispatch.auth' } });
+    try { this.queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch { this.queue = []; }
+    const { data } = await this.sb.auth.getSession();
+    this.userId = data.session?.user?.id || null;
+    if (this.userId) await this.load();
+    addEventListener('online', () => this.flush());
+    setInterval(() => this.flush(), 20000);
+    return this;
+  }
+  get needsLogin() { return !this.userId; }
+  get pending() { return this.queue.length; }
+
+  async signIn(email, password) {
+    const { data, error } = await this.sb.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) throw error;
+    this.userId = data.user.id;
+    await this.load();
+  }
+  async signOut() {
+    await this.flush();
+    await this.sb.auth.signOut().catch(() => {});
+    this.userId = null; localStorage.removeItem(CACHE_KEY);
+  }
+
+  async selectAll(table, order) {
+    const out = []; const size = 1000;
+    for (let from = 0; ; from += size) {
+      let q = this.sb.from(table).select('*').range(from, from + size - 1);
+      if (order) q = q.order(order, { ascending: true });
+      const { data, error } = await q; if (error) throw error;
+      out.push(...data); if (data.length < size) break;
+    }
+    return out;
+  }
+
+  // Leest alles in (beide profielen). Valt terug op de laatste kopie als het netwerk weg is.
+  async load() {
+    try {
+      const [coasters, profiles, entries, comparisons] = await Promise.all([
+        this.selectAll('coasters', 'id'), this.selectAll('profiles', 'id'), this.selectAll('entries', 'coaster_id'), this.selectAll('comparisons', 'id')]);
+      this.data = { coasters, profiles: profiles.map(p => ({ ...p, settings: p.settings || {} })), entries, comparisons };
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(this.data)); } catch { /* te groot: dan zonder kopie */ }
+      this.offline = false;
+    } catch (e) {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (!cached) throw e;
+      this.data = cached; this.offline = true;
+    }
+    // wijzigingen die nog in de wachtrij staan, opnieuw toepassen bovenop de verse data
+    for (const op of this.queue) this.apply(op);
+    this.flush();
+  }
+
+  saveQueue() { try { localStorage.setItem(QUEUE_KEY, JSON.stringify(this.queue)); } catch (e) { console.warn(e); } this.emit('queue', this.queue.length); }
+  async persist(op) { this.queue.push(op); this.saveQueue(); this.flush(); }
+
+  async flush() {
+    if (this.flushing || !this.queue.length || !this.userId) return;
+    this.flushing = true;
+    try {
+      while (this.queue.length) {
+        await this.send(this.queue[0]);
+        this.queue.shift(); this.saveQueue();
+      }
+      this.offline = false;
+    } catch (e) {
+      console.warn('Opslaan mislukt, later opnieuw', e?.message || e);
+      this.offline = true; this.emit('queue', this.queue.length);
+      // een fout die niet door het netwerk komt (bijv. RLS) mag de wachtrij niet eeuwig blokkeren
+      if (e && e.code && !String(e.message || '').match(/fetch|network/i)) {
+        this.queue.shift(); this.saveQueue(); this.emit('error', e);
+      }
+    } finally { this.flushing = false; }
+  }
+
+  async send(op) {
+    const sb = this.sb; let r;
+    switch (op.t) {
+      case 'comps': r = await sb.from('comparisons').insert(op.rows.map(({ a, b, outcome, mode, batch, created_at, user_id }) => ({ a, b, outcome, mode, batch, created_at, user_id }))); break;
+      case 'delBatch': r = await sb.from('comparisons').delete().eq('user_id', op.user_id).eq('batch', op.batch); break;
+      case 'entry': r = await sb.from('entries').upsert(op.row, { onConflict: 'user_id,coaster_id' }); break;
+      case 'delEntry': r = await sb.from('entries').delete().eq('user_id', op.user_id).eq('coaster_id', op.coaster_id); break;
+      case 'coaster': r = await sb.from('coasters').upsert(op.row, { onConflict: 'id' }); break;
+      case 'settings': {
+        const p = this.data.profiles.find(p => p.id === op.user_id);
+        r = await sb.from('profiles').update({ settings: p?.settings || op.settings }).eq('id', op.user_id); break;
+      }
+    }
+    if (r?.error) throw r.error;
+  }
+}
+
+export function newBatch() { return uuid(); }
+
+export async function createStore() {
+  const demo = new URLSearchParams(location.search).has('demo');
+  const store = demo ? new LocalStore() : new SupabaseStore();
+  await store.init();
+  return store;
+}

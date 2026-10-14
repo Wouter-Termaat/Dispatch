@@ -1,0 +1,12 @@
+# Bronbestanden van de poster: te groot en niet nodig in de site
+Can Can Poster.psd
+Can Can Poster.jpg
+*.psd
+Claude outputs/
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Ontwikkeltools en testuitvoer
+test-results/
+package-lock.json

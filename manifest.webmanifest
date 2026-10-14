@@ -1,0 +1,17 @@
+{
+  "name": "Dispatch",
+  "short_name": "Dispatch",
+  "description": "Cabaret des Montagnes Russes: de achtbanen-ranglijst van Wouter en Luca.",
+  "lang": "nl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0814",
+  "theme_color": "#1d1428",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

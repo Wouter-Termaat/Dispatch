@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dispatch</title>
+<meta name="description" content="Cabaret des Montagnes Russes: de achtbanen-ranglijst van Wouter en Luca.">
+<meta name="theme-color" content="#1d1428">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/screens.css">
+</head>
+<body>
+<div id="app">
+  <div id="bg" class="layer"></div>
+  <canvas id="fx" class="fx" aria-hidden="true"></canvas>
+  <main id="screen" class="layer"></main>
+  <nav id="nav" class="nav" aria-label="Hoofdnavigatie">
+    <a href="#/" data-tab="plein"><svg viewBox="0 0 24 24"><path d="M12 12 L5 5 M12 12 L19 5 M12 12 L5 19 M12 12 L19 19"/><path d="M9 21 L10 13 H14 L15 21Z"/><circle cx="12" cy="12" r="1.6"/></svg>Spelen</a>
+    <a href="#/programma" data-tab="programma"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h14M5 20h9"/></svg>Programma</a>
+    <a href="#/samen" data-tab="samen"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3"/><circle cx="15.5" cy="8" r="3"/><path d="M3 20c.5-4 3-6 5.5-6s5 2 5.5 6M10.5 20c.5-4 2.6-6 5-6s4.6 2 5 6"/></svg>Samen</a>
+    <a href="#/meer" data-tab="meer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Meer</a>
+  </nav>
+  <div id="music" class="music" hidden></div>
+  <div class="vig" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div id="sheet" class="sheet-wrap" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="boot" class="boot"><div class="boot-logo">Dispatch</div><div class="eyebrow">De zaal gaat open</div></div>
+</div>
+<noscript><p style="color:#f3e6c6;padding:24px;font-family:Georgia,serif">Dispatch heeft JavaScript nodig.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
