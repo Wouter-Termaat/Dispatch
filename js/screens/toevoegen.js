@@ -3,8 +3,9 @@
 import { S, me, meKey, model, coaster, entriesOf, refit } from '../state.js';
 import { Placement } from '../model.js';
 import { commit } from '../session.js';
-import { beams } from '../stage.js';
-import { esc, meta, cardHtml, buzz, toast, slug, artFor } from '../ui.js';
+import { backdrop } from '../stage.js';
+import { rankTop } from './duel.js';
+import { esc, meta, cardHtml, buzz, toast, slug, artFor, deal } from '../ui.js';
 import { coasterForm, readCoasterForm } from '../baankaart.js';
 import * as sound from '../sound.js';
 
@@ -16,11 +17,10 @@ class GuessPlacement extends Placement {
 
 export default {
   nav: null, title: 'Baan toevoegen', fast: false,
-  light: { fogH: .3, fog: .8, beams: [{ x: .5, y: 1.12, a: Math.PI, w: .18, i: .38 }] },
   mount({ bg, fg, params, go }) {
     document.body.classList.add('ranking');
-    bg.innerHTML = '<div class="theatre"></div><div class="floor"></div>';
-    fg.innerHTML = `<div class="topbar"><button class="x" id="close" aria-label="Sluiten">✕</button><div class="prog"><i id="prog"></i></div><div class="count" id="count"></div></div>
+    backdrop(bg, 'stage');
+    fg.innerHTML = `${rankTop('Baan toevoegen', '', 'Terug')}
       <div class="add" id="add"></div>`;
     const root = fg.querySelector('#add');
     fg.querySelector('#close').onclick = () => go('programma');
@@ -94,9 +94,8 @@ export default {
         prog(P.steps, Math.max(total, P.steps + 1)); busy = false;
         stage.innerHTML = cardHtml(coaster(id), 'a enter', 320, 240) + cardHtml(coaster(opp), 'b enter', 320, 240) + '<div class="or">of</div><span class="new-tag">Nieuw</span>';
         const [A, B] = stage.querySelectorAll('.card');
-        requestAnimationFrame(() => { A.classList.remove('enter'); setTimeout(() => B.classList.remove('enter'), 50); });
+        deal([A, B], { stagger: 60 });
         A.onclick = () => ans('new', A, B); B.onclick = () => ans('old', B, A);
-        beams([{ x: .5, y: 1.15, a: Math.PI - .16, w: .12, i: .45 }, { x: .5, y: 1.15, a: Math.PI + .16, w: .12, i: .45 }]);
       };
       const ans = (w, win, lose) => {
         if (busy) return; busy = true; P.answer(w); buzz(8); sound.bell();

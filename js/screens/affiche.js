@@ -1,6 +1,7 @@
 // De affiche na elke sessie: "Dispatch présente / Une Soirée de Duels", met de molen.
 // Bewaar als PNG (canvas, met de juiste fonts) of stuur naar de ander (Web Share API, anders downloaden).
-import { coaster, nameOf, otherKey, meKey } from '../state.js';
+import { coaster, nameOf, meKey } from '../state.js';
+import { backdrop } from '../stage.js';
 import { lastSummary } from '../session.js';
 import { esc, dateNl, isoDate, toast, buzz, reduceMotion } from '../ui.js';
 import * as sound from '../sound.js';
@@ -22,26 +23,24 @@ function rowsOf(s) {
 
 export default {
   nav: null, title: 'De affiche',
-  light: { fogH: .3, fog: .8, beams: [{ x: .1, y: -.05, a: .45, w: .08, i: .3, sway: .1 }, { x: .9, y: -.05, a: -.45, w: .08, i: .3, sway: .1 }] },
   mount({ bg, fg, go }) {
     const s = lastSummary();
     if (!s) { go(''); return; }
     const date = new Date(s.date);
-    const other = nameOf(otherKey());
     const rows = rowsOf(s);
-    const again = s.kind === 'duel' ? 'duel' : s.kind === 'toernooi' ? 'toernooi' : 'rangee';
-    bg.innerHTML = '<div class="theatre"></div>';
+    const again = s.kind === 'duel' ? 'duel' + (s.mode && s.mode !== 'duel' && s.mode !== 'park' && s.mode !== 'rematch' ? '?mode=' + s.mode : '') : s.kind === 'toernooi' ? 'toernooi' : 'rangee';
+    backdrop(bg, 'dim');
     fg.innerHTML = `
       <div class="aff-wrap">
         <div class="aff" id="aff"><div class="art"></div><div class="shade"></div>
           <div class="t"><div class="eyebrow">Dispatch présente</div><h1>Une Soirée<br>de Duels</h1><p>${esc(dateNl(date))}</p></div>
           <div class="rows">${rows.map(([k, v, d, cls], i) => `<div class="row" style="--i:${i}"><span>${esc(k)}</span><b>${esc(v)}${d ? `<small class="${cls}">${esc(d)}</small>` : ''}</b></div>`).join('')}</div>
-          <div class="curtain open"><i></i><i></i></div>
+          <div class="marquee"></div>
         </div>
       </div>
       <div class="a-foot">
-        <div class="row-btns"><button class="ghost" id="save">Bewaar</button><button class="btn" id="share">Stuur naar ${esc(other)}</button></div>
-        <div class="row-btns small"><button class="link" id="again">Nog een ronde</button><button class="link" id="home">Naar het plein</button></div>
+        <div class="row-btns"><button class="ghost" id="save">Opslaan</button><button class="ghost" id="share">Delen</button></div>
+        <div class="row-btns"><button class="ghost" id="home">Klaar</button><button class="btn" id="again">Nog een ronde</button></div>
       </div>`;
     if (!reduceMotion()) setTimeout(() => sound.applause(), 500);
     buzz([10, 50, 10]);
@@ -59,7 +58,7 @@ export default {
         try { await navigator.share({ files: [f], title: 'Une Soirée de Duels', text: `Mijn avond in Dispatch, ${dateNl(date)}.` }); return; }
         catch (e) { if (e.name === 'AbortError') return; }
       }
-      download(blob, file()); toast(`Gedownload. Stuur hem zelf naar ${other}.`);
+      download(blob, file()); toast('Opgeslagen. Delen kan dit apparaat niet.');
     };
   },
 };
@@ -86,6 +85,10 @@ export async function renderPng(s, rows, date) {
   // kader
   g.strokeStyle = 'rgba(236,199,127,.6)'; g.lineWidth = 2; g.strokeRect(28, 28, W - 56, H - 56);
   g.strokeStyle = 'rgba(236,199,127,.22)'; g.strokeRect(40, 40, W - 80, H - 80);
+  // lampjesrand
+  const dot = (x, y) => { const rg = g.createRadialGradient(x, y, 0, x, y, 7); rg.addColorStop(0, 'rgba(255,244,214,1)'); rg.addColorStop(.35, 'rgba(255,214,150,.8)'); rg.addColorStop(1, 'rgba(255,190,110,0)'); g.fillStyle = rg; g.beginPath(); g.arc(x, y, 7, 0, Math.PI * 2); g.fill(); };
+  for (let x = 52; x <= W - 52; x += 26) { dot(x, 52); dot(x, H - 52); }
+  for (let y = 78; y <= H - 78; y += 26) { dot(52, y); dot(W - 52, y); }
   g.textAlign = 'center';
   const spaced = (txt, x, y, sp) => { g.save(); g.letterSpacing = sp + 'px'; g.fillText(txt, x, y); g.restore(); };
   g.fillStyle = '#d9b97a'; g.font = '600 22px "Josefin Sans"'; spaced('DISPATCH PRÉSENTE', W / 2, 120, 9);

@@ -1,9 +1,10 @@
 // Achter de schermen: waarom Dispatch werkt zoals het werkt. Eerste versie door Claude Code, Wouter past hem aan.
+import { backdrop } from '../stage.js';
+
 export default {
   nav: 'meer', title: 'Achter de schermen',
-  light: { fogH: .3, fog: .7, beams: [{ x: .5, y: 1.12, a: Math.PI, w: .2, i: .3 }] },
   mount({ bg, fg, go }) {
-    bg.innerHTML = '<div class="theatre dim"></div>';
+    backdrop(bg, 'dim');
     fg.innerHTML = `<div class="page"><article class="achter">
       <button class="link back" id="back">‹ Meer</button>
       <div class="eyebrow">Achter de schermen</div>

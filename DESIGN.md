@@ -82,3 +82,11 @@ Bij `prefers-reduced-motion`: geen doorlopende animaties, alleen directe statusw
 - `cobbles.jpg`: kasseien als vloer onder de rangée en het duel.
 - `windmill.jpg`: de molen, voor de affiche.
 - De bron (PSD/JPG van de poster) staat in de projectmap maar hoort niet in git (te groot).
+
+## Herzien na feedback van Wouter (oktober 2026)
+
+- Geen WebGL-mist meer. Licht in CSS: spots per kaart, zoeklichten, lampjesranden die rondlopen, neon-titels.
+- De poster is geen plaatje meer maar een scène in lagen (molen met draaiende wieken, gevel, menigte achter de deur, lantaarns, huizen, auto's), met parallax op muis of kantelen. Alleen op Spelen; de andere schermen hebben een eigen achtergrond (nachtlucht met zachte zonnestralen en sterren, bij ranken een podiumvloer).
+- Kaarten zijn speelkaarten: art-deco lijst, fluwelen achterkant met monogram, binnenkomen door om te draaien, kantelen onder vinger of muis, lampjesrand bij de gekozen kaart. Baanprofielen hebben de zonnestralen van de poster in de parkkleur.
+- Spelvormen staan als verlichte kaartjes op Spelen; Le Duel is de standaard. La Rangée heeft een bevestigstap. Rondes van 10.
+- Knoppen in gewone woorden: Stoppen, Herstel, Bevestig, Opnieuw, Opslaan, Delen, Nog een ronde, Klaar.

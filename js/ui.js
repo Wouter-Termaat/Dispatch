@@ -34,17 +34,25 @@ const HUES = { 'Hansa-Park': 205, 'Energylandia': 320, 'Plopsaland Belgium': 28,
   'Efteling': 345, 'Movie Park': 250, 'Movie Park Germany': 250, 'Prater': 40, 'Slagharen': 30, 'Bobbejaanland': 55, 'Parque de Atracciones': 8 };
 export function art(name, park, w = 320, h = 260) {
   const r = rng(hash(name)), hu = HUES[park] ?? hash(park) % 360, id = 'a' + hash(name + w + h);
+  // zonnestralen zoals op de poster, in de kleur van het park
+  const cx = w * (.3 + r() * .4), cy = h * (.42 + r() * .12), R = Math.hypot(w, h);
+  let rays = '';
+  for (let k = 0; k < 18; k++) {
+    const a0 = (k / 18) * Math.PI * 2 + r() * .05, a1 = a0 + Math.PI / 18;
+    rays += `<path d="M${cx.toFixed(1)} ${cy.toFixed(1)}L${(cx + Math.cos(a0) * R).toFixed(1)} ${(cy + Math.sin(a0) * R).toFixed(1)}L${(cx + Math.cos(a1) * R).toFixed(1)} ${(cy + Math.sin(a1) * R).toFixed(1)}Z" fill="hsl(${hu} 40% ${k % 2 ? 22 : 30}%)" opacity="${k % 2 ? .5 : .35}"/>`;
+  }
   let x = -10, y = h * .64 + r() * 20, d = `M${x} ${y} L${w * .12} ${y} `; const pts = []; const lift = h * .2 + r() * h * .14;
   d += `Q${w * .17} ${y} ${w * .22} ${lift} `; x = w * .22; y = lift; pts.push([x, y]);
   while (x < w + 20) { const nx = x + w * .1 + r() * w * .15, ny = h * .26 + r() * h * .48; d += `Q${(x + nx) / 2} ${ny > y ? y - 8 : ny + h * .12} ${nx} ${ny} `; x = nx; y = ny; pts.push([x, y]); }
   const sup = pts.map(p => `<line x1="${p[0].toFixed(1)}" y1="${(p[1] + 3).toFixed(1)}" x2="${p[0].toFixed(1)}" y2="${h}" stroke="#07040a" stroke-width="1.6"/>`).join('');
-  const lights = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${(p[1] - 4).toFixed(1)}" r="1.3" fill="#ffe2a6" opacity=".8"/>`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${hu} 30% 8%)"/><stop offset=".62" stop-color="hsl(${hu} 26% 20%)"/><stop offset="1" stop-color="hsl(${(hu + 25) % 360} 46% 36%)"/></linearGradient>
-  <radialGradient id="${id}g" cx=".7" cy=".82" r=".55"><stop offset="0" stop-color="#ffc77d" stop-opacity=".5"/><stop offset="1" stop-color="#ffc77d" stop-opacity="0"/></radialGradient></defs>
-  <rect width="${w}" height="${h}" fill="url(#${id})"/><rect width="${w}" height="${h}" fill="url(#${id}g)"/>
-  <circle cx="${(w * .2 + r() * w * .1).toFixed(1)}" cy="${h * .15}" r="${h * .04}" fill="#f3e6c6" opacity=".7"/>${sup}
-  <path d="${d}" fill="none" stroke="#07040a" stroke-width="6" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#f0cf8f" stroke-width="1" opacity=".5" transform="translate(0 -2.6)"/>${lights}
-  <rect y="${h * .88}" width="${w}" height="${h * .12}" fill="#07040a" opacity=".5"/></svg>`;
+  const lights = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${(p[1] - 4).toFixed(1)}" r="1.5" fill="#ffe2a6"/>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${hu} 34% 9%)"/><stop offset=".62" stop-color="hsl(${hu} 30% 19%)"/><stop offset="1" stop-color="hsl(${(hu + 25) % 360} 48% 34%)"/></linearGradient>
+  <radialGradient id="${id}g" cx="${(cx / w).toFixed(2)}" cy="${(cy / h).toFixed(2)}" r=".7"><stop offset="0" stop-color="#ffd38f" stop-opacity=".55"/><stop offset=".5" stop-color="#ffc77d" stop-opacity=".12"/><stop offset="1" stop-color="#ffc77d" stop-opacity="0"/></radialGradient>
+  <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient></defs>
+  <rect width="${w}" height="${h}" fill="url(#${id})"/>${rays}<rect width="${w}" height="${h}" fill="url(#${id}g)"/>
+  <circle cx="${(w * (w < h ? .38 : .18) + r() * w * .12).toFixed(1)}" cy="${(h * .14).toFixed(1)}" r="${(h * .035).toFixed(1)}" fill="#f6ead0" opacity=".85"/>${sup}
+  <path d="${d}" fill="none" stroke="#07040a" stroke-width="6" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#f0cf8f" stroke-width="1.1" opacity=".6" transform="translate(0 -2.6)"/>${lights}
+  <rect width="${w}" height="${h}" fill="url(#${id}f)"/></svg>`;
 }
 export function artFor(c, w, h) {
   if (c?.photo_url) return `<img src="${esc(c.photo_url)}" alt="" loading="lazy" decoding="async">`;
@@ -52,7 +60,34 @@ export function artFor(c, w, h) {
 }
 export function meta(c) { return [c?.park, c?.manufacturer].filter(Boolean).map(esc).join(' · '); }
 export function cardHtml(c, cls = '', w = 320, h = 260) {
-  return `<div class="card ${cls}" data-id="${esc(c.id)}" role="button" tabindex="0" aria-label="${esc(c.name)}"><div class="art">${artFor(c, w, h)}</div><div class="sheen"></div><div class="num"></div><div class="cap"><div class="nm">${esc(c.name)}</div><div class="mt">${meta(c)}</div></div></div>`;
+  return `<div class="card ${cls}" data-id="${esc(c.id)}" role="button" tabindex="0" aria-label="${esc(c.name)}"><i class="bulbs"></i><div class="flip">
+    <div class="face front"><div class="art">${artFor(c, w, h)}</div><div class="sheen"></div><div class="sweep"></div><div class="frame"></div><div class="cap"><div class="nm">${esc(c.name)}</div><div class="mt">${meta(c)}</div></div><div class="num"></div></div>
+    <div class="face back"></div></div></div>`;
+}
+
+/** Kaarten binnen laten komen: omdraaien met een kleine vertraging per kaart (blokkeert nooit een tik). */
+export function deal(cards, { stagger = 50, slow = false } = {}) {
+  cards.forEach((el, i) => {
+    if (slow) el.style.setProperty('--slow', '1');
+    setTimeout(() => { el.classList.remove('enter'); el.classList.add('shine'); }, 16 + i * (slow ? stagger * 3 : stagger));
+  });
+}
+
+// kantelen onder de muis (laptop) of vinger (telefoon), plus meelopende glans
+if (typeof document !== 'undefined') {
+  const fine = matchMedia('(hover: hover)').matches;
+  const tilt = (el, x, y, k = 1) => {
+    const r = el.getBoundingClientRect(); const px = (x - r.left) / r.width, py = (y - r.top) / r.height;
+    el.style.setProperty('--ry', ((px - .5) * 14 * k).toFixed(2) + 'deg'); el.style.setProperty('--rx', ((.5 - py) * 12 * k).toFixed(2) + 'deg');
+    el.style.setProperty('--mx', (px * 100).toFixed(1) + '%'); el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+  };
+  const reset = el => { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); };
+  if (fine) {
+    document.addEventListener('pointermove', e => { const el = e.target.closest?.('.card'); if (el && !reduceMotion()) tilt(el, e.clientX, e.clientY); }, { passive: true });
+    document.addEventListener('pointerout', e => { const el = e.target.closest?.('.card'); if (el && !el.contains(e.relatedTarget)) reset(el); }, { passive: true });
+  } else {
+    document.addEventListener('pointerdown', e => { const el = e.target.closest?.('.card'); if (el && !reduceMotion()) { tilt(el, e.clientX, e.clientY, .7); setTimeout(() => reset(el), 260); } }, { passive: true });
+  }
 }
 
 export const SPARKLE = `<svg viewBox="0 0 40 40"><path d="M20 0 L21.3 18.7 L40 20 L21.3 21.3 L20 40 L18.7 21.3 L0 20 L18.7 18.7Z" fill="#fff4dc"/><circle cx="20" cy="20" r="2.4" fill="#fff"/></svg>`;

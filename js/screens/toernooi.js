@@ -1,8 +1,9 @@
 // Toernooi: bracket van 8 banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
 import { model, meKey, coaster, entriesOf } from '../state.js';
 import { startSession, commit, endSession, session } from '../session.js';
-import { beams, light } from '../stage.js';
-import { esc, meta, cardHtml, buzz, toast, openSheet, closeSheet, artFor } from '../ui.js';
+import { backdrop } from '../stage.js';
+import { rankTop } from './duel.js';
+import { esc, cardHtml, buzz, toast, openSheet, closeSheet, deal } from '../ui.js';
 import * as sound from '../sound.js';
 
 const ROUND = { 8: ['Kwartfinale', 'Halve finale', 'Finale'], 4: ['Halve finale', 'Finale'] };
@@ -22,15 +23,14 @@ function draw(ids) {
 
 export default {
   nav: null, title: 'Toernooi',
-  light: { fogH: .3, fog: .9, beams: [{ x: .2, y: 1.1, a: Math.PI - .3, w: .1, i: .3, sway: .1 }, { x: .8, y: 1.1, a: Math.PI + .3, w: .1, i: .3, sway: .1 }] },
   mount({ bg, fg, go }) {
     document.body.classList.add('ranking');
-    bg.innerHTML = '<div class="theatre"></div><div class="floor"></div>';
-    fg.innerHTML = `<div class="topbar"><button class="x" id="close" aria-label="Sluiten">✕</button><div class="prog"><i id="prog"></i></div><div class="count" id="count"></div></div>
+    backdrop(bg, 'stage');
+    fg.innerHTML = `${rankTop('Toernooi', '')}
       <div class="tour" id="tour"></div><div class="curtain"><i></i><i></i></div>`;
     const root = fg.querySelector('#tour');
     let s = null, rounds = [], ri = 0, mi = 0, busy = false, keyH = null, ended = false, total = 0, played = 0;
-    const prog = () => { fg.querySelector('#prog').style.width = (total ? played / total * 100 : 0) + '%'; fg.querySelector('#count').textContent = total ? `${played} / ${total}` : ''; };
+    const prog = () => { fg.querySelector('#prog').style.width = (total ? played / total * 100 : 0) + '%'; fg.querySelector('#count').textContent = total ? `${played} van ${total}` : ''; };
     fg.querySelector('#close').onclick = () => { if (s && s.actions.length) finish(); else { session.current = null; go(''); } };
 
     // ---------- kiezen ----------
@@ -68,7 +68,6 @@ export default {
         <div class="bracket">${rounds.map((r, k) => `<div class="b-round"><div class="eyebrow">${esc(names[k])}</div>${r.map(mt => `<div class="b-match">${[mt.a, mt.b].map(x => `<div class="b-slot${mt.w ? (mt.w === x ? ' won' : ' out') : ''}">${x ? esc(coaster(x).name) : '·'}</div>`).join('')}</div>`).join('')}</div>`).join('')}</div>
         <div class="row-btns"><button class="btn" id="go">${played ? 'Volgende ronde' : 'Begin'}</button></div></div>`;
       root.querySelector('#go').onclick = () => match();
-      light({ fogH: .3, fog: .9, beams: [{ x: .2, y: 1.1, a: Math.PI - .3, w: .1, i: .3, sway: .1 }, { x: .8, y: 1.1, a: Math.PI + .3, w: .1, i: .3, sway: .1 }] });
     }
     function match() {
       const r = rounds[ri], mt = r[mi]; const names = ROUND[rounds[0].length * 2];
@@ -76,20 +75,19 @@ export default {
         <div class="d-wrap"><div class="d-stage" id="stage">${cardHtml(coaster(mt.a), 'a enter', 320, 240)}${cardHtml(coaster(mt.b), 'b enter', 320, 240)}<div class="or">of</div></div></div>
         <div class="d-line">Wie gaat door?</div>`;
       const st = root.querySelector('#stage'); const [A, B] = st.querySelectorAll('.card'); busy = false;
-      requestAnimationFrame(() => { A.classList.remove('enter'); setTimeout(() => B.classList.remove('enter'), 50); });
+      deal([A, B], { stagger: 60 });
       const t0 = performance.now();
       const pickW = (w, el, other) => {
         if (busy) return; busy = true; mt.w = w; played++; prog();
         commit([{ a: mt.a, b: mt.b, outcome: w === mt.a ? 'a' : 'b' }], 'toernooi', { type: 'duel', ids: [mt.a, mt.b], ms: performance.now() - t0 });
         el.classList.add('win'); other.classList.add('lose'); buzz(8); sound.bell();
-        const bb = [{ x: .5, y: 1.15, a: Math.PI - .16, w: .12, i: .08 }, { x: .5, y: 1.15, a: Math.PI + .16, w: .12, i: .08 }]; bb[el === A ? 0 : 1].i = 1.1; beams(bb);
+        
         setTimeout(advance, 420);
       };
       A.onclick = () => pickW(mt.a, A, B); B.onclick = () => pickW(mt.b, B, A);
       keyH && removeEventListener('keydown', keyH);
       keyH = e => { if (e.key === 'ArrowUp') A.click(); else if (e.key === 'ArrowDown') B.click(); };
       addEventListener('keydown', keyH);
-      beams([{ x: .5, y: 1.15, a: Math.PI - .16, w: .12, i: .45 }, { x: .5, y: 1.15, a: Math.PI + .16, w: .12, i: .45 }]);
     }
     function advance() {
       const r = rounds[ri];
@@ -104,12 +102,11 @@ export default {
     function champion(id) {
       s.champion = id; const c = coaster(id);
       root.innerHTML = `<div class="champ"><div class="eyebrow">Toernooi · ${esc(s.tLabel)}</div><h2 class="champ-t">Kampioen</h2>
-        <div class="champ-card"><div class="card win">${`<div class="art">${artFor(c, 320, 400)}</div><div class="sheen"></div><div class="cap"><div class="nm">${esc(c.name)}</div><div class="mt">${meta(c)}</div></div>`}</div><div class="champ-ring"></div></div>
+        <div class="champ-card">${cardHtml(c, 'win', 320, 420)}<div class="champ-ring"></div></div>
         <div class="row-btns"><button class="ghost" id="again">Nog een toernooi</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
       const ring = root.querySelector('.champ-ring'); let h = '';
       for (let i = 0; i < 22; i++) { const a = i / 22 * Math.PI * 2; h += `<i style="left:${50 + 54 * Math.cos(a)}%;top:${50 + 50 * Math.sin(a)}%;animation-delay:${(i * .09).toFixed(2)}s"></i>`; }
       ring.innerHTML = h;
-      light({ fogH: .4, fog: 1.1, beams: [{ x: .2, y: 1.1, a: Math.PI - .32, w: .1, i: .9 }, { x: .8, y: 1.1, a: Math.PI + .32, w: .1, i: .9 }, { x: .5, y: 1.15, a: Math.PI, w: .12, i: 1 }], pool2: [.5, .5], pool2I: .5 });
       sound.applause(2.6); buzz([12, 50, 12, 50, 30]);
       root.querySelector('#aff').onclick = finish;
       root.querySelector('#again').onclick = async () => { await endSession(); s = null; setup(); };

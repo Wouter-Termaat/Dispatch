@@ -40,7 +40,7 @@ class BaseStore extends EventTarget {
   }
 
   /** Nooit em dashes of en dashes in de app: ook niet uit de catalogus. */
-  normalize() { for (const c of this.data.coasters) for (const k of ['name', 'park', 'manufacturer']) if (c[k]) c[k] = c[k].replace(/\s*[–—]\s*/g, ' - '); }
+  normalize() { const re = new RegExp('\\s*[' + String.fromCharCode(0x2013, 0x2014) + ']\\s*', 'g'); for (const c of this.data.coasters) for (const k of ['name', 'park', 'manufacturer']) if (c[k]) c[k] = c[k].replace(re, ' - '); }
 
   async write(op) { this.apply(op); this.emit('change', op); await this.persist(op); }
   async persist() { }

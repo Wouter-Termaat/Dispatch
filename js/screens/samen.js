@@ -7,11 +7,12 @@ import { openCoaster } from '../baankaart.js';
 
 const AN = 27; let tab = 'verhalen';
 
+import { backdrop } from '../stage.js';
+
 export default {
   nav: 'samen', title: 'Samen',
-  light: { fogH: .35, fog: .7, beams: [{ x: .5, y: 1.12, a: Math.PI, w: .16, i: .35 }], pool2: [.5, .68], pool2I: .35 },
   mount({ bg, fg }) {
-    bg.innerHTML = '<div class="theatre dim"></div>';
+    backdrop(bg, 'dim');
     const A = 'wouter', B = 'luca';
     if (!model(A) || !model(B) || !entriesOf(A).length || !entriesOf(B).length) {
       fg.innerHTML = `<div class="page center-msg"><h1 class="h-title">Samen</h1><p class="sheet-text">Er zijn twee lijsten nodig om te vergelijken.</p></div>`; return;

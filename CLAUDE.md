@@ -19,8 +19,9 @@ Dispatch: een webapp voor Wouter en Luca om hun achtbanen-ranglijst opnieuw te r
 - `js/config.js`: Supabase URL, publishable key, profiel-UID's.
 - `js/store.js` (te maken): één interface met twee implementaties: `SupabaseStore` en `LocalStore` (`?demo=1`, laadt `data/seed.json`, bewaart in localStorage). Schrijfacties optimistisch met een wachtrij.
 - `js/model.js`: rankingmodel (klaar). `js/model.worker.js` (te maken) draait `fitModel` in een worker.
-- `js/fx/lightfog.js`: licht en mist (klaar).
-- `js/screens/*.js`: één module per scherm (plein, rangee, duel, programma, baankaart, samen, affiche, meer, login, toevoegen, toernooi).
+- `js/scene.js` + `assets/scene/`: de poster in lagen (uit de PSD, zie `tools/psd/README.md`) met parallax, draaiende wieken en lampjesgolven. Licht zit in CSS (`css/scene.css`, `css/cards.css`). `js/fx/lightfog.js` (WebGL-mist) wordt niet meer gebruikt: Wouter vond de mist lelijk.
+- `js/pick.js`: kiest duels en rijen via het model, maar ~30% van de duels bewust verder uit elkaar (`tools/simulate-mix.mjs`: kost bij duels niets).
+- `js/screens/*.js`: één module per scherm. `plein.js` is het Spelen-scherm (scène + spelvormen, Le Duel is standaard), `programma.js` is de Ranking (met filters en sorteren), `rangee.js` heeft een bevestigstap.
 - `js/sound.js`: WebAudio-synth voor de geluiden.
 - `js/export.js`: Excel-export met ExcelJS (lazy-load).
 - `js/copy.js`: alle ride-op-regels, roast-sjablonen en easter-egg-teksten op één plek, zodat Wouter ze makkelijk kan aanvullen.
@@ -35,6 +36,8 @@ Dispatch: een webapp voor Wouter en Luca om hun achtbanen-ranglijst opnieuw te r
 - In Supabase onder Authentication > URL Configuration de Site URL op de Pages-URL zetten.
 
 ## Testen
-- `node tools/simulate.mjs` voor het model.
+- `node tools/simulate.mjs` voor het model, `node tools/simulate-mix.mjs` voor de selectie uit `js/pick.js`.
+- `node tools/test-store.mjs` (offline wachtrij) en `node tools/test-export.mjs` (Excel teruglezen).
+- `node tools/e2e.mjs`, `tools/e2e-pages.mjs`, `tools/e2e-meer.mjs` [phone|laptop]: Playwright in demomodus (gebruikt de geïnstalleerde Chrome).
 - End-to-end met Playwright in demomodus: plein laden, een sessie rangée (12 rijen) en een paar duels doen, baankaart openen, export draaien en de xlsx teruglezen.
 - Controleer in de browserconsole dat er geen fouten zijn en dat de WebGL-laag op mobiel vloeiend blijft (anders `scale` in lightfog verlagen).

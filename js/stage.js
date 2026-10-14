@@ -1,8 +1,5 @@
-// Eén gedeelde WebGL-laag (licht en mist) voor alle schermen. Elk scherm zet zijn eigen belichting.
-import { createLightFog } from './fx/lightfog.js';
-
-const BASE = { fogH: .3, fog: .8, tint: [1, .75, .45], haze: [.5, .38, .6], beams: [], pool: [.5, 0], poolI: 0, pool2: [.5, .5], pool2I: 0 };
-let fx = null, season = {};
+// Achtergronden en licht. De WebGL-mist is weg (te rommelig); licht zit nu in CSS: de scène op Spelen,
+// een gedeelde achtergrond met zonnestralen op de andere schermen, en spots per kaart.
 
 export function now() {
   const q = new URLSearchParams(location.search).get('nu'); // testhaak: ?nu=2026-10-31T23:30
@@ -12,26 +9,18 @@ export function isHalloween(d = now()) { const m = d.getMonth(), day = d.getDate
 export function isClosed(d = now()) { const h = d.getHours(); return h >= 23 || h < 6; }
 
 export function initStage() {
-  const canvas = document.getElementById('fx');
-  const small = Math.min(innerWidth, innerHeight) < 700;
-  fx = createLightFog(canvas, { ...BASE, scale: small ? .4 : .45 });
-  if (isHalloween()) { season = { tint: [.62, .78, 1], haze: [.36, .44, .62], fogMul: 1.5 }; document.documentElement.classList.add('halloween'); }
-  return fx;
+  document.getElementById('fx')?.remove();
+  if (isHalloween()) document.documentElement.classList.add('halloween');
 }
 
-/** Zet de belichting van een scherm (volledige set, ontbrekende waarden worden standaard). */
-export function light(opts = {}) {
-  if (!fx) return;
-  const o = { ...BASE, ...opts };
-  if (season.tint) { o.tint = season.tint; o.haze = season.haze; o.fog = o.fog * season.fogMul; o.fogH = Math.min(.7, o.fogH * 1.25); }
-  fx.set(o);
+/** Gedeelde achtergrond: variant 'stage' (podiumvloer voor ranken) of 'dim' (rustig, voor lijsten). */
+export function backdrop(bg, variant = '') {
+  let stars = '';
+  for (let i = 0; i < 46; i++) stars += `<i style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;animation-delay:${(Math.random() * 6).toFixed(1)}s"></i>`;
+  bg.innerHTML = `<div class="backdrop ${variant}"><div class="bd-rays"></div><div class="bd-sun"></div><div class="bd-stars">${stars}</div><div class="bd-floor"></div></div>`;
 }
-/** Alleen de bundels aanpassen (snel, tijdens ranken). */
-export function beams(list) { fx?.set({ beams: list }); }
-export function lightNow() { return fx?.o; }
 
-/** Spot van boven op een element: x in 0..1, y=0 onderaan. */
-export function spotOver(rect, i = .42, w = .10) {
-  const W = innerWidth, H = innerHeight;
-  return { x: (rect.left + rect.width / 2) / W, y: 1 + 90 / H, a: Math.PI, w, i };
-}
+// oude API (licht via WebGL): bewust leeg
+export function light() {}
+export function beams() {}
+export function spotOver() { return {}; }
