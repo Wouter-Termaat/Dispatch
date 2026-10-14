@@ -41,14 +41,14 @@ async function route() {
   if (token !== navToken) return;
   closeSheet(true);
 
-  // oud scherm uit
+  // oud scherm (en eventueel een half geladen scherm) uit
   const bgL = document.getElementById('bg'), fgL = document.getElementById('screen');
-  if (current) {
-    try { current.cleanup?.(); } catch (e) { console.error(e); }
-    const oldFg = fgL.firstElementChild, oldBg = bgL.firstElementChild;
-    oldFg?.classList.add('out'); oldBg?.classList.add('out');
-    const instant = current.fast || mod.fast;
-    setTimeout(() => { oldFg?.remove(); oldBg?.remove(); }, instant ? 0 : 230);
+  if (current) { try { current.cleanup?.(); } catch (e) { console.error(e); } }
+  const instant = current?.fast || mod.fast;
+  current = null;
+  for (const el of [...bgL.children, ...fgL.children]) {
+    if (el.classList.contains('out')) continue;
+    el.classList.add('out'); setTimeout(() => el.remove(), instant ? 0 : 230);
   }
   // nieuw scherm in
   const bg = document.createElement('div'); bg.className = 'bgset';
@@ -60,6 +60,7 @@ async function route() {
   light(mod.light || {});
   let cleanup;
   try { cleanup = await mod.mount({ bg, fg, params, go }); } catch (e) { console.error(e); toast('Er ging iets mis bij het openen van dit scherm.'); }
+  if (token !== navToken) { try { cleanup?.(); } catch (e) { console.error(e); } return; }  // intussen al verder genavigeerd
   current = { cleanup, fast: mod.fast };
   document.title = mod.title ? `${mod.title} · Dispatch` : 'Dispatch';
 }
