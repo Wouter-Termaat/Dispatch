@@ -28,22 +28,21 @@ await shot('10-ranking');
 await page.click('#vbtn'); await wait(300);
 ok(await page.$eval('#list', el => el.classList.contains('ext')) && await page.$('#list .xrow .rng'), 'uitgebreide weergave toont bereik, duels en de ander');
 await shot('10b-ranking-uitgebreid');
-// filters: top 25 van Efteling? eerst top 25 via het filterblad
-await page.click('#fbtn'); await page.waitForSelector('.filters'); await wait(300); await shot('10c-filters');
-await page.click('.filters [data-top="25"]'); await page.click('.filters [data-f=status] [data-v=aan]'); await page.click('#apply'); await wait(400);
-const n25 = await page.$$eval('#list .li', x => x.length);
-ok(n25 > 0 && n25 <= 25, `filter plek 1 tot 25 + in gebruik: ${n25} banen`);
-ok(await page.$$eval('#active .chip', x => x.length) === 2, 'actieve filters als labels zichtbaar');
-await page.click('#sbtn'); await page.waitForSelector('.opt-list'); await page.click('[data-s=naam]'); await wait(300);
+// slim zoeken: park als label, snelfilter, sorteren
+await page.fill('#q', 'eft'); await wait(300); await shot('10c-suggestie');
+ok(await page.$('#sugg:not([hidden]) [data-s=parks]'), 'zoeken stelt het park voor');
+await page.click('#sugg [data-s=parks]'); await wait(300);
+const nE = await page.$$eval('#list .li', x => x.length);
+ok(nE > 3 && nE < 20 && await page.$('#labels .label'), `park als label: ${nE} banen van Efteling`);
+await page.click('#quick [data-k=top][data-v="50"]'); await wait(300);
+const nE50 = await page.$$eval('#list .li', x => x.length);
+ok(nE50 <= nE, `plus Top 50: ${nE50} banen`);
+await page.selectOption('#sort', 'naam'); await wait(300);
 const names = await page.$$eval('#list .li .nm', x => x.map(e => e.textContent.trim()));
 ok(names.join('|') === [...names].sort((a, b) => a.localeCompare(b)).join('|'), 'sorteren op naam');
 await shot('10d-gefilterd');
-await page.click('#active [data-k=all]').catch(() => {}); await page.click('#sbtn'); await page.click('[data-s=plek]'); await wait(300);
+await page.click('#labels [data-k=all]'); await page.selectOption('#sort', 'plek'); await wait(300);
 ok(await page.$$eval('#list .li', x => x.length) === 169, 'filters wissen');
-await page.fill('#q', 'efteling'); await wait(300);
-const nEft = await page.$$eval('#list .li', x => x.length);
-ok(nEft > 3 && nEft < 20, `zoeken op park werkt (${nEft} banen van Efteling)`);
-await page.fill('#q', ''); await wait(200);
 await page.click('#seg [data-t=park]'); await wait(300); await shot('11-parken');
 ok(await page.$$eval('#list .li', x => x.length) > 20, 'tab Parken');
 await page.click('#seg [data-t=manufacturer]'); await wait(300);
@@ -51,10 +50,10 @@ await page.click('#list .li'); await page.waitForSelector('.sheet .mini-list'); 
 await page.click('.sheet .mini-list .li'); await page.waitForSelector('.bk-rank'); await wait(500); await shot('13-baankaart');
 // herreden + notitie
 const bkName = await page.$eval('.bk-cap h2', e => e.textContent);
-await page.click('[data-a=reride]'); await wait(400);
+ok(!(await page.$('[data-a=reride]')), 'herreden is weg uit de baankaart');
 await page.click('[data-a=note]'); await page.fill('#nt', 'Voorste rij, avond.'); await page.click('#ntok'); await wait(400);
 let d = await db(); const ent = d.entries.find(e => e.user_id.startsWith('e5ae') && d.coasters.find(c => c.id === e.coaster_id).name === bkName);
-ok(ent?.reridden_at && ent?.note === 'Voorste rij, avond.', `herreden en notitie bewaard voor ${bkName}`);
+ok(ent?.note === 'Voorste rij, avond.', `notitie bewaard voor ${bkName}`);
 await page.keyboard.press('Escape'); await wait(400);
 // Luca bekijken
 await page.click('#seg [data-t=banen]'); await page.click('#pers [data-k=luca]'); await wait(300);
@@ -100,6 +99,10 @@ ok(parkLbl.startsWith('Park-avond'), 'park-avond is een duel: ' + parkLbl);
 const parkSet = new Set();
 for (let i = 0; i < 4; i++) { (await page.$$eval('#stage .card .mt', x => x.map(e => e.textContent.split(' · ')[0]))).forEach(p => parkSet.add(p)); await page.keyboard.press('ArrowUp'); await wait(700); }
 ok(parkSet.size === 1, 'alle duels binnen één park: ' + [...parkSet][0]);
+await page.goto(base + '#/duel?mode=park&park=Prater'); await page.waitForSelector('#stage .card'); await wait(400);
+ok((await page.$eval('#count', e => e.textContent)) === '0 van 1', 'Park-avond Prater (2 banen): precies 1 duel');
+await page.goto(base + '#/duel?mode=park&park=Toverland'); await page.waitForSelector('#stage .card'); await wait(400);
+ok((await page.$eval('#count', e => e.textContent)) === '0 van 10', 'Park-avond Toverland (5 banen): 10 duels, elk paar één keer');
 await page.goto(base + '#/duel?mode=twijfel'); await page.waitForSelector('#stage .card'); await wait(400);
 ok((await page.$eval('.meter .lbl span', e => e.textContent)) === 'Twijfelzone', 'twijfelzone in duels');
 await page.goto(base + '#/duel?mode=rematch'); await wait(1200);

@@ -1,7 +1,7 @@
 // App-staat: store, catalogus, profielen en het model per persoon (gefit in een worker).
 import { fitModel, remainingEstimate } from './model.js';
 
-export const DEFAULT_SETTINGS = { anchorDuels: 3, sound: true, music: 'none', musicUnlocked: false, showCertainty: false, sessionLength: 10 };
+export const DEFAULT_SETTINGS = { anchorDuels: 3, sound: true, music: 'none', musicUnlocked: false, showCertainty: false, sessionLength: 10, rowLength: 5 };
 
 export const S = {
   store: null,

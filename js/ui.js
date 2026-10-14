@@ -100,7 +100,7 @@ export function toast(msg, ms = 2600) {
 }
 
 // ---------- haptiek ----------
-export function buzz(p = 6) { try { if (navigator.vibrate) navigator.vibrate(p); } catch { /* niet ondersteund */ } }
+export function buzz(p = 6) { try { if (navigator.vibrate && navigator.userActivation?.hasBeenActive !== false) navigator.vibrate(p); } catch { /* niet ondersteund */ } }
 
 // ---------- bottom sheet ----------
 let sheetClose = null;

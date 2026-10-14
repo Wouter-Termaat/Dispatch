@@ -1,6 +1,6 @@
 // Le Duel (standaard): twee banen, tik de beste. Ook voor Twijfelzone, Park-avond en Rematch.
 // Telefoon: boven elkaar (↑ ↓). Laptop: naast elkaar (← →). Spatie = gelijk, n = weet niet.
-import { model, compsOf, meKey, coaster } from '../state.js';
+import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { contradictions } from '../model.js';
 import { startSession, commit, undoLast, endSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
 import { backdrop } from '../stage.js';
@@ -36,7 +36,18 @@ export default {
       const seen = new Set(); queue = queue.filter(([a, b]) => { const k = [a, b].sort().join('|'); if (seen.has(k)) return false; seen.add(k); return true; });
       queue = queue.map(p => (Math.random() < .5 ? p : [p[1], p[0]]));
     }
-    const s = startSession('duel', { mode: cmode, label, filter, length: queue ? Math.min(queue.length, 30) : undefined });
+    // Park-avond: het aantal duels hangt af van het aantal banen. Klein park: elk paar precies één keer.
+    let length = queue ? Math.min(queue.length, 30) : undefined;
+    if (pmode === 'park' && filter) {
+      const ids = model().ranking.filter(filter), n = ids.length, pairs = n * (n - 1) / 2;
+      length = Math.min(pairs, Math.max(mySettings().sessionLength, n));
+      if (pairs <= length) {
+        queue = [];
+        for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) queue.push(Math.random() < .5 ? [ids[i], ids[j]] : [ids[j], ids[i]]);
+        for (let a = queue.length - 1; a > 0; a--) { const b = Math.floor(Math.random() * (a + 1)); [queue[a], queue[b]] = [queue[b], queue[a]]; }
+      }
+    }
+    const s = startSession('duel', { mode: cmode, label, filter, length });
     if (queue && !queue.length) { toast('Geen tegenstrijdigheden gevonden.'); setTimeout(() => go(''), 10); return; }
     if (filter && model().ids.filter(filter).length < 2) { toast('Te weinig banen in dit park.'); setTimeout(() => go(''), 10); return; }
 
@@ -58,9 +69,14 @@ export default {
     const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
     const progress = () => { const n = s.duels; count.textContent = `${n} van ${s.length}`; prog.style.width = Math.min(100, n / s.length * 100) + '%'; };
 
+    const played = new Set();
+    const pk = p => [...p].sort().join('|');
     function choose() {
       if (queue) return queue[qi++] || null;
-      return pickDuel(model(), compsOf(meKey()), { filter, mode: pmode === 'twijfel' ? 'twijfel' : 'normal' });
+      let p = null;
+      for (let t = 0; t < 10; t++) { p = pickDuel(model(), compsOf(meKey()), { filter, mode: pmode === 'twijfel' ? 'twijfel' : 'normal' }); if (p && !played.has(pk(p))) break; }
+      if (p) played.add(pk(p));
+      return p;
     }
 
     function render(p) {

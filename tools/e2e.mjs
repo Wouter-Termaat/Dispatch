@@ -35,7 +35,7 @@ await page.click('#start');
 await page.waitForSelector('#line .card');
 await page.waitForTimeout(500);
 const times = [];
-for (let r = 0; r < 10; r++) {
+for (let r = 0; r < 5; r++) {
   await page.waitForFunction(() => document.querySelectorAll('#line .card:not(.enter)').length === 4 && !document.querySelector('#line .card.picked'));
   if (r === 2) {
     // twee tikken, screenshot, dan Herstel (wist de keuzes)
@@ -78,14 +78,11 @@ await page.waitForSelector('.aff', { timeout: 5000 });
 await page.waitForTimeout(3200);
 await shot('04-affiche');
 const nComps = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).comparisons.filter(c => c.outcome !== 'skip').length);
-ok(nComps === 60, `10 rijen = 60 vergelijkingen opgeslagen (${nComps})`);
+ok(nComps === 30, `5 rijen = 30 vergelijkingen opgeslagen (${nComps})`);
 const sum = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.lastSession')));
-ok(sum.rows === 10 && sum.certainty > 0, `affiche-samenvatting: ${sum.rows} rijen, ${Math.round(sum.certainty * 100)}% zeker, ster ${sum.riser?.id}`);
+ok(sum.rows === 5 && sum.certainty > 0, `affiche-samenvatting: ${sum.rows} rijen, ${Math.round(sum.certainty * 100)}% zeker, ster ${sum.riser?.id}`);
 
-// PNG van de affiche
-const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#save')]);
-ok(/\.png$/.test(dl.suggestedFilename()), 'affiche bewaard als ' + dl.suggestedFilename());
-await dl.saveAs(`${out}/${which}-affiche.png`);
+ok(!(await page.$('#save, #share')), 'affiche zonder Opslaan en Delen');
 
 // ---------- Le Duel ----------
 await page.goto(base + '#/duel');

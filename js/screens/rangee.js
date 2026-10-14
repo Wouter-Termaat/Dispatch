@@ -1,5 +1,5 @@
 // La Rangée: vier banen naast elkaar. Tik ze op volgorde (favoriet eerst), bekijk de volgorde en bevestig.
-import { model, compsOf, meKey, coaster } from '../state.js';
+import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { rowToComparisons, checkWindow } from '../model.js';
 import { startSession, commit, undoLast, endSession, checkDue, checkDone, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
 import { backdrop } from '../stage.js';
@@ -18,7 +18,7 @@ export default {
     const mode = params.get('mode') === 'twijfel' ? 'twijfel' : 'normal';
     const cmode = params.get('mode') === 'twijfel' ? 'twijfel' : params.get('mode') === 'park' ? 'park' : 'rangee';
     const label = labelFromParams(params, 'La Rangée');
-    const s = startSession('rangee', { mode: cmode, label, filter });
+    const s = startSession('rangee', { mode: cmode, label, filter, length: mySettings().rowLength });
     const allowed = filter ? m0.ids.filter(filter).length : m0.n;
     if (allowed < 4) { toast('Te weinig banen voor een rij. We doen duels.'); setTimeout(() => go('duel?' + params.toString()), 10); return; }
 
@@ -104,7 +104,7 @@ export default {
       progress();
       if (tempo.add(ms / 1000 / 4)) toast(`${TRIMREM.titel}. ${TRIMREM.sub}`, 2600);
       const finished = s.rows >= s.length;
-      const wantCheck = !finished && checkDue();
+      const wantCheck = false;   // Klopt dit? is uitgezet: Wouter wil alleen rijen van vier
       const next = !finished && !wantCheck ? choose() : null;   // direct kiezen met het vorige model; de nieuwe fit loopt in de worker
       later(() => {
         flash.classList.remove('show');
