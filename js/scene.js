@@ -18,7 +18,7 @@ export async function sceneMeta() { if (!META) META = await (await fetch('assets
  * Bouwt de scène in `host`. focus = [x0, y0, x1, y1] in PSD-coördinaten: dat deel moet in beeld zijn.
  * opts: { mini: true } voor een kleine versie (inlogscherm), { closed: true } als het park dicht is.
  */
-export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = false, closed = false } = {}) {
+export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = false, closed = false, only = null } = {}) {
   const M = await sceneMeta();
   host.classList.add('scene'); if (mini) host.classList.add('mini'); if (closed) host.classList.add('closed');
   const world = document.createElement('div'); world.className = 'world';
@@ -26,8 +26,9 @@ export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = f
   let html = '';
   // achtergrond: zonnestralen, lichtbundels, sterren (eigen elementen in de stijl van de poster)
   html += `<div class="lyr d0" data-d=".12"><img class="sunburst" src="assets/scene/sunburst.webp" style="${pos(M.sunburst)}" alt=""><div class="rays" style="left:${HUB[0]}px;top:${HUB[1]}px"></div></div>`;
-  html += `<div class="lyr" data-d=".2"><div class="beam b1"></div><div class="beam b2"></div></div>`;
+  if (!only) html += `<div class="lyr" data-d=".2"><div class="beam b1"></div><div class="beam b2"></div></div>`;
   for (const [name, d] of LAYERS) {
+    if (only && !only.includes(name)) continue;
     if (name === 'SAILS') {
       const s = M['wm-sails'], b = M['bulbs-sails'];
       html += `<div class="lyr" data-d="${d}"><div class="sails" style="transform-origin:${HUB[0]}px ${HUB[1]}px">

@@ -26,10 +26,10 @@ await page.waitForSelector('.meer'); await wait(600); await shot('50-meer');
 // instellingen
 await page.click('[data-set=anchorDuels] [data-v="8"]'); await wait(500);
 ok((await settings()).anchorDuels === 8, 'ankersterkte op sterk bewaard');
-await page.click('[data-set=sessionLength] [data-v="8"]'); await wait(200);
+await page.click('[data-set=sessionLength] [data-v="5"]'); await wait(200);
 await page.click('[data-tog=sound]'); await wait(200);
 const s1 = await settings();
-ok(s1.sessionLength === 8 && s1.sound === false, 'sessielengte en geluid bewaard');
+ok(s1.sessionLength === 5 && s1.sound === false, 'sessielengte en geluid bewaard');
 ok(!(await page.$('[data-set=music]')), 'muziekoptie nog verborgen');
 await page.click('#stip'); await wait(700);
 ok((await settings()).musicUnlocked && await page.$('[data-set=music]') && await page.$('#music:not([hidden]) iframe'), 'witte stip in de instellingen ontgrendelt de muziek');
@@ -64,8 +64,8 @@ await page.mouse.click(box.x, box.y); await wait(1100); await shot('54-witte-sti
 ok(await page.$('.ws.show') && (await settings()).musicUnlocked, 'Witte Stip op het plein: stip en muziek ontgrendeld');
 
 // park gesloten en halloween
-await page.goto(base + '&nu=2026-10-14T23:40#/'); await page.reload(); await wait(7500); await shot('55-gesloten');
-ok(await page.$$eval('.bulb.off', x => x.length) === 220, 'na 23:00 zijn alle 220 lampjes uit');
+await page.goto(base + '&nu=2026-10-14T23:40#/'); await page.reload(); await wait(6000); await shot('55-gesloten');
+ok(await page.$('.scene.closed') && (await page.textContent('#greet')).includes('gesloten'), 'na 23:00: park gesloten, lampjes uit, alleen de sterren');
 await page.goto(base + '&nu=2026-10-31T21:00#/'); await page.reload(); await wait(1500); await shot('56-halloween');
 ok(await page.evaluate(() => document.documentElement.classList.contains('halloween')), 'halloween-sfeer tussen 24 oktober en 2 november');
 

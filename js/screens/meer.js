@@ -5,11 +5,12 @@ import { TICKETS, WITTE_STIP } from '../copy.js';
 
 const pills = (name, opts, cur) => `<div class="pills" data-set="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(v) === String(cur) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
 
+import { backdrop } from '../stage.js';
+
 export default {
   nav: 'meer', title: 'Meer',
-  light: { fogH: .25, fog: .6, beams: [{ x: .85, y: 1.1, a: Math.PI + .35, w: .09, i: .25, sway: .08 }] },
   mount({ bg, fg, go }) {
-    bg.innerHTML = '<div class="theatre dim"></div>';
+    backdrop(bg, 'dim');
     const demo = S.store.kind === 'demo';
 
     function render() {
@@ -20,9 +21,9 @@ export default {
 
         <section class="m-sec"><h2 class="eyebrow">Instellingen <button class="stip${st.musicUnlocked ? ' found' : ''}" id="stip" aria-label="Een witte stip"></button></h2>
           <div class="m-row"><div><b>Ankersterkte</b><small>Hoe zwaar je startvolgorde (je Excel) meetelt.</small></div>${pills('anchorDuels', [[1, 'Licht'], [3, 'Gemiddeld'], [8, 'Sterk']], st.anchorDuels)}</div>
-          <div class="m-row"><div><b>Sessielengte</b><small>Rijen of duels per voorstelling.</small></div>${pills('sessionLength', [[8, '8'], [12, '12'], [20, '20']], st.sessionLength)}</div>
+          <div class="m-row"><div><b>Sessielengte</b><small>Rijen of duels per voorstelling.</small></div>${pills('sessionLength', [[5, '5'], [10, '10'], [20, '20']], st.sessionLength)}</div>
           <div class="m-row"><div><b>Geluid</b><small>Stationsbel, liftheuvel en applaus.</small></div><button class="tog${st.sound ? ' on' : ''}" data-tog="sound"><i></i>${st.sound ? 'Aan' : 'Uit'}</button></div>
-          <div class="m-row"><div><b>Zekerheid tonen</b><small>Het bereik per baan in het programma.</small></div><button class="tog${st.showCertainty ? ' on' : ''}" data-tog="showCertainty"><i></i>${st.showCertainty ? 'Aan' : 'Uit'}</button></div>
+          <div class="m-row"><div><b>Uitgebreide ranking</b><small>Bereik, duels, winst% en de plek bij de ander per baan.</small></div><button class="tog${st.showCertainty ? ' on' : ''}" data-tog="showCertainty"><i></i>${st.showCertainty ? 'Aan' : 'Uit'}</button></div>
           ${st.musicUnlocked ? `<div class="m-row"><div><b>Achtergrondmuziek</b><small>Spotify, in een kleine speler die blijft staan.</small></div>${pills('music', [['none', 'Geen'], ['wittestip', 'Witte Stip.']], st.music)}</div>` : ''}
         </section>
 

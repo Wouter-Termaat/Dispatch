@@ -23,10 +23,23 @@ await page.goto(base + '#/'); await page.evaluate(() => { localStorage.clear(); 
 
 // ---------- Programma ----------
 await page.goto(base + '#/programma'); await page.reload(); await page.waitForSelector('#list .li'); await wait(700);
-ok(await page.$$eval('#list .li', x => x.length) === 169, 'programma toont 169 banen');
-await shot('10-programma');
-await page.click('#cert'); await wait(300);
-ok(await page.$eval('#list', el => el.classList.contains('showcert')), 'schakelaar Zekerheid toont het bereik');
+ok(await page.$$eval('#list .li', x => x.length) === 169, 'ranking toont 169 banen');
+await shot('10-ranking');
+await page.click('#vbtn'); await wait(300);
+ok(await page.$eval('#list', el => el.classList.contains('ext')) && await page.$('#list .xrow .rng'), 'uitgebreide weergave toont bereik, duels en de ander');
+await shot('10b-ranking-uitgebreid');
+// filters: top 25 van Efteling? eerst top 25 via het filterblad
+await page.click('#fbtn'); await page.waitForSelector('.filters'); await wait(300); await shot('10c-filters');
+await page.click('.filters [data-top="25"]'); await page.click('.filters [data-f=status] [data-v=aan]'); await page.click('#apply'); await wait(400);
+const n25 = await page.$$eval('#list .li', x => x.length);
+ok(n25 > 0 && n25 <= 25, `filter plek 1 tot 25 + in gebruik: ${n25} banen`);
+ok(await page.$$eval('#active .chip', x => x.length) === 2, 'actieve filters als labels zichtbaar');
+await page.click('#sbtn'); await page.waitForSelector('.opt-list'); await page.click('[data-s=naam]'); await wait(300);
+const names = await page.$$eval('#list .li .nm', x => x.map(e => e.textContent.trim()));
+ok(names.join('|') === [...names].sort((a, b) => a.localeCompare(b)).join('|'), 'sorteren op naam');
+await shot('10d-gefilterd');
+await page.click('#active [data-k=all]').catch(() => {}); await page.click('#sbtn'); await page.click('[data-s=plek]'); await wait(300);
+ok(await page.$$eval('#list .li', x => x.length) === 169, 'filters wissen');
 await page.fill('#q', 'efteling'); await wait(300);
 const nEft = await page.$$eval('#list .li', x => x.length);
 ok(nEft > 3 && nEft < 20, `zoeken op park werkt (${nEft} banen van Efteling)`);
@@ -45,7 +58,7 @@ ok(ent?.reridden_at && ent?.note === 'Voorste rij, avond.', `herreden en notitie
 await page.keyboard.press('Escape'); await wait(400);
 // Luca bekijken
 await page.click('#seg [data-t=banen]'); await page.click('#pers [data-k=luca]'); await wait(300);
-ok((await page.$eval('#who', e => e.textContent)).includes('Luca · 159 banen'), "Luca's programma (alleen lezen)");
+ok((await page.$eval('#who', e => e.textContent)).includes('Luca') && await page.$$eval('#list .li', x => x.length) === 159, "Luca's ranking (alleen lezen, 159 banen)");
 
 // ---------- Baan toevoegen ----------
 await page.goto(base + '#/toevoegen'); await page.waitForSelector('#q'); await wait(400);
@@ -79,15 +92,16 @@ await page.click('#notes .li'); await page.waitForSelector('.sheet'); await wait
 
 // ---------- Modi ----------
 await page.goto(base + '#/'); await page.waitForSelector('#modes'); await wait(400);
-await page.click('#modes'); await page.waitForSelector('.mode-list'); await wait(400); await shot('30-modi');
-await page.click('.mode[data-k=park]'); await page.waitForSelector('#parks .chip'); await page.click('#parks .chip'); await wait(200); await shot('31-park');
-await page.click('#go'); await page.waitForSelector('#line .card, #stage .card'); await wait(500); await shot('32-park-avond');
-const parkLbl = await page.$eval('.eyebrow', e => e.textContent);
-ok(parkLbl.startsWith('Park-avond'), 'park-avond start: ' + parkLbl);
-const parks = await page.$$eval('#line .card .mt', x => x.map(e => e.textContent.split(' · ')[0]));
-ok(new Set(parks).size === 1, 'alle banen uit één park: ' + parks[0]);
-await page.goto(base + '#/rangee?mode=twijfel'); await page.waitForSelector('#line .card'); await wait(400);
-ok((await page.$eval('.r-title .eyebrow', e => e.textContent)) === 'Twijfelzone', 'twijfelzone in rijen');
+await page.click('.mode-t[data-k=park]'); await wait(200); await shot('30-modi');
+await page.click('#start'); await page.waitForSelector('#parks .chip'); await wait(300); await shot('31-park');
+await page.click('#parks .chip'); await page.waitForSelector('#stage .card'); await wait(600); await shot('32-park-avond');
+const parkLbl = await page.$eval('.meter .lbl span', e => e.textContent);
+ok(parkLbl.startsWith('Park-avond'), 'park-avond is een duel: ' + parkLbl);
+const parkSet = new Set();
+for (let i = 0; i < 4; i++) { (await page.$$eval('#stage .card .mt', x => x.map(e => e.textContent.split(' · ')[0]))).forEach(p => parkSet.add(p)); await page.keyboard.press('ArrowUp'); await wait(700); }
+ok(parkSet.size === 1, 'alle duels binnen één park: ' + [...parkSet][0]);
+await page.goto(base + '#/duel?mode=twijfel'); await page.waitForSelector('#stage .card'); await wait(400);
+ok((await page.$eval('.meter .lbl span', e => e.textContent)) === 'Twijfelzone', 'twijfelzone in duels');
 await page.goto(base + '#/duel?mode=rematch'); await wait(1200);
 ok(true, 'rematch: ' + (await page.$('#stage .card') ? 'duel met tegenstrijdigheid' : 'geen tegenstrijdigheden (melding)'));
 
