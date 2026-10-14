@@ -2,6 +2,7 @@
 // Parallax op muis (laptop) of kantelen (telefoon), draaiende wieken, lampjes die golven, en een opbouw bij binnenkomst.
 // Coördinaten zijn die van de PSD (1134 × 1417); assets/scene/scene.json bevat per laag [x, y, breedte, hoogte].
 import { reduceMotion } from './ui.js';
+import { dot } from './stippen.js';
 
 const HUB = [566, 612];   // naaf van de molen
 // van achter naar voor: [naam, diepte]
@@ -37,7 +38,7 @@ export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = f
       continue;
     }
     if (!M[name]) continue;
-    let extra = '';
+    let extra = name === 'wm-hub' ? dot('molen', 'hub') .replace('class="wdot', `style="left:${HUB[0]}px;top:${HUB[1]}px" class="wdot`) : '';
     if (name === 'bulbs-front') extra = `<img class="glow wave-x" src="assets/scene/bulbs-front.webp" style="${pos(M[name])}" alt="">`;
     if (name === 'inside') extra = `<div class="doorlight" style="left:${M.inside[0] + M.inside[2] * .5}px;top:${M.inside[1] + M.inside[3] * .55}px"></div>`;
     if (name === 'lamp-l' || name === 'lamp-r') { const L = M[name]; extra = `<i class="halo" style="left:${L[0] + L[2] * (name === 'lamp-l' ? .5 : .5)}px;top:${L[1] + 22}px"></i>`; }

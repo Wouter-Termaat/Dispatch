@@ -10,7 +10,7 @@ const live = process.argv.includes('--live');
 const only = process.argv.find(a => a.startsWith('--size='))?.slice(7);
 const out = 'test-results/shots'; await mkdir(out, { recursive: true });
 const server = await serve(8123);
-const browser = await chromium.launch({ channel: 'chrome', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const browser = await chromium.launch({ channel: 'chrome', args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] });
 const sizes = { phone: { width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }, laptop: { width: 1440, height: 900 } };
 const errors = [];
 for (const [name, s] of Object.entries(sizes)) {

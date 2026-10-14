@@ -1,6 +1,7 @@
 // De affiche na elke sessie: "Dispatch présente / Une Soirée de Duels", met de molen.
 import { coaster, nameOf, meKey } from '../state.js';
 import { backdrop } from '../stage.js';
+import { dot } from '../stippen.js';
 import { lastSummary } from '../session.js';
 import { esc, dateNl, buzz, reduceMotion } from '../ui.js';
 import * as sound from '../sound.js';
@@ -34,7 +35,7 @@ export default {
         <div class="aff" id="aff"><div class="art"></div><div class="shade"></div>
           <div class="t"><div class="eyebrow">Dispatch présente</div><h1>Une Soirée<br>de Duels</h1><p>${esc(dateNl(date))}</p></div>
           <div class="rows">${rows.map(([k, v, d, cls], i) => `<div class="row" style="--i:${i}"><span>${esc(k)}</span><b>${esc(v)}${d ? `<small class="${cls}">${esc(d)}</small>` : ''}</b></div>`).join('')}</div>
-          <div class="marquee"></div>
+          <div class="marquee"></div>${dot('affiche', 'affdot', 'span')}
         </div>
       </div>
       <div class="a-foot">

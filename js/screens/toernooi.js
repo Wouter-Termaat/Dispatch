@@ -5,9 +5,10 @@ import { backdrop } from '../stage.js';
 import { rankTop } from './duel.js';
 import { esc, cardHtml, buzz, toast, openSheet, closeSheet, deal } from '../ui.js';
 import * as sound from '../sound.js';
+import { dot } from '../stippen.js';
 
-const ROUND = { 8: ['Kwartfinale', 'Halve finale', 'Finale'], 4: ['Halve finale', 'Finale'] };
-const SEED = { 8: [0, 7, 3, 4, 1, 6, 2, 5], 4: [0, 3, 1, 2] };
+const ROUND = { 16: ['Achtste finale', 'Kwartfinale', 'Halve finale', 'Finale'], 8: ['Kwartfinale', 'Halve finale', 'Finale'], 4: ['Halve finale', 'Finale'] };
+const SEED = { 16: [0, 15, 7, 8, 3, 12, 4, 11, 1, 14, 6, 9, 2, 13, 5, 10], 8: [0, 7, 3, 4, 1, 6, 2, 5], 4: [0, 3, 1, 2] };
 
 function groups(field) {
   const m = model(); const map = new Map();
@@ -16,7 +17,7 @@ function groups(field) {
 }
 function draw(ids) {
   // de 8 (of 4) beste uit de groep, of bij "willekeurig" 8 uit de top 30; volgorde = huidige ranking (seeding)
-  const n = ids.length >= 8 ? 8 : 4;
+  const n = ids.length >= 16 ? 16 : ids.length >= 8 ? 8 : 4;
   const m = model(); const sorted = [...ids].sort((a, b) => m.position[m.idx.get(a)] - m.position[m.idx.get(b)]);
   return sorted.slice(0, n);
 }
@@ -35,17 +36,20 @@ export default {
 
     // ---------- kiezen ----------
     function setup() {
-      const top30 = model().ranking.slice(0, 30);
-      root.innerHTML = `<div class="add-in"><div class="eyebrow">Toernooi</div><h2 class="h-title">Acht banen, één kampioen</h2>
+      root.innerHTML = `<div class="add-in"><div class="eyebrow">Toernooi</div><h2 class="h-title">Eén kampioen</h2>
         <p class="sheet-text">Kies wie er meedoet. Elke match telt als gewone vergelijking.</p>
         <div class="mode-list">
-          <button class="mode" data-k="random"><b>Willekeurig</b><span>Acht uit je top 30.</span><em>›</em></button>
-          <button class="mode" data-k="manufacturer"><b>Per fabrikant</b><span>De beste acht van één fabrikant.</span><em>›</em></button>
+          <button class="mode" data-k="random"><b>Willekeurig</b><span>Zestien banen die in je ranking bij elkaar staan.</span><em>›</em></button>
+          <button class="mode" data-k="manufacturer"><b>Per fabrikant</b><span>De beste van één fabrikant (8 of 16).</span><em>›</em></button>
           <button class="mode" data-k="park"><b>Per park</b><span>De beste van één park.</span><em>›</em></button>
         </div></div>`;
       root.querySelectorAll('.mode').forEach(b => b.onclick = () => {
         buzz(5); const k = b.dataset.k;
-        if (k === 'random') { const pool = [...top30].sort(() => Math.random() - .5).slice(0, 8); return start(draw(pool), 'Top 30'); }
+        if (k === 'random') {
+          // een willekeurig blok van 16 aangrenzende banen uit je ranking
+          const rk = model().ranking, n = Math.min(16, rk.length), at = Math.floor(Math.random() * (rk.length - n + 1));
+          return start(draw(rk.slice(at, at + n)), `plek ${at + 1} tot ${at + n}`);
+        }
         const gs = groups(k);
         if (!gs.length) { toast('Geen groep met minstens vier banen.'); return; }
         const body = openSheet(`<div class="sheet-pad"><div class="eyebrow">${k === 'park' ? 'Park' : 'Fabrikant'}</div><h3 class="h-title">Kies</h3>
@@ -106,8 +110,8 @@ export default {
         <div class="row-btns"><button class="ghost" id="again">Nog een toernooi</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
       const ring = root.querySelector('.champ-ring'); let h = '';
       for (let i = 0; i < 22; i++) { const a = i / 22 * Math.PI * 2; h += `<i style="left:${50 + 54 * Math.cos(a)}%;top:${50 + 50 * Math.sin(a)}%;animation-delay:${(i * .09).toFixed(2)}s"></i>`; }
-      ring.innerHTML = h;
-      sound.applause(2.6); buzz([12, 50, 12, 50, 30]);
+      ring.innerHTML = h + dot('kampioen', 'ringdot', 'span');
+      sound.fanfare(true); setTimeout(() => sound.applause(2.6), 700); buzz([12, 50, 12, 50, 30]);
       root.querySelector('#aff').onclick = finish;
       root.querySelector('#again').onclick = async () => { await endSession(); s = null; setup(); };
     }

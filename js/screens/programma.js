@@ -5,9 +5,10 @@ import { groupStats } from '../model.js';
 import { esc, meta, openSheet, closeSheet, buzz } from '../ui.js';
 import { openCoaster } from '../baankaart.js';
 import { backdrop } from '../stage.js';
+import { dot } from '../stippen.js';
 
-const VIEW_KEY = 'dispatch.rankview.v2';
-const FRESH = () => ({ parks: [], mans: [], top: 0, zeker: '', luca: '', uit: false });
+const VIEW_KEY = 'dispatch.rankview.v3';
+const FRESH = () => ({ parks: [], mans: [] });
 let view = (() => { try { return { tab: 'banen', q: '', sort: 'plek', f: FRESH(), ...JSON.parse(localStorage.getItem(VIEW_KEY) || '{}') }; } catch { return { tab: 'banen', q: '', sort: 'plek', f: FRESH() }; } })();
 view.f = { ...FRESH(), ...view.f };
 const saveView = () => { try { localStorage.setItem(VIEW_KEY, JSON.stringify({ sort: view.sort, f: view.f })); } catch { /* */ } };
@@ -55,7 +56,6 @@ export default {
         <label class="search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input class="input" id="q" type="search" placeholder="Zoek baan, park of fabrikant" autocomplete="off" enterkeyhint="search"></label>
         <div class="suggest" id="sugg" hidden></div>
       </div>
-      <div class="quick" id="quick"></div>
       <div class="rk-bar"><div class="labels" id="labels"></div>
         <div class="rk-right"><label class="sortsel"><span>Sorteer</span><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}">${k === 'luca' ? 'Grootste verschil met ' + esc(otherName()) : l}</option>`).join('')}</select></label>
         <button class="tool" id="vbtn" aria-label="Uitgebreide weergave" title="Uitgebreide weergave"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span id="vlabel"></span></button></div></div>
@@ -66,12 +66,6 @@ export default {
     q.value = view.q; sortEl.value = view.sort;
     let R = [];
 
-    const QUICK = () => [
-      ['top', 10, 'Top 10'], ['top', 25, 'Top 25'], ['top', 50, 'Top 50'],
-      ['zeker', 'onzeker', 'Onzeker'], ['zeker', 'zeker', 'Zeker'],
-      ['luca', 'beide', 'Ook bij ' + otherName()], ['luca', 'alleen', 'Alleen ik'], ['uit', true, 'Niet meer in gebruik'],
-    ];
-
     const filtered = () => {
       const f = view.f, needle = view.q.trim().toLowerCase(), m = model(key);
       return R.filter(r => {
@@ -79,12 +73,6 @@ export default {
         if (needle && !(`${c.name} ${c.park || ''} ${c.manufacturer || ''}`.toLowerCase().includes(needle))) return false;
         if (f.parks.length && !f.parks.includes(c.park)) return false;
         if (f.mans.length && !f.mans.includes(c.manufacturer)) return false;
-        if (f.top && r.p >= f.top) return false;
-        if (f.zeker === 'zeker' && r.hw > .5) return false;
-        if (f.zeker === 'onzeker' && r.hw <= m.stableHW) return false;
-        if (f.luca === 'beide' && r.oRank === null) return false;
-        if (f.luca === 'alleen' && r.oRank !== null) return false;
-        if (f.uit && c.operational !== false) return false;
         return true;
       });
     };
@@ -119,20 +107,19 @@ export default {
       fg.querySelector('#vbtn').classList.toggle('on', ext);
       list.classList.toggle('ext', ext);
       const banen = view.tab === 'banen';
-      fg.querySelector('#quick').hidden = !banen; fg.querySelector('.rk-bar').hidden = !banen;
+      fg.querySelector('.rk-bar').hidden = !banen;
       q.placeholder = banen ? 'Zoek baan, park of fabrikant' : view.tab === 'park' ? 'Zoek een park' : 'Zoek een fabrikant';
-      // snelfilters en labels
-      fg.querySelector('#quick').innerHTML = QUICK().map(([k, v, l]) => `<button class="chip${view.f[k] === v ? ' on' : ''}" data-k="${k}" data-v="${v}">${esc(l)}</button>`).join('');
+      // labels (park, fabrikant)
       const labels = [...view.f.parks.map(v => ['parks', v]), ...view.f.mans.map(v => ['mans', v])];
       fg.querySelector('#labels').innerHTML = labels.map(([k, v]) => `<button class="label" data-k="${k}" data-v="${esc(v)}">${esc(v)}<span aria-label="weghalen">✕</span></button>`).join('')
-        + (labels.length || view.f.top || view.f.zeker || view.f.luca || view.f.uit ? '<button class="link" data-k="all">Wis filters</button>' : '');
+        + (labels.length > 1 ? '<button class="link" data-k="all">Wis alles</button>' : '');
       suggest();
 
       if (banen) {
         const shown = sorted(filtered());
         const zeker = shown.filter(r => r.hw <= .5).length;
         fg.querySelector('#stats').innerHTML = shown.length === R.length
-          ? `${m.n} banen · ${Math.round(m.certainty * 100)}% zeker · gem. bereik ± ${m.meanHalfWidth.toFixed(1)}`
+          ? `${m.n} banen ${dot('cijfers', 'inline')} ${Math.round(m.certainty * 100)}% zeker · gem. bereik ± ${m.meanHalfWidth.toFixed(1)}`
           : `<b>${shown.length}</b> van ${m.n} banen · ${zeker} zeker`;
         const span = Math.max(1, m.n - 1);
         list.innerHTML = shown.map(r => {
@@ -146,7 +133,7 @@ export default {
           return `<button class="li ${cls}${r.c.operational === false ? ' closed' : ''}" data-id="${esc(r.id)}"><div class="rk">${r.p + 1}</div>
             <div class="mid"><div class="nm">${esc(r.c.name)} ${flags}</div><div class="pk">${meta(r.c)}</div>${extRow}</div>
             <div class="side">${mv}<span class="cert">${cert}</span></div></button>`;
-        }).join('') || `<p class="empty">Geen banen gevonden. <button class="link" data-k="all">Wis filters</button></p>`;
+        }).join('') || `<p class="empty">Geen banen gevonden. <button class="link" data-k="all">Wis zoeken</button></p>`;
         if (mine) list.insertAdjacentHTML('beforeend', '<div class="list-end"><button class="ghost" id="add">Baan toevoegen</button></div>');
         list.querySelector('#add')?.addEventListener('click', () => go('toevoegen'));
       } else {
@@ -172,12 +159,6 @@ export default {
       if (li.dataset.id) openCoaster(li.dataset.id, key);
       else if (li.dataset.g) openGroup(li.dataset.g, view.tab, key);
     });
-    fg.querySelector('#quick').onclick = e => {
-      const b = e.target.closest('[data-k]'); if (!b) return; buzz(3);
-      const k = b.dataset.k, raw = b.dataset.v, v = k === 'top' ? +raw : k === 'uit' ? true : raw;
-      view.f[k] = view.f[k] === v ? FRESH()[k] : v;
-      saveView(); list.scrollTop = 0; render();
-    };
     fg.querySelector('#labels').onclick = e => {
       const b = e.target.closest('[data-k]'); if (!b) return;
       if (b.dataset.k === 'all') clearAll(); else view.f[b.dataset.k] = view.f[b.dataset.k].filter(x => x !== b.dataset.v);

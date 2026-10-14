@@ -2,6 +2,7 @@
 import { entriesOf, meKey, coaster, model, compsOf } from './state.js';
 import { contradictions } from './model.js';
 import { openSheet, closeSheet, esc, buzz, toast } from './ui.js';
+import * as sound from './sound.js';
 
 const I = {
   duel: '<svg viewBox="0 0 48 48"><rect x="7" y="9" width="17" height="24" rx="2" transform="rotate(-10 15 21)"/><rect x="24" y="9" width="17" height="24" rx="2" transform="rotate(10 33 21)"/><path d="M18 40h12M24 36v8"/></svg>',
@@ -18,7 +19,7 @@ export const MODES = [
   { k: 'twijfel', t: 'Twijfelzone', s: 'duels', d: 'Alleen je onzekerste banen.', unit: 'duels' },
   { k: 'park', t: 'Park-avond', s: 'duels', d: 'Duels binnen één park.', unit: 'duels' },
   { k: 'rematch', t: 'Rematch', s: 'duels', d: 'Tegenstrijdigheden opnieuw.', unit: 'duels' },
-  { k: 'toernooi', t: 'Toernooi', s: 'bracket', d: 'Acht banen, één kampioen.', unit: '' },
+  { k: 'toernooi', t: 'Toernooi', s: 'bracket', d: 'Zestien banen in een bracket, één kampioen.', unit: '' },
 ];
 export const icon = k => I[k] || '';
 
@@ -29,6 +30,7 @@ export function setLastMode(k) { localStorage.setItem(LAST, k); }
 /** Start een spelvorm. */
 export function startMode(k, go) {
   setLastMode(k);
+  if (k !== 'park') sound.fanfare();
   if (k === 'duel') return go('duel');
   if (k === 'rij') return go('rangee');
   if (k === 'twijfel') return go('duel?mode=twijfel');

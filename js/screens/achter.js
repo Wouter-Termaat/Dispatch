@@ -1,5 +1,6 @@
 // Achter de schermen: waarom Dispatch werkt zoals het werkt. Eerste versie door Claude Code, Wouter past hem aan.
 import { backdrop } from '../stage.js';
+import { dot } from '../stippen.js';
 
 export default {
   nav: 'meer', title: 'Achter de schermen',
@@ -33,7 +34,7 @@ export default {
       <h2>De poster</h2>
       <p>Het plein is mijn eigen poster: de molen, de lampjes, de straat. Licht speelt de hoofdrol, net als in een echte voorstelling. Wat ertoe doet staat in de spot.</p>
 
-      <p class="sign">Wouter</p>
+      <p class="sign">Wouter${dot('handtekening', 'signdot', 'span')}</p>
     </article></div>`;
     fg.querySelector('#back').onclick = () => go('meer');
   },

@@ -4,16 +4,17 @@ import { me, model, remaining, saveSetting, mySettings, on, coaster } from '../s
 import { isClosed, isHalloween, now, backdrop } from '../stage.js';
 import { esc, buzz, meta } from '../ui.js';
 import { openCoaster } from '../baankaart.js';
-import { PLEIN, WITTE_STIP, fill } from '../copy.js';
+import { PLEIN, fill } from '../copy.js';
 import { buildScene } from '../scene.js';
 import { MODES, icon, lastMode, startMode, setLastMode } from '../modes.js';
+import { dot } from '../stippen.js';
 
 function greeting(name) {
   const h = now().getHours();
   const k = h < 6 ? 'nacht' : h < 12 ? 'ochtend' : h < 18 ? 'middag' : 'avond';
   return fill(PLEIN.groet[k], { naam: name });
 }
-const head = () => `<header class="sp-head"><h1 class="neon">Dispatch</h1><div class="eyebrow">Cabaret des Montagnes Russes</div><p class="sp-greet" id="greet"></p></header>`;
+const head = () => `<header class="sp-head"><h1 class="neon">D<span class="idot">i${dot('logo-i')}</span>spatch</h1><div class="eyebrow">Cabaret des Montagnes Russes</div><p class="sp-greet" id="greet"></p></header>`;
 const cards = () => `<div class="modes" id="modes" role="radiogroup" aria-label="Spelvorm">${MODES.map(m => `
   <button class="mode-t" role="radio" data-k="${m.k}"><span class="mi">${icon(m.k)}</span><b>${m.t}</b><small>${m.s}</small></button>`).join('')}</div>`;
 const extra = () => `<div class="sp-extra"><div class="eyebrow">Jouw ranking</div><div class="big"><b id="xpct"></b><span id="xsub"></span></div><ol id="xtop"></ol></div>`;
@@ -28,8 +29,8 @@ export default {
     backdrop(bg);
     fg.innerHTML = `<div class="spelen vb"><div class="vb-scene" id="scene"></div>${head()}
       <section class="sp-play vb-panel">${extra()}${label()}${cards()}<p class="mode-desc" id="desc"></p><button class="btn big" id="start"></button>
-        <button class="pb-sign" id="pb" aria-label="Point Blanc">Point Blanc</button></section>
-      <div class="ws" id="ws"><i></i><div>${esc(WITTE_STIP.titel)}</div><div class="eyebrow">${esc(WITTE_STIP.sub)}</div></div></div>`;
+        <button class="pb-sign" id="pb" data-dot="pointblanc" aria-label="Point Blanc">Point Blanc</button></section>
+</div>`;
 
     const sceneEl = fg.querySelector('#scene');
     const scene = await buildScene(sceneEl, { closed, focus: wide ? [0, 120, 1134, 1330] : [150, 60, 984, 1330] });
@@ -65,13 +66,8 @@ export default {
     fg.querySelector('#start').onclick = () => { buzz(8); startMode(sel, go); };
 
     // Witte Stip: tik het straatbordje Point Blanc
-    const ws = fg.querySelector('#ws'); let wsT = 0;
     const pb = fg.querySelector('#pb'); const ro = null;
-    pb.onclick = async () => {
-      buzz([6, 40, 6]); ws.classList.add('show'); clearTimeout(wsT); wsT = setTimeout(() => ws.classList.remove('show'), 3200);
-      if (!mySettings().musicUnlocked) await saveSetting({ musicUnlocked: true, music: 'wittestip' });
-      (await import('../music.js')).openMusic();
-    };
-    return () => { off(); scene.stop(); ro?.disconnect(); clearTimeout(wsT); };
+    pb.onclick = async () => { if (!mySettings().musicUnlocked) await saveSetting({ musicUnlocked: true }); };
+    return () => { off(); scene.stop(); ro?.disconnect(); };
   },
 };

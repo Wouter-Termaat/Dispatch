@@ -89,3 +89,7 @@ body.ranking .music-btn{opacity:.55}
 body.ranking .netpill{bottom:auto;top:calc(56px + var(--safe-t))}
 .login{justify-content:safe center}
 @media (max-height:500px){ .login{flex-direction:row;flex-wrap:wrap;align-content:center} .emblem{width:160px;margin:0} }
+.music-btn.orgel svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(255,200,120,.6))}
+.music.paused .music-btn svg{stroke:var(--cream-dim);filter:none;opacity:.6}
+.music.paused .music-btn::after{content:"";position:absolute;width:22px;height:1.5px;background:var(--cream-dim);transform:rotate(-45deg)}
+.music-btn{position:relative}

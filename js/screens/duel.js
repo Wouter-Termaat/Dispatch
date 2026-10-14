@@ -130,7 +130,7 @@ export default {
 
     async function finish() {
       if (ended) return; ended = true; busy = true;
-      fg.querySelector('.lightsout').classList.add('on');
+      fg.querySelector('.lightsout').classList.add('on'); sound.drumroll(.8);
       await Promise.all([endSession(), new Promise(r => setTimeout(r, 750))]);
       go('affiche');
     }

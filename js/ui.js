@@ -1,4 +1,5 @@
 // Kleine UI-helpers: escapen, baanprofiel-art (uit de mockup), kaarten, toast, bottom sheet, haptiek.
+import * as sound from './sound.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -29,11 +30,14 @@ export const isoDate = (d = new Date()) => `${d.getFullYear()}-${String(d.getMon
 export const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 // ---------- baanprofiel (gegenereerd, uniek per baan, kleur per park) ----------
-const HUES = { 'Hansa-Park': 205, 'Energylandia': 320, 'Plopsaland Belgium': 28, 'Plopsaland': 28, 'Walibi Holland': 285, 'Phantasialand': 18, 'Europa-Park': 215, 'PortAventura': 12,
-  'Parque Warner': 235, 'Walibi Belgium': 300, 'Ferrari Land': 0, 'Toverland': 150, 'Thorpe Park': 190, 'Heide Park': 120, 'Alton Towers': 265, 'Tripsdrill': 40,
-  'Efteling': 345, 'Movie Park': 250, 'Movie Park Germany': 250, 'Prater': 40, 'Slagharen': 30, 'Bobbejaanland': 55, 'Parque de Atracciones': 8 };
-export function art(name, park, w = 320, h = 260) {
-  const r = rng(hash(name)), hu = HUES[park] ?? hash(park) % 360, id = 'a' + hash(name + w + h);
+// kleur per fabrikant (tint van het baanprofiel); onbekende fabrikanten krijgen een vaste afgeleide kleur
+export const MAKER_HUES = { 'Intamin': 216, 'B&M': 158, 'Mack Rides': 354, 'Vekoma': 26, 'Gerstlauer': 278, 'RMC': 14, 'GCI': 40, 'Maurer Rides': 322,
+  'Schwarzkopf': 50, 'Zierer': 190, 'Arrow Dynamics': 78, 'Zamperla': 100, 'SBF Visa': 300, 'Philadelphia Toboggan Coasters': 32, 'CCI': 34, 'Great Coasters International': 40,
+  'Premier Rides': 236, 'Schwarzkopf ': 50, 'Preston & Barbieri': 330, 'Pinfari': 120, 'Togo': 205, 'Hopkins': 170, 'Bolliger & Mabillard': 158, 'Rocky Mountain Construction': 14,
+  'Dynamic Attractions': 250, 'S&S': 0, 'Chance Rides': 60, 'E&F Miler': 140, 'Caripro': 260, 'RCCA': 200, 'Charles Paige': 34, 'KumbaK': 290, 'Doppelmayr': 180, 'Valdemar Lebech': 30, 'ABC Rides': 120 };
+export const makerHue = m => MAKER_HUES[m] ?? (hash(m || '?') % 360);
+export function art(name, maker, w = 320, h = 260) {
+  const r = rng(hash(name)), hu = makerHue(maker), id = 'a' + hash(name + w + h);
   // zonnestralen zoals op de poster, in de kleur van het park
   const cx = w * (.3 + r() * .4), cy = h * (.42 + r() * .12), R = Math.hypot(w, h);
   let rays = '';
@@ -56,7 +60,7 @@ export function art(name, park, w = 320, h = 260) {
 }
 export function artFor(c, w, h) {
   if (c?.photo_url) return `<img src="${esc(c.photo_url)}" alt="" loading="lazy" decoding="async">`;
-  return art(c?.name || '?', c?.park || '', w, h);
+  return art(c?.name || '?', c?.manufacturer || '', w, h);
 }
 export function meta(c) { return [c?.park, c?.manufacturer].filter(Boolean).map(esc).join(' · '); }
 export function cardHtml(c, cls = '', w = 320, h = 260) {
@@ -67,6 +71,7 @@ export function cardHtml(c, cls = '', w = 320, h = 260) {
 
 /** Kaarten binnen laten komen: omdraaien met een kleine vertraging per kaart (blokkeert nooit een tik). */
 export function deal(cards, { stagger = 50, slow = false } = {}) {
+  sound.flip();
   cards.forEach((el, i) => {
     if (slow) el.style.setProperty('--slow', '1');
     setTimeout(() => { el.classList.remove('enter'); el.classList.add('shine'); }, 16 + i * (slow ? stagger * 3 : stagger));
@@ -111,7 +116,7 @@ export function openSheet(html, { onClose, cls = '' } = {}) {
   wrap.innerHTML = `<div class="sheet-back"></div><section class="sheet ${cls}" role="dialog" aria-modal="true"><div class="sheet-grip"></div><div class="sheet-body"></div></section>`;
   const body = wrap.querySelector('.sheet-body');
   if (typeof html === 'string') body.innerHTML = html; else body.appendChild(html);
-  wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open')); sound.swoosh();
   // Android-terugknop sluit eerst het blad
   if (!sheetHist) { try { history.pushState({ sheet: 1 }, ''); sheetHist = true; } catch { /* */ } }
   const close = () => closeSheet();

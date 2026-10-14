@@ -34,14 +34,12 @@ ok(await page.$('#sugg:not([hidden]) [data-s=parks]'), 'zoeken stelt het park vo
 await page.click('#sugg [data-s=parks]'); await wait(300);
 const nE = await page.$$eval('#list .li', x => x.length);
 ok(nE > 3 && nE < 20 && await page.$('#labels .label'), `park als label: ${nE} banen van Efteling`);
-await page.click('#quick [data-k=top][data-v="50"]'); await wait(300);
-const nE50 = await page.$$eval('#list .li', x => x.length);
-ok(nE50 <= nE, `plus Top 50: ${nE50} banen`);
+ok(!(await page.$('#quick')), 'geen snelfilters meer');
 await page.selectOption('#sort', 'naam'); await wait(300);
 const names = await page.$$eval('#list .li .nm', x => x.map(e => e.textContent.trim()));
 ok(names.join('|') === [...names].sort((a, b) => a.localeCompare(b)).join('|'), 'sorteren op naam');
 await shot('10d-gefilterd');
-await page.click('#labels [data-k=all]'); await page.selectOption('#sort', 'plek'); await wait(300);
+await page.click('#labels .label'); await page.selectOption('#sort', 'plek'); await wait(300);
 ok(await page.$$eval('#list .li', x => x.length) === 169, 'filters wissen');
 await page.click('#seg [data-t=park]'); await wait(300); await shot('11-parken');
 ok(await page.$$eval('#list .li', x => x.length) > 20, 'tab Parken');
@@ -112,12 +110,12 @@ ok(true, 'rematch: ' + (await page.$('#stage .card') ? 'duel met tegenstrijdighe
 await page.goto(base + '#/toernooi'); await page.waitForSelector('.mode[data-k=random]'); await wait(300);
 await page.click('.mode[data-k=random]'); await page.waitForSelector('.bracket'); await wait(300); await shot('40-bracket');
 let matches = 0;
-for (let i = 0; i < 12 && !(await page.$('.champ')); i++) {
+for (let i = 0; i < 30 && !(await page.$('.champ')); i++) {
   if (await page.$('#go')) { await page.click('#go'); await wait(300); }
   if (await page.$('#stage .card')) { await page.click(i % 2 ? '#stage .card.a' : '#stage .card.b'); matches++; await wait(600); }
 }
 await page.waitForSelector('.champ'); await wait(1800); await shot('41-kampioen');
-ok(matches === 7, `toernooi met 7 matches gespeeld (${matches})`);
+ok(matches === 15, `toernooi van 16 aangrenzende banen: 15 matches gespeeld (${matches})`);
 await page.click('#aff'); await page.waitForSelector('.aff'); await wait(3000); await shot('42-affiche-toernooi');
 ok((await page.$eval('.aff', e => e.textContent)).includes('Kampioen'), 'affiche noemt de kampioen');
 
