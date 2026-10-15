@@ -1,6 +1,7 @@
 // Zet mijn keuzes klaar voor de keuzepagina: haalt de gekozen foto en de alternatieven groot op en vult fotos/keuze.json.
 //   node tools/photos/kies.mjs fotos/mijnkeuze.json
 // mijnkeuze.json: { "<id>": { "pick": 16, "alts": [7, 15, 4], "focus": { "x": 55, "y": 45 }, "note": "..." } }
+// opts is de vaste rij keuzes (mijn keuze eerst), zodat wisselen nooit een optie wegdrukt.
 // Bestaande beoordelingen in keuze.json (status, eigen wissels) blijven staan.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -24,7 +25,7 @@ for (const [id, m] of Object.entries(mine)) {
     await writeFile(out, Buffer.from(await r.arrayBuffer())); await wait(800);
   }
   const prev = keuze[id] || {};
-  keuze[id] = { name: c.name, park: c.park, note: m.note || '', alts: m.alts, pick: prev.status ? prev.pick : m.pick, focus: prev.status ? prev.focus : m.focus, status: prev.status || '' };
+  keuze[id] = { name: c.name, park: c.park, note: m.note || '', opts: [m.pick, ...m.alts], alts: m.alts, pick: prev.status ? prev.pick : m.pick, focus: prev.status ? prev.focus : m.focus, status: prev.status || '' };
   console.log('klaar', id);
 }
 await writeFile(file, JSON.stringify(keuze, null, 1));

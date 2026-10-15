@@ -56,7 +56,7 @@ function render() {
       '<div class="side"><div class="prev">' +
         '<div class="card" style="width:130px;height:174px"><img src="' + src(c, c.pick) + '" style="object-position:' + pos + '"><span>kaart laptop</span></div>' +
         '<div class="card" style="width:150px;height:140px"><img src="' + src(c, c.pick) + '" style="object-position:' + pos + '"><span>kaart telefoon</span></div></div>' +
-      '<div class="alts">' + [c.pick, ...c.alts].map(n => '<img data-n="' + n + '" class="' + (n === c.pick ? 'on' : '') + '" src="' + src(c, n) + '" loading="lazy">').join('') + '</div>' +
+      '<div class="alts">' + (c.opts || [c.pick, ...c.alts]).map(n => '<img data-n="' + n + '" class="' + (n === c.pick ? 'on' : '') + '" src="' + src(c, n) + '" loading="lazy">').join('') + '</div>' +
       '<div class="acts"><button class="ok' + (c.status === 'ok' ? ' on' : '') + '">Goed</button><button class="nn' + (c.status === 'no' ? ' on' : '') + '">Geen van deze</button></div>' +
       '</div></section>';
   }).join('');
