@@ -2,7 +2,7 @@
 // en een uitgebreide weergave met bereik, duels, winst% en de plek bij de ander. Ook Luca's ranking (alleen lezen).
 import { model, meKey, nameOf, coaster, catalog, compsOf, entriesOf, mySettings, saveSetting, on, profiles } from '../state.js';
 import { groupStats } from '../model.js';
-import { esc, meta, openSheet, closeSheet, buzz } from '../ui.js';
+import { esc, meta, openSheet, closeSheet, closeSheetThen, buzz } from '../ui.js';
 import { openCoaster } from '../baankaart.js';
 import { backdrop } from '../stage.js';
 import { dot } from '../stippen.js';
@@ -190,5 +190,5 @@ function openGroup(name, field, key) {
     <div class="mini-list">${ids.map(id => { const c = coaster(id); const p = m.position[m.idx.get(id)]; return `<button class="li" data-id="${esc(id)}"><div class="rk">${p + 1}</div><div class="mid"><div class="nm">${esc(c.name)}</div><div class="pk">${meta(c)}</div></div><div></div></button>`; }).join('')}</div>
     ${field === 'park' && key === meKey() && ids.length >= 2 ? `<div class="row-btns"><button class="btn" id="pa">Park-avond: ${esc(name)}</button></div>` : ''}</div>`);
   body.addEventListener('click', e => { const li = e.target.closest('.li'); if (li) openCoaster(li.dataset.id, key); });
-  body.querySelector('#pa')?.addEventListener('click', () => { closeSheet(); location.hash = '#/duel?mode=park&park=' + encodeURIComponent(name); });
+  body.querySelector('#pa')?.addEventListener('click', () => closeSheetThen('#/duel?mode=park&park=' + encodeURIComponent(name)));
 }

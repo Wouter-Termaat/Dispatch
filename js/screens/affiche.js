@@ -1,5 +1,5 @@
 // De affiche na elke sessie: "Dispatch présente / Une Soirée de Duels", met de molen.
-import { coaster, nameOf, meKey } from '../state.js';
+import { coaster } from '../state.js';
 import { backdrop } from '../stage.js';
 import { dot } from '../stippen.js';
 import { lastSummary } from '../session.js';

@@ -31,11 +31,12 @@ class BaseStore extends EventTarget {
       }
       case 'delEntry': d.entries = d.entries.filter(e => !(e.user_id === op.user_id && e.coaster_id === op.coaster_id)); break;
       case 'coaster': {
+        // altijd een nieuwe array: de opzoektabel in state.js ververst op een nieuwe array
         const i = d.coasters.findIndex(c => c.id === op.row.id);
-        if (i >= 0) d.coasters[i] = { ...d.coasters[i], ...op.row }; else d.coasters.push({ operational: true, photo_url: null, ...op.row });
+        d.coasters = i >= 0 ? d.coasters.map((c, k) => (k === i ? { ...c, ...op.row } : c)) : [...d.coasters, { operational: true, photo_url: null, ...op.row }];
         break;
       }
-      case 'settings': { const p = d.profiles.find(p => p.id === op.user_id); if (p) p.settings = { ...(p.settings || {}), ...op.settings }; break; }
+      case 'settings': { const p = d.profiles.find(p => p.id === op.user_id); if (p) p.settings = mergeSettings(p.settings, op.settings); break; }
     }
   }
 
@@ -148,7 +149,10 @@ export class SupabaseStore extends BaseStore {
     }
     this.normalize();
     // wijzigingen die nog in de wachtrij staan, opnieuw toepassen bovenop de verse data
-    for (const op of this.queue) this.apply(op);
+    for (const op of this.queue) {
+      if (op.t === 'comps' && this.data.comparisons.some(c => c.batch === op.rows[0]?.batch)) continue;   // al op de server
+      this.apply(op);
+    }
     this.flush();
   }
 
@@ -182,7 +186,12 @@ export class SupabaseStore extends BaseStore {
   async send(op) {
     const sb = this.sb; let r;
     switch (op.t) {
-      case 'comps': r = await sb.from('comparisons').insert(op.rows.map(({ a, b, outcome, mode, batch, created_at, user_id }) => ({ a, b, outcome, mode, batch, created_at, user_id }))); break;
+      case 'comps': {
+        // na een mislukte poging eerst kijken of de rij toch al is aangekomen (anders dubbel tellen)
+        if (op.tried) { const { data: ex } = await sb.from('comparisons').select('id').eq('user_id', op.rows[0].user_id).eq('batch', op.rows[0].batch).limit(1); if (ex?.length) return; }
+        op.tried = true; this.saveQueue();
+        r = await sb.from('comparisons').insert(op.rows.map(({ a, b, outcome, mode, batch, created_at, user_id }) => ({ a, b, outcome, mode, batch, created_at, user_id }))); break;
+      }
       case 'delBatch': r = await sb.from('comparisons').delete().eq('user_id', op.user_id).eq('batch', op.batch); break;
       case 'entry': {
         const e = this.data.entries.find(x => x.user_id === op.row.user_id && x.coaster_id === op.row.coaster_id) || op.row;
@@ -191,13 +200,17 @@ export class SupabaseStore extends BaseStore {
       }
       case 'delEntry': r = await sb.from('entries').delete().eq('user_id', op.user_id).eq('coaster_id', op.coaster_id); break;
       case 'coaster': {
-        const c = { ...(this.data.coasters.find(x => x.id === op.row.id) || {}), ...op.row };
-        const { id, name, park, manufacturer = null, operational = true, photo_url = null } = c;
-        r = await sb.from('coasters').upsert({ id, name, park, manufacturer, operational, photo_url, ...(c.created_by ? { created_by: c.created_by } : {}) }, { onConflict: 'id' }); break;
+        // alleen de velden die in deze wijziging zitten (geen verouderde lokale kopie terugschrijven)
+        const row = Object.fromEntries(Object.entries(op.row).filter(([k, v]) => ['id', 'name', 'park', 'manufacturer', 'operational', 'photo_url', 'created_by'].includes(k) && v !== undefined));
+        r = await sb.from('coasters').upsert(row, { onConflict: 'id' }); break;
       }
       case 'settings': {
-        const p = this.data.profiles.find(p => p.id === op.user_id);
-        r = await sb.from('profiles').update({ settings: p?.settings || op.settings }).eq('id', op.user_id); break;
+        // eerst de actuele instellingen van de server lezen en daar deze wijziging op zetten
+        const cur = await sb.from('profiles').select('settings').eq('id', op.user_id).single(); if (cur.error) throw cur.error;
+        const merged = mergeSettings(cur.data?.settings, op.settings);
+        r = await sb.from('profiles').update({ settings: merged }).eq('id', op.user_id);
+        const p = this.data.profiles.find(p => p.id === op.user_id); if (p && !r.error) p.settings = mergeSettings(merged, p.settings);
+        break;
       }
     }
     if (r?.error) throw r.error;
@@ -205,6 +218,14 @@ export class SupabaseStore extends BaseStore {
 }
 
 export function newBatch() { return uuid(); }
+
+/** Instellingen samenvoegen; gevonden witte stippen worden altijd bij elkaar opgeteld (nooit kwijt door een ander apparaat). */
+export function mergeSettings(base = {}, patch = {}) {
+  const out = { ...(base || {}), ...patch };
+  if (base?.dots || patch?.dots) out.dots = [...new Set([...(base?.dots || []), ...(patch?.dots || [])])];
+  if (base?.musicUnlocked) out.musicUnlocked = true;
+  return out;
+}
 
 /** Postgres-fouten die bij opnieuw proberen niet verdwijnen (data, constraints, rechten). */
 export function isPermanent(e) { return !!e?.code && /^(22|23|42|P0)/.test(String(e.code)); }

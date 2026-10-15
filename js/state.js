@@ -78,6 +78,4 @@ export function refit(key = meKey()) {
 }
 export async function fitAll() { await Promise.all(profiles().map(p => refit(p.key))); }
 
-// ---------- schrijven ----------
-export function storeChanged(fn) { S.store.addEventListener('change', fn); return () => S.store.removeEventListener('change', fn); }
 export { emit };

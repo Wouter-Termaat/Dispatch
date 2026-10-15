@@ -25,15 +25,12 @@ export function slug(s) {
 const DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 const MONTHS = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
 export const dateNl = (d = new Date()) => `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-export const dateShort = (d = new Date()) => `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-export const isoDate = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-export const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 // ---------- baanprofiel (gegenereerd, uniek per baan, kleur per park) ----------
 // kleur per fabrikant (tint van het baanprofiel); onbekende fabrikanten krijgen een vaste afgeleide kleur
 export const MAKER_HUES = { 'Intamin': 216, 'B&M': 158, 'Mack Rides': 354, 'Vekoma': 26, 'Gerstlauer': 278, 'RMC': 14, 'GCI': 40, 'Maurer Rides': 322,
   'Schwarzkopf': 50, 'Zierer': 190, 'Arrow Dynamics': 78, 'Zamperla': 100, 'SBF Visa': 300, 'Philadelphia Toboggan Coasters': 32, 'CCI': 34, 'Great Coasters International': 40,
-  'Premier Rides': 236, 'Schwarzkopf ': 50, 'Preston & Barbieri': 330, 'Pinfari': 120, 'Togo': 205, 'Hopkins': 170, 'Bolliger & Mabillard': 158, 'Rocky Mountain Construction': 14,
+  'Premier Rides': 236, 'Preston & Barbieri': 330, 'Pinfari': 120, 'Togo': 205, 'Hopkins': 170, 'Bolliger & Mabillard': 158, 'Rocky Mountain Construction': 14,
   'Dynamic Attractions': 250, 'S&S': 0, 'Chance Rides': 60, 'E&F Miler': 140, 'Caripro': 260, 'RCCA': 200, 'Charles Paige': 34, 'KumbaK': 290, 'Doppelmayr': 180, 'Valdemar Lebech': 30, 'ABC Rides': 120 };
 export const makerHue = m => MAKER_HUES[m] ?? (hash(m || '?') % 360);
 export function art(name, maker, w = 320, h = 260) {
@@ -78,6 +75,9 @@ export function deal(cards, { stagger = 50, slow = false } = {}) {
   });
 }
 
+// kaarten met het toetsenbord kiezen (Enter), tenzij het scherm dat zelf al afhandelt
+if (typeof document !== 'undefined') document.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.defaultPrevented && e.target.matches?.('.card[role=button]')) { e.preventDefault(); e.target.click(); } });
+
 // kantelen onder de muis (laptop) of vinger (telefoon), plus meelopende glans
 if (typeof document !== 'undefined') {
   const fine = matchMedia('(hover: hover)').matches;
@@ -94,8 +94,6 @@ if (typeof document !== 'undefined') {
     document.addEventListener('pointerdown', e => { const el = e.target.closest?.('.card'); if (el && !reduceMotion()) { tilt(el, e.clientX, e.clientY, .7); setTimeout(() => reset(el), 260); } }, { passive: true });
   }
 }
-
-export const SPARKLE = `<svg viewBox="0 0 40 40"><path d="M20 0 L21.3 18.7 L40 20 L21.3 21.3 L20 40 L18.7 21.3 L0 20 L18.7 18.7Z" fill="#fff4dc"/><circle cx="20" cy="20" r="2.4" fill="#fff"/></svg>`;
 
 // ---------- toast ----------
 let toastT = 0;
@@ -147,7 +145,13 @@ export function closeSheet(instant = false, fromBack = false, keepHist = false) 
   if (instant || reduceMotion()) done(); else setTimeout(done, 320);
   fn?.();
 }
-export const sheetOpen = () => !document.getElementById('sheet').hidden;
+/** Blad sluiten en daarna naar een ander scherm, zonder een 'dode' stap in de terug-geschiedenis. */
+export function closeSheetThen(hash) {
+  const had = sheetHist; closeSheet();
+  if (!had) { location.hash = hash; return; }
+  let done = false; const goNow = () => { if (done) return; done = true; location.hash = hash; };
+  addEventListener('popstate', goNow, { once: true }); setTimeout(goNow, 400);
+}
 
 // eenvoudige bevestiging in een sheet
 export function confirmSheet(title, text, yes = 'Ja', no = 'Annuleer') {

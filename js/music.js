@@ -2,7 +2,7 @@
 // Spotify-playlist "Witte Stip. Inspiratie" in een kleine, inklapbare speler die over schermen heen blijft staan.
 import { SPOTIFY_PLAYLIST } from './config.js';
 import { on, mySettings, meKey } from './state.js';
-import { startOrgel, stopOrgel, duckOrgel, orgelPlaying } from './orgel.js';
+import { startOrgel, stopOrgel, duckOrgel } from './orgel.js';
 
 const ID = SPOTIFY_PLAYLIST.split('/playlist/')[1]?.split('?')[0];
 let box = null, unlocked = false, paused = false;
@@ -37,7 +37,5 @@ export function initMusic() {
   // browsers laten geluid pas toe na een aanraking
   addEventListener('pointerdown', () => { if (!unlocked) { unlocked = true; render(); } }, { once: true });
 }
-export function openMusic() { render(); box?.classList.add('open'); }
 /** Tijdens het spelen zachter. */
 export function duck(on) { duckOrgel(on); }
-export { orgelPlaying };

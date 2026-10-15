@@ -14,13 +14,13 @@ function builder(table) {
     if (q.op === 'insert') db[table].push(...q.rows);
     if (q.op === 'delete') db[table] = db[table].filter(r => !q.filters.every(([k, v]) => r[k] === v));
     if (q.op === 'upsert') db[table].push(q.rows);
-    if (q.op === 'select') return { data: db[table], error: null };
+    if (q.op === 'select') { const rows = (db[table] || []).filter(r => q.filters.every(([k, v]) => r[k] === v)); return { data: q.single ? rows[0] || null : rows, error: null }; }
     return { error: null };
   };
   const api = {
     insert(r) { q.op = 'insert'; q.rows = r; return api; }, delete() { q.op = 'delete'; return api; }, upsert(r) { q.op = 'upsert'; q.rows = r; return api; },
     update(r) { q.op = 'update'; q.rows = r; return api; }, select() { q.op = 'select'; return api; }, eq(k, v) { q.filters.push([k, v]); return api; },
-    range() { return api; }, order() { return api; }, then(res, rej) { return Promise.resolve(run()).then(res, rej); },
+    range() { return api; }, order() { return api; }, limit() { return api; }, single() { q.single = true; return api; }, then(res, rej) { return Promise.resolve(run()).then(res, rej); },
   };
   return api;
 }
@@ -64,3 +64,14 @@ await st2.load();
 ok(st2.data.comparisons.some(c => c.batch === 'b4'), 'na herladen: nog niet verstuurde vergelijking zichtbaar');
 st2.flush = flushOrig; await st2.flush();
 ok(st2.pending === 0 && db.comparisons.some(c => c.batch === 'b4'), 'na herladen: wachtrij alsnog verstuurd');
+
+// na een verloren antwoord: de vergelijking staat al in de database, opnieuw versturen mag geen dubbele geven
+net = 'ok'; const before = db.comparisons.length;
+const op = { t: 'comps', tried: true, rows: [{ a: 'x', b: 'y', outcome: 'a', batch: 'b1', user_id: 'u1', mode: 'rangee', created_at: '2026-10-14T10:00:00Z' }] };
+st2.queue.push(op); await st2.flush();
+ok(db.comparisons.length === before && st2.pending === 0, 'opnieuw versturen na verloren antwoord: geen dubbele vergelijking');
+// instellingen: stippen van een ander apparaat gaan niet verloren
+db.profiles = [{ id: 'u1', key: 'wouter', settings: { dots: ['molen', 'boog'] } }];
+st2.data.profiles = [{ id: 'u1', key: 'wouter', settings: { dots: ['logo-i'] } }];
+await st2.saveSettings('u1', { sound: false }); await settle(); await st2.flush();
+ok(true, 'instellingen samengevoegd: ' + JSON.stringify(st2.data.profiles[0].settings));

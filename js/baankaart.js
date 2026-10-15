@@ -2,7 +2,7 @@
 import { model, me, meKey, otherKey, nameOf, coaster, compsOf, entriesOf, refit, S, emit } from './state.js';
 import { coasterInfo } from './model.js';
 import { isFound } from './stippen.js';
-import { esc, meta, artFor, openSheet, closeSheet, confirmSheet, toast, buzz } from './ui.js';
+import { esc, meta, artFor, openSheet, closeSheet, closeSheetThen, confirmSheet, toast, buzz } from './ui.js';
 
 export function openCoaster(id, key = meKey()) {
   const c = coaster(id); if (!c) return;
@@ -67,7 +67,7 @@ export function openCoaster(id, key = meKey()) {
       if (!(await confirmSheet('Uit je lijst halen?', `${c.name} verdwijnt uit je programma. Je duels blijven bewaard en tellen weer mee als je hem terugzet.`, 'Haal weg', 'Laat staan'))) return;
       await S.store.deleteEntry(me().id, id); await refit(); toast(`${c.name} is van je lijst gehaald.`);
     } else if (a === 'add') {
-      closeSheet(); location.hash = '#/toevoegen?id=' + encodeURIComponent(id);
+      closeSheetThen('#/toevoegen?id=' + encodeURIComponent(id));
     }
   });
 }

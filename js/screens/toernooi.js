@@ -1,5 +1,5 @@
-// Toernooi: bracket van 8 banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
-import { model, meKey, coaster, entriesOf } from '../state.js';
+// Toernooi: bracket van 16 (of 8) banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
+import { model, coaster } from '../state.js';
 import { startSession, commit, endSession, session } from '../session.js';
 import { backdrop } from '../stage.js';
 import { rankTop } from './duel.js';
@@ -30,7 +30,7 @@ export default {
     fg.innerHTML = `${rankTop('Toernooi', '')}
       <div class="tour" id="tour"></div><div class="curtain"><i></i><i></i></div>`;
     const root = fg.querySelector('#tour');
-    let s = null, rounds = [], ri = 0, mi = 0, busy = false, keyH = null, ended = false, total = 0, played = 0;
+    let s = null, rounds = [], ri = 0, mi = 0, busy = false, keyH = null, ended = false, total = 0, played = 0, alive = true, advT = 0;
     const prog = () => { fg.querySelector('#prog').style.width = (total ? played / total * 100 : 0) + '%'; fg.querySelector('#count').textContent = total ? `${played} van ${total}` : ''; };
     fg.querySelector('#close').onclick = () => { if (s && s.actions.length) finish(); else { session.current = null; go(''); } };
 
@@ -46,6 +46,7 @@ export default {
       root.querySelectorAll('.mode').forEach(b => b.onclick = () => {
         buzz(5); const k = b.dataset.k;
         if (k === 'random') {
+          if (model().ranking.length < 4) { toast('Je hebt minstens vier banen nodig voor een toernooi.'); return; }
           // een willekeurig blok van 16 aangrenzende banen uit je ranking
           const rk = model().ranking, n = Math.min(16, rk.length), at = Math.floor(Math.random() * (rk.length - n + 1));
           return start(draw(rk.slice(at, at + n)), `plek ${at + 1} tot ${at + n}`);
@@ -69,7 +70,7 @@ export default {
     function bracket(next = true) {
       const names = ROUND[rounds[0].length * 2];
       root.innerHTML = `<div class="add-in"><div class="eyebrow">Toernooi · ${esc(s.tLabel)}</div><h2 class="h-title">${esc(names[ri])}</h2>
-        <div class="bracket">${rounds.map((r, k) => `<div class="b-round"><div class="eyebrow">${esc(names[k])}</div>${r.map(mt => `<div class="b-match">${[mt.a, mt.b].map(x => `<div class="b-slot${mt.w ? (mt.w === x ? ' won' : ' out') : ''}">${x ? esc(coaster(x).name) : '·'}</div>`).join('')}</div>`).join('')}</div>`).join('')}</div>
+        <div class="bracket">${rounds.map((r, k) => `<div class="b-round">${rounds.length > 1 ? `<div class="eyebrow">${esc(names[k])}</div>` : ''}${r.map(mt => `<div class="b-match">${[mt.a, mt.b].map(x => `<div class="b-slot${mt.w ? (mt.w === x ? ' won' : ' out') : ''}">${x ? esc(coaster(x).name) : '·'}</div>`).join('')}</div>`).join('')}</div>`).join('')}</div>
         <div class="row-btns"><button class="btn" id="go">${played ? 'Volgende ronde' : 'Begin'}</button></div></div>`;
       root.querySelector('#go').onclick = () => match();
     }
@@ -86,7 +87,7 @@ export default {
         commit([{ a: mt.a, b: mt.b, outcome: w === mt.a ? 'a' : 'b' }], 'toernooi', { type: 'duel', ids: [mt.a, mt.b], ms: performance.now() - t0 });
         el.classList.add('win'); other.classList.add('lose'); buzz(8); sound.bell();
         
-        setTimeout(advance, 420);
+        advT = setTimeout(() => alive && advance(), 420);
       };
       A.onclick = () => pickW(mt.a, A, B); B.onclick = () => pickW(mt.b, B, A);
       keyH && removeEventListener('keydown', keyH);
@@ -125,6 +126,6 @@ export default {
     }
 
     setup(); prog();
-    return () => { document.body.classList.remove('ranking'); keyH && removeEventListener('keydown', keyH); if (!ended && session.current === s) session.current = null; };
+    return () => { alive = false; clearTimeout(advT); document.body.classList.remove('ranking'); keyH && removeEventListener('keydown', keyH); if (!ended && session.current === s) session.current = null; };
   },
 };

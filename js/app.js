@@ -2,7 +2,7 @@
 import { createStore } from './store.js';
 import { S, fitAll, mySettings, meKey, on, emit } from './state.js';
 import { session } from './session.js';
-import { initStage, light } from './stage.js';
+import { initStage } from './stage.js';
 import { closeSheet, toast } from './ui.js';
 import * as sound from './sound.js';
 import './stippen.js';
@@ -58,7 +58,6 @@ async function route() {
   const nav = document.getElementById('nav');
   nav.classList.toggle('away', !mod.nav);
   document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.dataset.tab === mod.nav));
-  light(mod.light || {});
   let cleanup;
   try { cleanup = await mod.mount({ bg, fg, params, go }); } catch (e) { console.error(e); toast('Er ging iets mis bij het openen van dit scherm.'); }
   if (token !== navToken) { try { cleanup?.(); } catch (e) { console.error(e); } return; }  // intussen al verder genavigeerd
