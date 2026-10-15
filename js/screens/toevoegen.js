@@ -40,7 +40,7 @@ export default {
       const show = () => {
         const n = q.value.trim().toLowerCase();
         const hits = pool.filter(c => !n || c.name.toLowerCase().includes(n) || c.park.toLowerCase().includes(n)).slice(0, 40);
-        res.innerHTML = hits.length ? hits.map(c => `<button class="res" data-id="${esc(c.id)}"><div class="ck-art">${artFor(c, 120, 80)}</div><div><b>${esc(c.name)}</b><small>${meta(c)}</small></div></button>`).join('')
+        res.innerHTML = hits.length ? hits.map(c => `<button class="res" data-id="${esc(c.id)}"><div class="ck-art">${artFor(c, 120, 80, { mini: true })}</div><div><b>${esc(c.name)}</b><small>${meta(c)}</small></div></button>`).join('')
           : `<p class="empty">Geen baan gevonden${n ? ` voor “${esc(q.value)}”` : ''}.</p>`;
       };
       q.oninput = show; show(); setTimeout(() => q.focus(), 300);

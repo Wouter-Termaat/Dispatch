@@ -22,12 +22,12 @@ for (const [id, m] of Object.entries(mine)) {
   for (const n of [m.pick, ...m.alts]) {
     const out = new URL(`${n}.jpg`, dir); if (existsSync(out)) continue;
     const p = c.pics.find(x => x.n === n);
-    const url = p.src === 'web' ? p.url : 'https://rcdb.com' + big(p).url;
+    const url = p.url || 'https://rcdb.com' + big(p).url;   // web en Captain Coaster hebben een eigen adres
     const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20000) }).catch(e => ({ ok: false, status: e.message }));
     if (!r.ok) { console.log('FOUT', id, n, r.status); continue; }
     // webfoto's kunnen webp, png of enorm zijn: altijd als jpg van hooguit 1600 breed bewaren
     await writeFile(out, await sharp(Buffer.from(await r.arrayBuffer())).rotate().resize(1600, 1600, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 88 }).toBuffer());
-    await wait(p.src === 'web' ? 200 : 800);
+    await wait(p.src === 'rcdb' || !p.src ? 800 : 300);
   }
   // nieuwe rij opties (na een afkeuring): opnieuw beoordelen
   const opts = [m.pick, ...m.alts];

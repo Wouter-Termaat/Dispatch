@@ -12,6 +12,8 @@ import sharp from 'sharp';
 const ROOT = new URL('../../', import.meta.url);
 const DIR = new URL('fotos/', ROOT);
 const MAX = 24, WEB = 12;   // zoveel kandidaten bekijk ik zelf per baan, als kleine plaatjes
+// Zoeken via DuckDuckGo alleen met --web, en rustig: bij een botcontrole stoppen we (niet omzeilen).
+const USE_WEB = process.argv.includes('--web');
 const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36' };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
@@ -85,6 +87,7 @@ async function web(c, want) {
   const vqd = (h.match(/vqd=["']?([\d-]+)/) || [])[1]; if (!vqd) return [];
   const r = await fetch(`https://duckduckgo.com/i.js?l=wt-wt&o=json&q=${encodeURIComponent(q)}&vqd=${vqd}&f=size:Large,,,&p=1`, { headers: { ...UA, Referer: 'https://duckduckgo.com/' } });
   const j = await r.json().catch(() => ({}));
+  if (j.challenge) throw new Error('DuckDuckGo vraagt om een botcontrole; zoeken via het web gestopt');
   return (j.results || []).filter(x => x.width >= 1200 && x.width >= x.height * 1.2 && !SKIP.test(x.image)).slice(0, want);
 }
 async function grab(url, ms = 15000) {
@@ -106,7 +109,7 @@ async function run(list, meer = false) {
       // liggende foto's eerst (die passen op elke kaart), dan staande
       const have = new Set((prev?.pics || []).map(p => p.rcdbPic || p.url));
       // Wouter keurde vooral te kleine, oude foto's af: grote en nieuwe eerst, liggend boven staand
-      const sorted = [...pics].filter(p => !have.has(p.id) && p.width >= 1000)
+      const sorted = [...pics].filter(p => !have.has(p.id) && p.width >= 640)
         .sort((a, b) => (b.width >= b.height) - (a.width >= a.height) || (b.width >= 1200) - (a.width >= 1200) || String(b.copy_date).localeCompare(String(a.copy_date)));
       const dir = new URL(`kandidaten/${c.id}/`, DIR); await mkdir(dir, { recursive: true });
       const out = [...(prev?.pics || [])]; let n = out.reduce((m, p) => Math.max(m, p.n), 0);
@@ -116,7 +119,7 @@ async function run(list, meer = false) {
         out.push({ n, src: 'rcdb', rcdbPic: p.id, w: p.width, h: p.height, sizes: p.sizes, by: p.copy_name, date: p.copy_date });
       }
       let webN = 0;
-      for (const x of await web(c, WEB * (meer ? 2 : 1))) {
+      for (const x of USE_WEB ? await web(c, WEB * (meer ? 2 : 1)) : []) {
         if (have.has(x.image)) continue;
         try {
           const thumb = await sharp(await grab(x.image)).resize(390, 260, { fit: 'inside' }).jpeg({ quality: 80 }).toBuffer();
@@ -132,7 +135,7 @@ async function run(list, meer = false) {
 }
 
 const seed = JSON.parse(await readFile(new URL('data/seed.json', ROOT), 'utf8')).coasters;
-const arg = process.argv.slice(2);
+const arg = process.argv.slice(2).filter(a => !a.startsWith('--'));
 let list;
 if (arg[0] === 'proef') list = JSON.parse(await readFile(new URL('proef.json', DIR), 'utf8')).map(id => seed.find(c => c.id === id));
 else if (arg[0] === 'alle') { const done = existsSync(new URL('kandidaten.json', DIR)) ? JSON.parse(await readFile(new URL('kandidaten.json', DIR), 'utf8')) : {}; list = seed.filter(c => !done[c.id]); }

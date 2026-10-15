@@ -1,5 +1,6 @@
 // Kleine UI-helpers: escapen, baanprofiel-art (uit de mockup), kaarten, toast, bottom sheet, haptiek.
 import * as sound from './sound.js';
+import { photoOf } from './photos.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -55,9 +56,15 @@ export function art(name, maker, w = 320, h = 260) {
   <path d="${d}" fill="none" stroke="#07040a" stroke-width="6" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#f0cf8f" stroke-width="1.1" opacity=".6" transform="translate(0 -2.6)"/>${lights}
   <rect width="${w}" height="${h}" fill="url(#${id}f)"/></svg>`;
 }
-export function artFor(c, w, h) {
-  if (c?.photo_url) return `<img src="${esc(c.photo_url)}" alt="" loading="lazy" decoding="async">`;
-  return art(c?.name || '?', c?.manufacturer || '', w, h);
+/** Beeld voor een baan: een eigen Foto-URL, anders de foto uit de fotomap, met het getekende profiel eronder tot hij binnen is. */
+export function artFor(c, w, h, { mini = false } = {}) {
+  const drawn = art(c?.name || '?', c?.manufacturer || '', w, h);
+  const p = c && photoOf(c.id);
+  const src = c?.photo_url || (p && (mini ? p.mini : p.card));
+  if (!src) return drawn;
+  // fotomap: inzoompunt, en CORS zodat de service worker ze mag bewaren
+  const pos = !c.photo_url && p ? ` style="object-position:${p.x}% ${p.y}%" crossorigin="anonymous"` : '';
+  return `${drawn}<img class="ph" src="${esc(src)}" alt=""${pos} decoding="async" onload="this.classList.add('in')" onerror="this.remove()"><i class="phfade"></i>`;
 }
 export function meta(c) { return [c?.park, c?.manufacturer].filter(Boolean).map(esc).join(' · '); }
 export function cardHtml(c, cls = '', w = 320, h = 260) {

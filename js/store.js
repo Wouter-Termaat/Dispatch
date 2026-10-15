@@ -9,6 +9,7 @@
 //   { t:'coaster', row }                   catalogus: baan toevoegen of wijzigen
 //   { t:'settings', user_id, settings }    instellingen van een profiel
 
+import { forgetPhotos } from './photos.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 import { uuid } from './ui.js';
 
@@ -120,7 +121,7 @@ export class SupabaseStore extends BaseStore {
   async signOut() {
     await this.flush();
     await this.sb.auth.signOut().catch(() => {});
-    this.userId = null; localStorage.removeItem(CACHE_KEY);
+    this.userId = null; localStorage.removeItem(CACHE_KEY); forgetPhotos();
   }
 
   async selectAll(table, order) {

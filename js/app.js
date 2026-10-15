@@ -1,5 +1,6 @@
 // Dispatch: opstart, router en navigatie.
 import { createStore } from './store.js';
+import { initPhotos } from './photos.js';
 import { S, fitAll, mySettings, meKey, on, emit } from './state.js';
 import { session } from './session.js';
 import { initStage } from './stage.js';
@@ -75,6 +76,7 @@ async function boot() {
     document.querySelector('#boot .eyebrow').textContent = 'Geen verbinding met de kassa. Probeer het zo opnieuw.';
     return;
   }
+  initPhotos(S.store);   // uit de kopie meteen klaar, anders op de achtergrond
   // geluid volgt de instelling
   const syncSound = () => { if (meKey()) sound.setSound(mySettings().sound); };
   on(w => { if (w === 'settings') syncSound(); });
@@ -115,6 +117,7 @@ function watchQueue() {
 
 /** Na inloggen of profielkeuze: modellen fitten en naar het plein. */
 export async function afterLogin() {
+  initPhotos(S.store);
   sound.setSound(mySettings().sound);
   await fitAll();
   go('');

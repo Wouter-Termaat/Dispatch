@@ -58,3 +58,10 @@
 .spot.off{opacity:.06}
 
 @media (prefers-reduced-motion:reduce){ .card .flip{transition:none} }
+
+/* echte foto over het getekende profiel; iets warmer getint zodat hij bij de affiche past */
+.ph{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;opacity:0;transition:opacity .45s ease;
+  filter:saturate(.92) contrast(1.05) brightness(.95) sepia(.1)}
+.ph.in{opacity:1}
+.phfade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 95% at 50% 38%,transparent 55%,rgba(12,7,18,.5))}
+.ck-art{position:relative}
