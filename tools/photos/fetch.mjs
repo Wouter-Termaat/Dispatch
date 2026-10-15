@@ -2,13 +2,16 @@
 //   node tools/photos/fetch.mjs proef            de banen uit fotos/proef.json
 //   node tools/photos/fetch.mjs alle             alle banen uit data/seed.json zonder kandidaten
 //   node tools/photos/fetch.mjs <id> [<id>...]    losse banen
-// Resultaat: fotos/kandidaten/<id>/<n>.jpg (270 breed) en fotos/kandidaten.json met de bron per foto.
+//   node tools/photos/fetch.mjs meer <id> ...     extra kandidaten erbij (volgende RCDB-foto's en meer van het web)
+// Bronnen: RCDB (fanfoto's per baan) en een afbeeldingenzoekopdracht via DuckDuckGo (parkblogs, persfoto's).
+// Resultaat: fotos/kandidaten/<id>/<n>.jpg (klein, om te kiezen) en fotos/kandidaten.json met de bron per foto.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import sharp from 'sharp';
 
 const ROOT = new URL('../../', import.meta.url);
 const DIR = new URL('fotos/', ROOT);
-const MAX = 24;   // zoveel kandidaten bekijk ik zelf per baan, als kleine plaatjes
+const MAX = 24, WEB = 12;   // zoveel kandidaten bekijk ik zelf per baan, als kleine plaatjes
 const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36' };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
@@ -74,30 +77,55 @@ async function pictures(id) {
   return { title, pics: JSON.parse(j[1]).pictures || [] };
 }
 
+// Afbeeldingen zoeken. Alleen grote, liggende foto's; YouTube-stills, Pinterest en RCDB zelf (die hebben we al) vallen af.
+const SKIP = /ytimg|fbsbx|pinimg|rcdb\.com|ebay|amazon|alamy|shutterstock|istockphoto|dreamstime|gettyimages|tiktok/;
+async function web(c, want) {
+  const q = `${c.name} ${c.park} roller coaster`;
+  const h = await (await fetch('https://duckduckgo.com/?q=' + encodeURIComponent(q) + '&iax=images&ia=images', { headers: UA })).text();
+  const vqd = (h.match(/vqd=["']?([\d-]+)/) || [])[1]; if (!vqd) return [];
+  const r = await fetch(`https://duckduckgo.com/i.js?l=wt-wt&o=json&q=${encodeURIComponent(q)}&vqd=${vqd}&f=size:Large,,,&p=1`, { headers: { ...UA, Referer: 'https://duckduckgo.com/' } });
+  const j = await r.json().catch(() => ({}));
+  return (j.results || []).filter(x => x.width >= 1200 && x.width >= x.height * 1.2 && !SKIP.test(x.image)).slice(0, want);
+}
+async function grab(url, ms = 15000) {
+  const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(ms) }); if (!r.ok) throw new Error(r.status);
+  return Buffer.from(await r.arrayBuffer());
+}
+
 const size = (p, w) => (p.sizes || []).find(s => s.width >= w) || p.sizes?.at(-1) || p;
 
-async function run(list) {
+async function run(list, meer = false) {
   await mkdir(new URL('kandidaten/', DIR), { recursive: true });
   const dbFile = new URL('kandidaten.json', DIR);
   const db = existsSync(dbFile) ? JSON.parse(await readFile(dbFile, 'utf8')) : {};
   for (const c of list) {
     try {
-      const rid = await findCoaster(c);
-      if (!rid) { db[c.id] = { name: c.name, park: c.park, rcdb: null, pics: [] }; console.log('GEEN  ', c.name, '|', c.park); continue; }
-      const { title, pics } = await pictures(rid);
+      const prev = meer ? db[c.id] : null;
+      const rid = prev?.rcdb ?? await findCoaster(c);
+      const { title, pics } = rid ? await pictures(rid) : { title: '', pics: [] };
       // liggende foto's eerst (die passen op elke kaart), dan staande
-      const sorted = [...pics].sort((a, b) => (b.width >= b.height) - (a.width >= a.height));
-      const keep = sorted.slice(0, MAX);
+      const have = new Set((prev?.pics || []).map(p => p.rcdbPic || p.url));
+      // Wouter keurde vooral te kleine, oude foto's af: grote en nieuwe eerst, liggend boven staand
+      const sorted = [...pics].filter(p => !have.has(p.id) && p.width >= 1000)
+        .sort((a, b) => (b.width >= b.height) - (a.width >= a.height) || (b.width >= 1200) - (a.width >= 1200) || String(b.copy_date).localeCompare(String(a.copy_date)));
       const dir = new URL(`kandidaten/${c.id}/`, DIR); await mkdir(dir, { recursive: true });
-      const out = [];
-      for (const [i, p] of keep.entries()) {
-        const s = size(p, 260);
-        const buf = Buffer.from(await (await get(s.url)).arrayBuffer());
-        await writeFile(new URL(`${i + 1}.jpg`, dir), buf);
-        out.push({ n: i + 1, rcdbPic: p.id, w: p.width, h: p.height, sizes: p.sizes, by: p.copy_name, date: p.copy_date });
+      const out = [...(prev?.pics || [])]; let n = out.reduce((m, p) => Math.max(m, p.n), 0);
+      for (const p of sorted.slice(0, MAX)) {
+        const buf = Buffer.from(await (await get(size(p, 260).url)).arrayBuffer());
+        await writeFile(new URL(`${++n}.jpg`, dir), buf);
+        out.push({ n, src: 'rcdb', rcdbPic: p.id, w: p.width, h: p.height, sizes: p.sizes, by: p.copy_name, date: p.copy_date });
       }
-      db[c.id] = { name: c.name, park: c.park, rcdb: rid, title, total: pics.length, pics: out };
-      console.log(`${String(out.length).padStart(2)}/${String(pics.length).padEnd(3)}`, c.name, '|', c.park, '=>', title);
+      let webN = 0;
+      for (const x of await web(c, WEB * (meer ? 2 : 1))) {
+        if (have.has(x.image)) continue;
+        try {
+          const thumb = await sharp(await grab(x.image)).resize(390, 260, { fit: 'inside' }).jpeg({ quality: 80 }).toBuffer();
+          await writeFile(new URL(`${++n}.jpg`, dir), thumb); webN++;
+          out.push({ n, src: 'web', url: x.image, w: x.width, h: x.height, by: x.source || new URL(x.image).host, title: x.title });
+        } catch { /* dode link of geen afbeelding */ }
+      }
+      db[c.id] = { name: c.name, park: c.park, rcdb: rid, title: title || prev?.title || '', total: pics.length, pics: out };
+      console.log(`${String(out.length).padStart(2)} (rcdb ${pics.length}, web ${webN})`, c.name, '|', c.park, '=>', rid ? title : 'niet op RCDB');
     } catch (e) { console.log('FOUT  ', c.name, e.message); }
     await writeFile(dbFile, JSON.stringify(db, null, 1));
   }
@@ -108,5 +136,6 @@ const arg = process.argv.slice(2);
 let list;
 if (arg[0] === 'proef') list = JSON.parse(await readFile(new URL('proef.json', DIR), 'utf8')).map(id => seed.find(c => c.id === id));
 else if (arg[0] === 'alle') { const done = existsSync(new URL('kandidaten.json', DIR)) ? JSON.parse(await readFile(new URL('kandidaten.json', DIR), 'utf8')) : {}; list = seed.filter(c => !done[c.id]); }
+else if (arg[0] === 'meer') list = arg.slice(1).map(id => seed.find(c => c.id === id)).filter(Boolean);
 else list = arg.map(id => seed.find(c => c.id === id)).filter(Boolean);
-await run(list);
+await run(list, arg[0] === 'meer');

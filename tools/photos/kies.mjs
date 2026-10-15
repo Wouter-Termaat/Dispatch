@@ -5,6 +5,7 @@
 // Bestaande beoordelingen in keuze.json (status, eigen wissels) blijven staan.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import sharp from 'sharp';
 
 const DIR = new URL('../../fotos/', import.meta.url);
 const mine = JSON.parse(await readFile(process.argv[2], 'utf8'));
@@ -20,12 +21,18 @@ for (const [id, m] of Object.entries(mine)) {
   const dir = new URL(`groot/${id}/`, DIR); await mkdir(dir, { recursive: true });
   for (const n of [m.pick, ...m.alts]) {
     const out = new URL(`${n}.jpg`, dir); if (existsSync(out)) continue;
-    const p = c.pics.find(x => x.n === n), s = big(p);
-    const r = await fetch('https://rcdb.com' + s.url, { headers: UA }); if (!r.ok) { console.log('FOUT', id, n, r.status); continue; }
-    await writeFile(out, Buffer.from(await r.arrayBuffer())); await wait(800);
+    const p = c.pics.find(x => x.n === n);
+    const url = p.src === 'web' ? p.url : 'https://rcdb.com' + big(p).url;
+    const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(20000) }).catch(e => ({ ok: false, status: e.message }));
+    if (!r.ok) { console.log('FOUT', id, n, r.status); continue; }
+    // webfoto's kunnen webp, png of enorm zijn: altijd als jpg van hooguit 1600 breed bewaren
+    await writeFile(out, await sharp(Buffer.from(await r.arrayBuffer())).rotate().resize(1600, 1600, { fit: 'inside', withoutEnlargement: true }).jpeg({ quality: 88 }).toBuffer());
+    await wait(p.src === 'web' ? 200 : 800);
   }
-  const prev = keuze[id] || {};
-  keuze[id] = { name: c.name, park: c.park, note: m.note || '', opts: [m.pick, ...m.alts], alts: m.alts, pick: prev.status ? prev.pick : m.pick, focus: prev.status ? prev.focus : m.focus, status: prev.status || '' };
+  // nieuwe rij opties (na een afkeuring): opnieuw beoordelen
+  const opts = [m.pick, ...m.alts];
+  const prev = String(keuze[id]?.opts) === String(opts) ? keuze[id] : {};
+  keuze[id] = { name: c.name, park: c.park, note: m.note || '', opts, alts: m.alts, pick: prev.status ? prev.pick : m.pick, focus: prev.status ? prev.focus : m.focus, status: prev.status || '' };
   console.log('klaar', id);
 }
 await writeFile(file, JSON.stringify(keuze, null, 1));
