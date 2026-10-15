@@ -10,3 +10,6 @@ Thumbs.db
 # Ontwikkeltools en testuitvoer
 test-results/
 package-lock.json
+
+# Werkmap voor coasterfoto's (gejat, alleen voor eigen gebruik, nooit committen)
+fotos/
