@@ -1,9 +1,11 @@
-// Keuzepagina voor de coasterfoto's: per baan mijn keuze groot, alternatieven ernaast. Keuzes gaan direct naar fotos/keuze.json.
-//   node tools/photos/review.mjs        en open http://localhost:8131
+// Keuzepagina voor de coasterfoto's. Keuzes gaan direct naar fotos/keuze.json.
+//   node tools/photos/review.mjs        en open http://localhost:8131/muur (alles klein, tik af wat niet goed is)
+//                                       of http://localhost:8131 (per baan groot, met alternatieven en inzoompunt)
 import { createServer } from 'node:http';
 import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const DIR = new URL('../../fotos/', import.meta.url);
 const PORT = 8131;
@@ -76,9 +78,60 @@ $('#all').onclick = async () => { for (const c of data) if (!c.status) { c.statu
 fetch('/data').then(r => r.json()).then(d => { data = d; render(); });
 </script></body></html>`;
 
+
+const MUUR = String.raw`<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fotomuur</title>
+<style>
+:root{--bg:#14100d;--ink:#f3e9dc;--mute:#a8998a;--gold:#e0b45c;--no:#d9725f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(20,16,13,.94);backdrop-filter:blur(8px);padding:12px 16px;border-bottom:1px solid #3a2f25;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0;flex:1}.stat{color:var(--mute)}a{color:var(--gold)}
+main{padding:12px}.note{color:var(--mute);font-size:13px;margin:0 4px 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.t{position:relative;aspect-ratio:3/2;border-radius:10px;overflow:hidden;cursor:pointer;background:#000;border:0;padding:0;color:inherit;font:inherit;text-align:left}
+.t img{width:100%;height:100%;object-fit:cover;display:block}
+.t b{position:absolute;left:0;right:0;bottom:0;padding:22px 9px 7px;font-size:13px;font-weight:600;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);text-shadow:0 1px 2px #000}
+.t b small{display:block;font-weight:400;color:#d8cbbd;font-size:11px}
+.t.no img{filter:grayscale(1) brightness(.35)}.t.no::after{content:"Niet goed";position:absolute;top:8px;right:8px;background:var(--no);color:#1a0d0a;font-weight:700;font-size:12px;padding:3px 9px;border-radius:999px}
+.t.none{outline:2px dashed #5a4a3a}.t.none span{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:13px}
+</style></head><body>
+<header><h1>Fotomuur</h1><span class="stat" id="stat"></span><a href="/">per baan groot</a></header>
+<main><p class="note">Tik een foto aan die niet goed is; nog een keer tikken maakt het ongedaan. Alles wordt direct bewaard. Wat je niet aantikt, keur je goed.</p><div class="grid" id="g"></div></main>
+<script>
+let data = [];
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const $ = s => document.querySelector(s);
+function stat() { const no = data.filter(c => c.status === 'no').length; $('#stat').textContent = data.length + ' banen, ' + no + ' niet goed'; }
+function render() {
+  $('#g').innerHTML = data.map(c => '<button class="t ' + (c.status === 'no' ? 'no' : '') + (c.pick ? '' : ' none') + '" data-id="' + c.id + '">' +
+    (c.pick ? '<img loading="lazy" src="/klein/' + c.id + '/' + c.pick + '.jpg">' : '<span>geen foto gevonden</span>') +
+    '<b>' + esc(c.name) + '<small>' + esc(c.park) + '</small></b></button>').join('');
+  stat();
+}
+$('#g').addEventListener('click', e => {
+  const t = e.target.closest('.t'); if (!t) return;
+  const c = data.find(x => x.id === t.dataset.id); c.status = c.status === 'no' ? 'ok' : 'no';
+  t.classList.toggle('no', c.status === 'no'); stat();
+  fetch('/keuze', { method: 'POST', body: JSON.stringify({ id: c.id, status: c.status }) });
+});
+fetch('/data').then(r => r.json()).then(d => { data = d.sort((a, b) => a.name.localeCompare(b.name)); render(); });
+</script></body></html>`;
+
+const small = new Map();
 createServer(async (req, res) => {
   try {
     if (req.url === '/') { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(PAGE); }
+    if (req.url === '/muur') { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(MUUR); }
+    const k = req.url.match(/^\/klein\/([a-z0-9-]+)\/(\d+)\.jpg$/);
+    if (k) {
+      // kleine versie voor de muur, eenmalig gemaakt en in het geheugen bewaard
+      const key = k[1] + '/' + k[2];
+      if (!small.has(key)) {
+        const groot = new URL(`groot/${key}.jpg`, DIR), klein = new URL(`kandidaten/${key}.jpg`, DIR);
+        small.set(key, await sharp(fileURLToPath(existsSync(groot) ? groot : klein)).resize(480, 320, { fit: 'cover' }).jpeg({ quality: 78 }).toBuffer());
+      }
+      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Cache-Control': 'max-age=600' }); return res.end(small.get(key));
+    }
     if (req.url === '/data') { const k = await load(); res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify(Object.entries(k).map(([id, v]) => ({ id, ...v })))); }
     const m = req.url.match(/^\/img\/([a-z0-9-]+)\/(\d+)\.jpg$/);
     if (m) {

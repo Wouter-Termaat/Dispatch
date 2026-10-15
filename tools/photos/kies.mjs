@@ -10,6 +10,8 @@ import sharp from 'sharp';
 const DIR = new URL('../../fotos/', import.meta.url);
 const mine = JSON.parse(await readFile(process.argv[2], 'utf8'));
 const cand = JSON.parse(await readFile(new URL('kandidaten.json', DIR), 'utf8'));
+const ccf = new URL('cc.json', DIR);
+if (existsSync(ccf)) for (const [id, v] of Object.entries(JSON.parse(await readFile(ccf, 'utf8')))) if (cand[id]) { const have = new Set(cand[id].pics.map(p => p.n)); cand[id].pics.push(...v.pics.filter(p => !have.has(p.n))); }
 const file = new URL('keuze.json', DIR);
 const keuze = existsSync(file) ? JSON.parse(await readFile(file, 'utf8')) : {};
 const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36' };

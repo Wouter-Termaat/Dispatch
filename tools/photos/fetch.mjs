@@ -3,6 +3,7 @@
 //   node tools/photos/fetch.mjs alle             alle banen uit data/seed.json zonder kandidaten
 //   node tools/photos/fetch.mjs <id> [<id>...]    losse banen
 //   node tools/photos/fetch.mjs meer <id> ...     extra kandidaten erbij (volgende RCDB-foto's en meer van het web)
+//   node tools/photos/fetch.mjs meer <id>:<rcdb>  idem, met de RCDB-pagina met de hand gekozen
 // Bronnen: RCDB (fanfoto's per baan) en een afbeeldingenzoekopdracht via DuckDuckGo (parkblogs, persfoto's).
 // Resultaat: fotos/kandidaten/<id>/<n>.jpg (klein, om te kiezen) en fotos/kandidaten.json met de bron per foto.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -18,10 +19,12 @@ const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim();
-const words = s => new Set(norm(s).split(' ').filter(w => w.length > 1 && !['the', 'ride', 'de', 'der', 'die', 'la', 'le', 'el'].includes(w)));
+const words = s => new Set(norm(s).split(' ').filter(w => w.length > 1 && !['the', 'ride', 'de', 'der', 'die', 'la', 'le', 'el', 'park', 'resort', 'land', 'world'].includes(w)));
 function score(a, b) {
   if (norm(a).replace(/ /g, '') === norm(b).replace(/ /g, '')) return 1;
   const A = words(a), B = words(b); if (!A.size || !B.size) return 0;
+  // "Slagharen" is "Slagharen Themepark & Resort", "Hellendoorn" is "Avonturenpark Hellendoorn"
+  if ([...A].every(w => B.has(w)) || [...B].every(w => A.has(w))) return .9;
   let n = 0; for (const w of A) if (B.has(w)) n++;
   return n / Math.max(A.size, B.size);
 }
@@ -104,7 +107,7 @@ async function run(list, meer = false) {
   for (const c of list) {
     try {
       const prev = meer ? db[c.id] : null;
-      const rid = prev?.rcdb ?? await findCoaster(c);
+      const rid = FORCE[c.id] || (prev?.rcdb ?? await findCoaster(c));
       const { title, pics } = rid ? await pictures(rid) : { title: '', pics: [] };
       // liggende foto's eerst (die passen op elke kaart), dan staande
       const have = new Set((prev?.pics || []).map(p => p.rcdbPic || p.url));
@@ -136,6 +139,9 @@ async function run(list, meer = false) {
 
 const seed = JSON.parse(await readFile(new URL('data/seed.json', ROOT), 'utf8')).coasters;
 const arg = process.argv.slice(2).filter(a => !a.startsWith('--'));
+// id:rcdbnummer zet de RCDB-pagina met de hand (als zoeken op naam niets vindt, bijvoorbeeld De Bob = 899)
+const FORCE = Object.fromEntries(arg.filter(a => a.includes(':')).map(a => a.split(':')));
+for (let i = 0; i < arg.length; i++) arg[i] = arg[i].split(':')[0];
 let list;
 if (arg[0] === 'proef') list = JSON.parse(await readFile(new URL('proef.json', DIR), 'utf8')).map(id => seed.find(c => c.id === id));
 else if (arg[0] === 'alle') { const done = existsSync(new URL('kandidaten.json', DIR)) ? JSON.parse(await readFile(new URL('kandidaten.json', DIR), 'utf8')) : {}; list = seed.filter(c => !done[c.id]); }

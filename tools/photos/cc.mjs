@@ -1,6 +1,6 @@
 // Tweede bron: Captain Coaster. Per baan de meest gewaardeerde foto's van gebruikers (recent en tot 1440 pixels).
 //   node tools/photos/cc.mjs alle | <id> ...    kandidaten ophalen naar fotos/cc.json en fotos/kandidaten/<id>/1xx.jpg
-//   node tools/photos/cc.mjs --merge            daarna toevoegen aan fotos/kandidaten.json (als RCDB klaar is)
+//   node tools/photos/cc.mjs --merge            optioneel: blijvend toevoegen aan fotos/kandidaten.json (sheet en kies lezen cc.json ook zelf)
 // Banen worden gevonden via de sitemap; nummers vanaf 101, zodat ze nooit botsen met die van RCDB.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -38,14 +38,16 @@ function match(list, c, alt) {
     const want = [...toks(name), ...toks(c.park)].join('-');
     const exact = list.find(l => l.split(' ')[1] === want); if (exact) return exact.split(' ')[1];
   }
-  let best = null, bs = 0;
+  // anders aan elkaar geschreven vergelijken: "Wickerman" is wicker-man, "F.L.Y." is fly, "Timburcoaster" is timbur-coaster
+  let best = null, bs = -1;
   for (const name of [c.name, alt].filter(Boolean)) {
-    const N = toks(name).filter(w => !STOP.has(w)), P = toks(c.park), park = P.join('');
+    const N = toks(name).filter(w => !STOP.has(w)).join(''), P = toks(c.park), park = P.join('');
+    if (!N) continue;
     for (const l of list) {
       const slug = l.split(' ')[1], t = slug.split('-'), flat = t.join('');
-      if (!N.length || !N.every(w => t.includes(w))) continue;          // de hele naam moet erin staan
-      const p = flat.includes(park) ? 1 : P.filter(w => t.includes(w)).length / P.length;
-      const s = p - (t.length - N.length - P.length) * 0.05;
+      if (!flat.includes(N)) continue;                                   // de hele naam moet erin staan
+      const p = flat === N ? 1 : flat.includes(park) ? 1 : P.filter(w => t.includes(w)).length / P.length;   // een slug zonder park mag als het precies de naam is
+      const s = p - (flat.length - N.length - (flat.includes(park) ? park.length : 0)) * 0.01;
       if (p >= .5 && s > bs) { bs = s; best = slug; }
     }
     if (best) return best;
