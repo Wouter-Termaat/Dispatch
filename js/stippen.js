@@ -53,4 +53,4 @@ document.addEventListener('click', e => {
   if (d.dataset.dot !== 'pointblanc') { e.stopPropagation(); e.preventDefault(); }
   find(d.dataset.dot, d);
 }, true);
-document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('span[data-dot]')) { e.preventDefault(); e.target.click(); } });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('[data-dot]:not(button)')) { e.preventDefault(); e.target.click(); } });

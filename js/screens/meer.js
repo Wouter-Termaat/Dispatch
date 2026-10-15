@@ -1,5 +1,5 @@
 // Meer: instellingen, export, baan toevoegen, achter de schermen, ticketjes, uitloggen.
-import { S, me, meKey, nameOf, mySettings, saveSetting, model, catalog, compsOf, profiles, profileByKey, on } from '../state.js';
+import { S, me, meKey, mySettings, saveSetting, model, catalog, compsOf, profiles, profileByKey, on } from '../state.js';
 import { esc, toast, buzz, openSheet, closeSheet, confirmSheet } from '../ui.js';
 import { TICKETS } from '../copy.js';
 import { dot, DOTS, found } from '../stippen.js';

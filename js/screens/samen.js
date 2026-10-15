@@ -58,7 +58,7 @@ export default {
       if (loveA) out.push([`${gen(a)} geheime liefde`, fill(pick(ROAST.geheimeLiefde), { baan: nm(loveA.id), wie: a, ander: b, verschil: loveA.rankB - loveA.rankA })]);
       if (C.bucketA[0]) out.push([`Nog te rijden, ${a}`, fill(pick(ROAST.bucket), { baan: nm(C.bucketA[0]), wie: a, ander: b })]);
       if (C.bucketB[0]) out.push([`Nog te rijden, ${b}`, fill(pick(ROAST.bucket), { baan: nm(C.bucketB[0]), wie: b, ander: a })]);
-      const pm = C.perManufacturer;
+      const pm = C.perManufacturer.filter(x => x.manufacturer && x.manufacturer !== '?');
       if (pm.length) out.push(['Per fabrikant', fill(pick(ROAST.fabrikantEens), { fabrikant: esc(pm[0].manufacturer), pct: pm[0].match }) + (pm.length > 1 ? ' ' + fill(pick(ROAST.fabrikantOneens), { fabrikant: esc(pm[pm.length - 1].manufacturer), pct: pm[pm.length - 1].match }) : '')]);
       return out.map(([t, p], i) => `<div class="note" style="--i:${i}"><div class="eyebrow">${esc(t)}</div><p>${p}</p></div>`).join('');
     }

@@ -6,7 +6,6 @@ import { sessionSummary } from './model.js';
 import { toast } from './ui.js';
 import { TICKETS } from './copy.js';
 
-const CHECK_EVERY = 15;
 export const session = { current: null };
 
 export function startSession(kind, { mode = 'normal', label = '', length, filter = null, extra = {} } = {}) {
@@ -32,7 +31,6 @@ export function commit(comps, cmode, { ms = 0, type = 'row', ids = [] } = {}) {
     if (type === 'row') s.rows++; else if (type === 'duel') s.duels++; else if (type === 'check') s.checks++;
     s.actions.push({ type, batch, ids, comps, ms });
   }
-  if (type !== 'skip') bumpActions();
   const after = before + comps.filter(c => c.outcome !== 'skip').length;
   for (const tk of TICKETS) if (before < tk.at && after >= tk.at) setTimeout(() => toast(`Ticket verdiend: ${tk.naam}. ${tk.tekst}`, 4200), 700);
   return batch;
@@ -46,21 +44,11 @@ export function undoLast() {
     s.actions.splice(i, 1);
     S.store.deleteBatch(me().id, a.batch);
     if (a.type === 'row') s.rows--; else if (a.type === 'duel') s.duels--; else if (a.type === 'check') s.checks--;
-    bumpActions(-1); refit();
+    refit();
     return a;
   }
   return null;
 }
-
-function counterKey() { return 'dispatch.actions.' + meKey(); }
-function bumpActions(d = 1) { const n = (+localStorage.getItem(counterKey()) || 0) + d; localStorage.setItem(counterKey(), String(Math.max(0, n))); }
-/** Tijd voor een "Klopt dit?"-ronde? (elke ~15 acties) */
-export function checkDue() {
-  const n = +localStorage.getItem(counterKey()) || 0;
-  const last = +localStorage.getItem(counterKey() + '.check') || 0;
-  return n - last >= CHECK_EVERY;
-}
-export function checkDone() { localStorage.setItem(counterKey() + '.check', localStorage.getItem(counterKey()) || '0'); }
 
 /** Sluit de sessie af en bewaart de samenvatting voor de affiche. */
 export async function endSession() {

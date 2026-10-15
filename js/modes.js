@@ -1,7 +1,7 @@
 // De spelvormen op het Spelen-scherm. Le Duel is de standaard.
 import { entriesOf, meKey, coaster, model, compsOf } from './state.js';
 import { contradictions } from './model.js';
-import { openSheet, closeSheet, esc, buzz, toast } from './ui.js';
+import { openSheet, closeSheetThen, esc, buzz, toast } from './ui.js';
 import * as sound from './sound.js';
 
 const I = {
@@ -54,5 +54,5 @@ function parkPicker(go) {
   const body = openSheet(`<div class="sheet-pad"><div class="eyebrow">Park-avond</div><h3 class="h-title">Welk park?</h3>
     <p class="sheet-text">Je krijgt duels tussen banen van dat park.</p>
     <div class="chips" id="parks">${parks.map(p => `<button class="chip" data-p="${esc(p.park)}">${esc(p.park)} <small>${p.n}</small></button>`).join('')}</div></div>`);
-  body.querySelectorAll('.chip').forEach(c => c.onclick = () => { buzz(5); closeSheet(); go('duel?mode=park&park=' + encodeURIComponent(c.dataset.p)); });
+  body.querySelectorAll('.chip').forEach(c => c.onclick = () => { buzz(5); closeSheetThen('#/duel?mode=park&park=' + encodeURIComponent(c.dataset.p)); });
 }

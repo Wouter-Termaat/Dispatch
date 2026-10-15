@@ -123,3 +123,9 @@
   .d-stage .card{left:0;right:auto;top:0;bottom:0;width:calc(50% - 30px);height:auto}
   .d-stage .card.b{left:auto;right:0;top:0}
 }
+/* lange namen in smalle kaarten netjes afbreken in plaats van uit de kaart te lopen */
+.card .nm{overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+.r-line .card .cap{overflow:hidden}
+/* kop boven een duel in toernooi en plaatsing: gecentreerd, los van de balk */
+.d-head{text-align:center;margin-top:14px;padding:0 20px;position:relative;z-index:30}
+.d-head .eyebrow{font-size:10px}

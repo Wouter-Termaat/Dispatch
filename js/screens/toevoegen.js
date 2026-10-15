@@ -25,7 +25,7 @@ export default {
     const root = fg.querySelector('#add');
     fg.querySelector('#close').onclick = () => go('programma');
     const prog = (k, n) => { fg.querySelector('#prog').style.width = (k / n * 100) + '%'; fg.querySelector('#count').textContent = n && k < n ? `duel ${k + 1}` : ''; };
-    let keyH = null;
+    let keyH = null, alive = true, showT = 0;
 
     // ---------- 1. kiezen ----------
     function pickStep() {
@@ -75,7 +75,7 @@ export default {
       const upd = () => {
         g = +r.value; root.querySelector('#gv').textContent = `Plek ${g}`;
         const above = m.ranking[g - 2], below = m.ranking[g - 1];
-        root.querySelector('#gn').innerHTML = above && below ? `ongeveer tussen <i>${esc(coaster(above).name)}</i> en <i>${esc(coaster(below).name)}</i>` : above ? `onder <i>${esc(coaster(above).name)}</i>` : `boven <i>${esc(coaster(below).name)}</i>`;
+        root.querySelector('#gn').innerHTML = !above && !below ? 'je eerste baan' : above && below ? `ongeveer tussen <i>${esc(coaster(above).name)}</i> en <i>${esc(coaster(below).name)}</i>` : above ? `onder <i>${esc(coaster(above).name)}</i>` : `boven <i>${esc(coaster(below).name)}</i>`;
       };
       r.oninput = upd; upd();
       root.querySelector('#back').onclick = pickStep;
@@ -100,7 +100,7 @@ export default {
       const ans = (w, win, lose) => {
         if (busy) return; busy = true; P.answer(w); buzz(8); sound.bell();
         if (win) { win.classList.add('win'); lose.classList.add('lose'); }
-        setTimeout(show, 250);
+        showT = setTimeout(() => alive && show(), 250);
       };
       root.querySelector('#tie').onclick = () => ans('tie');
       keyH = e => { if (e.key === 'ArrowUp') ans('new', ...stage.querySelectorAll('.card')); else if (e.key === 'ArrowDown') { const [A, B] = stage.querySelectorAll('.card'); ans('old', B, A); } else if (e.key === ' ') { e.preventDefault(); ans('tie'); } };
@@ -128,6 +128,6 @@ export default {
 
     const pre = params.get('id');
     if (pre && coaster(pre) && !entriesOf(meKey()).some(e => e.coaster_id === pre)) guessStep(pre); else pickStep();
-    return () => { document.body.classList.remove('ranking'); if (keyH) removeEventListener('keydown', keyH); };
+    return () => { alive = false; clearTimeout(showT); document.body.classList.remove('ranking'); if (keyH) removeEventListener('keydown', keyH); };
   },
 };

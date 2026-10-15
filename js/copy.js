@@ -43,8 +43,6 @@ export const PLEIN = {
   halloween: 'Er hangt iets kils in de lucht vanavond.',
 };
 
-// Witte Stip easter egg
-export const WITTE_STIP = { titel: 'Witte Stip.', sub: 'muziek ontgrendeld' };
 
 // Credits: verzamelbare ticketjes
 export const TICKETS = [

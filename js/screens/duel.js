@@ -12,14 +12,13 @@ import * as sound from '../sound.js';
 const sig = x => 1 / (1 + Math.exp(-x));
 
 export function rankTop(label, total, stopLabel = 'Stoppen') {
-  return `<div class="rank-top"><button class="stop" id="close" aria-label="Stoppen"><i>✕</i>${stopLabel}</button>
+  return `<div class="rank-top"><button class="stop" id="close" aria-label="${stopLabel}"><i>✕</i>${stopLabel}</button>
     <div class="meter"><div class="lbl"><span>${esc(label)}</span><b id="count">${total === '' ? '' : '0 van ' + total}</b></div><div class="bar"><i id="prog"></i></div></div></div>`;
 }
 
 export default {
   nav: null, title: 'Le Duel',
   mount({ bg, fg, params, go }) {
-    document.body.classList.add('ranking');
     const pmode = params.get('mode');
     const filter = filterFromParams(params);
     const cmode = pmode === 'twijfel' ? 'twijfel' : pmode === 'park' ? 'park' : pmode === 'rematch' ? 'rematch' : 'duel';
@@ -47,9 +46,11 @@ export default {
         for (let a = queue.length - 1; a > 0; a--) { const b = Math.floor(Math.random() * (a + 1)); [queue[a], queue[b]] = [queue[b], queue[a]]; }
       }
     }
-    const s = startSession('duel', { mode: cmode, label, filter, length });
+    // eerst controleren, pas daarna een sessie starten (anders blijft er een halve sessie hangen)
     if (queue && !queue.length) { toast('Geen tegenstrijdigheden gevonden.'); setTimeout(() => go(''), 10); return; }
     if (filter && model().ids.filter(filter).length < 2) { toast('Te weinig banen in dit park.'); setTimeout(() => go(''), 10); return; }
+    document.body.classList.add('ranking');
+    const s = startSession('duel', { mode: cmode, label, filter, length });
 
     const wide = () => (innerWidth >= 900 || (innerWidth >= 600 && innerHeight <= 600)) && innerWidth / innerHeight >= 1.25;
     backdrop(bg, 'stage');

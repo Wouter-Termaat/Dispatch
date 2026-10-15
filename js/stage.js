@@ -9,7 +9,6 @@ export function isHalloween(d = now()) { const m = d.getMonth(), day = d.getDate
 export function isClosed(d = now()) { const h = d.getHours(); return h >= 23 || h < 6; }
 
 export function initStage() {
-  document.getElementById('fx')?.remove();
   if (isHalloween()) document.documentElement.classList.add('halloween');
 }
 
@@ -22,7 +21,3 @@ export function backdrop(bg, variant = '') {
     <div class="bd-floor"></div></div>`;
 }
 
-// oude API (licht via WebGL): bewust leeg
-export function light() {}
-export function beams() {}
-export function spotOver() { return {}; }
