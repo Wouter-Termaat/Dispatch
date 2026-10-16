@@ -11,7 +11,7 @@ export const photoOf = id => map[id];
 function restore() {
   try {
     const c = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (c && c.exp > Date.now() + 864e5) { map = c.map; return true; }   // nog minstens een dag geldig
+    if (c && c.exp > Date.now() + 864e5) { map = c.map; return Date.now() - (c.at || 0) < 6 * 36e5 ? 'vers' : 'oud'; }   // nog minstens een dag geldig
   } catch { /* geen of kapotte kopie */ }
   return false;
 }
@@ -20,7 +20,9 @@ function restore() {
 export async function initPhotos(store) {
   if (store.kind === 'demo') return initLocal();
   if (!store.sb || store.needsLogin) { map = {}; return false; }
-  if (restore()) { prefetch(); return true; }
+  // uit de kopie meteen klaar; na zes uur op de achtergrond kijken of er nieuwe foto's zijn
+  const kopie = restore();
+  if (kopie) { prefetch(); if (kopie === 'vers') return true; }
   try {
     const b = store.sb.storage.from('fotos');
     const { data: blob, error } = await b.download('index.json');
@@ -32,10 +34,19 @@ export async function initPhotos(store) {
     if (e2) return false;
     const url = Object.fromEntries(signed.filter(s => s.signedUrl).map(s => [s.path, s.signedUrl]));
     map = Object.fromEntries(ids.map(id => { const v = index[id].v; return [id, { card: url[`${id}-${v}.webp`], mini: url[`${id}-${v}-s.webp`], x: index[id].x ?? 50, y: index[id].y ?? 50 }]; }).filter(([, p]) => p.card));
-    try { localStorage.setItem(KEY, JSON.stringify({ exp: Date.now() + DAYS * 864e5, map })); } catch { /* vol */ }
-    prefetch();
+    try { localStorage.setItem(KEY, JSON.stringify({ exp: Date.now() + DAYS * 864e5, at: Date.now(), map })); } catch { /* vol */ }
+    upgrade(); prefetch();
     return true;
   } catch (e) { console.warn('foto\'s', e); return false; }
+}
+// kaarten die al in beeld stonden voordat de foto's bekend waren alsnog een foto geven
+function upgrade() {
+  document.querySelectorAll('.card[data-id] .art').forEach(a => {
+    const p = map[a.closest('.card').dataset.id]; if (!p || a.querySelector('img')) return;
+    const img = new Image(); img.className = 'ph'; img.alt = ''; img.crossOrigin = 'anonymous'; img.decoding = 'async';
+    img.style.objectPosition = `${p.x}% ${p.y}%`; img.onload = () => img.classList.add('in'); img.onerror = () => img.remove(); img.src = p.card;
+    const fade = document.createElement('i'); fade.className = 'phfade'; a.append(img, fade);
+  });
 }
 export function forgetPhotos() { map = {}; try { localStorage.removeItem(KEY); } catch { /* */ } }
 
@@ -54,7 +65,8 @@ async function initLocal() {
 // Daarna staan ze in de cache van de browser en de service worker. Niet bij databesparing.
 let prefetched = false;
 function prefetch() {
-  if (prefetched || navigator.connection?.saveData) return; prefetched = true;
+  const net = navigator.connection;
+  if (prefetched || net?.saveData || /2g|3g/.test(net?.effectiveType || '')) return; prefetched = true;   // traag of databesparing: alleen laden wat in beeld komt
   const list = Object.values(map).map(p => p.card);
   const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
   const next = () => { const src = list.shift(); if (!src) return; const img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.onload = img.onerror = () => setTimeout(() => idle(next), 120); img.src = src; };
