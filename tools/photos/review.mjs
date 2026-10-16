@@ -114,7 +114,7 @@ $('#g').addEventListener('click', e => {
   t.classList.toggle('no', c.status === 'no'); stat();
   fetch('/keuze', { method: 'POST', body: JSON.stringify({ id: c.id, status: c.status }) });
 });
-fetch('/data').then(r => r.json()).then(d => { data = d.sort((a, b) => a.name.localeCompare(b.name)); render(); });
+fetch('/data').then(r => r.json()).then(d => { data = d.sort((a, b) => (b.note === 'tweede ronde') - (a.note === 'tweede ronde') || a.name.localeCompare(b.name));   // nieuwe keuzes bovenaan render(); });
 </script></body></html>`;
 
 const small = new Map();
