@@ -1,5 +1,5 @@
 // Service worker: de app blijft openen zonder netwerk. Eerst het netwerk (altijd de nieuwste versie), anders de kopie.
-const CACHE = 'dispatch-v8';
+const CACHE = 'dispatch-v9';
 const PHOTOS = 'dispatch-fotos';   // los van de app-versie: foto's blijven bewaard bij een update
 const SHELL = ['./', 'index.html', 'css/app.css', 'css/screens.css', 'css/ranking.css', 'css/pages.css', 'css/scene.css', 'css/cards.css', 'css/spelen.css', 'js/app.js', 'js/scene.js', 'js/pick.js', 'js/stippen.js', 'js/orgel.js', 'js/config.js', 'js/store.js', 'js/state.js',
   'js/model.js', 'js/model.worker.js', 'js/ui.js', 'js/photos.js', 'js/stage.js', 'js/session.js', 'js/sound.js', 'js/copy.js', 'js/modes.js', 'js/music.js',
@@ -16,7 +16,7 @@ self.addEventListener('fetch', e => {
     const key = url.origin + url.pathname;
     e.respondWith(caches.open(PHOTOS).then(async c => {
       const hit = await c.match(key); if (hit) return hit;
-      const res = await fetch(req); if (res.ok) c.put(key, res.clone());
+      const res = await fetch(req); if (res.ok) e.waitUntil(c.put(key, res.clone()).catch(() => {}));
       return res;
     }));
     return;

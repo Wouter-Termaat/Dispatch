@@ -1,6 +1,6 @@
 // Dispatch: opstart, router en navigatie.
 import { createStore } from './store.js';
-import { initPhotos } from './photos.js';
+import { initPhotos, photosNeedRefresh } from './photos.js';
 import { S, fitAll, mySettings, meKey, on, emit } from './state.js';
 import { session } from './session.js';
 import { initStage } from './stage.js';
@@ -91,7 +91,9 @@ async function boot() {
   // terug in de app na een tijdje weg: verse data ophalen (zo zie je wat Luca intussen deed)
   document.addEventListener('visibilitychange', async () => {
     const st = S.store;
-    if (document.hidden || st.kind !== 'supabase' || st.needsLogin || session.current) return;
+    if (document.hidden || st.kind !== 'supabase' || st.needsLogin) return;
+    if (photosNeedRefresh()) initPhotos(st);   // getekende foto-links bijna verlopen: nieuwe ophalen
+    if (session.current) return;
     if (Date.now() - (st.loadedAt || 0) < 120000) return;
     try { await st.load(); await fitAll(); emit('data'); } catch (e) { console.warn(e); }
   });

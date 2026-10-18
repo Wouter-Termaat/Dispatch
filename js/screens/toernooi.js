@@ -1,4 +1,5 @@
 // Toernooi: bracket van 16 (of 8) banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
+import { warm } from '../photos.js';
 import { model, coaster } from '../state.js';
 import { startSession, commit, endSession, session } from '../session.js';
 import { backdrop } from '../stage.js';
@@ -65,7 +66,7 @@ export default {
       rounds = [[]]; for (let i = 0; i < n; i += 2) rounds[0].push({ a: order[i], b: order[i + 1], w: null });
       ri = 0; mi = 0; total = n - 1; played = 0;
       s = startSession('toernooi', { mode: 'toernooi', label: `Toernooi · ${label}`, length: total });
-      s.tLabel = label; sound.liftHill(); prog(); bracket();
+      s.tLabel = label; sound.liftHill(); prog(); warm(ids); bracket();
     }
     function bracket(next = true) {
       const names = ROUND[rounds[0].length * 2];

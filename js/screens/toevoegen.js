@@ -1,5 +1,6 @@
 // Nieuwe baan toevoegen: kies uit de catalogus (of voeg een nieuwe toe), gok een plek,
 // daarna ~7 plaatsingsduels (binair zoeken). Opslaan met een zwak anker (1/3).
+import { warm } from '../photos.js';
 import { S, me, meKey, model, coaster, entriesOf, refit } from '../state.js';
 import { Placement } from '../model.js';
 import { commit } from '../session.js';
@@ -85,6 +86,7 @@ export default {
     // ---------- 3. plaatsingsduels ----------
     function duelStep(id, guess) {
       const P = new GuessPlacement(model(), id, guess);
+      warm([id]);
       const total = Math.ceil(Math.log2(P.ranking.length + 1)) + 1;
       root.innerHTML = `<div class="d-head"><div class="eyebrow">Plaatsing</div></div><div class="d-wrap"><div class="d-stage" id="stage"></div></div>
         <div class="d-foot"><button class="ghost" id="tie">Gelijk</button></div><div class="d-line">Welke vind je beter?</div>`;

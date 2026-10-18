@@ -43,7 +43,8 @@ export default {
     const sceneEl = fg.querySelector('#scene');
     // telefoon: de scène vult alleen de ruimte tussen titel en paneel, ingezoomd op de molen, zodat die nooit achter het paneel valt
     const frame = () => {
-      if (wide || innerHeight < 500) { sceneEl.style.top = sceneEl.style.bottom = ''; return; }   // liggend: de hele scène als achtergrond
+      const breed = matchMedia('(min-width:900px) and (min-aspect-ratio:5/4)').matches;   // opnieuw bepalen: venster kan draaien of groeien
+      if (breed || innerHeight < 500) { sceneEl.style.top = sceneEl.style.bottom = ''; return; }   // liggend: de hele scène als achtergrond
       const root = fg.querySelector('.spelen'), head = fg.querySelector('.sp-head'), panel = fg.querySelector('.vb-panel');
       sceneEl.style.top = Math.max(0, head.offsetTop + head.offsetHeight - 40) + 'px';
       sceneEl.style.bottom = Math.max(0, root.clientHeight - panel.offsetTop - 40) + 'px';

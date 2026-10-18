@@ -65,3 +65,4 @@
 .ph.in{opacity:1}
 .phfade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 95% at 50% 38%,transparent 55%,rgba(12,7,18,.5))}
 .ck-art{position:relative}
+.ph.now{transition:none}

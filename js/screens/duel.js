@@ -1,5 +1,6 @@
 // Le Duel (standaard): twee banen, tik de beste. Ook voor Twijfelzone, Park-avond en Rematch.
 // Telefoon: boven elkaar (↑ ↓). Laptop: naast elkaar (← →). Spatie = gelijk, n = weet niet.
+import { warm } from '../photos.js';
 import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { contradictions } from '../model.js';
 import { startSession, commit, undoLast, endSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
@@ -18,7 +19,7 @@ export function rankTop(label, total, stopLabel = 'Stoppen') {
 
 export default {
   nav: null, title: 'Le Duel',
-  mount({ bg, fg, params, go }) {
+  async mount({ bg, fg, params, go }) {
     const pmode = params.get('mode');
     const filter = filterFromParams(params);
     const cmode = pmode === 'twijfel' ? 'twijfel' : pmode === 'park' ? 'park' : pmode === 'rematch' ? 'rematch' : 'duel';
@@ -116,6 +117,7 @@ export default {
       if (type === 'duel' && tempo.add(ms / 1000)) toast(`${TRIMREM.titel}. ${TRIMREM.sub}`, 2600);
       progress();
       const next = s.duels >= s.length ? null : choose();
+      warm(next);   // foto's decoderen tijdens de korte pauze, zodat de kaarten direct met foto verschijnen
       later(() => (next ? render(next) : finish()), outcome === 'skip' || outcome === 'tie' ? 170 : (tempo.slow ? 480 : 270));
     }
 
@@ -150,7 +152,7 @@ export default {
 
     sound.liftHill();
     progress();
-    render(choose());
+    const first = choose(); await warm(first, 350); if (fg.isConnected && !fg.closest('.out')) render(first);   // eerste paar: heel even wachten op de foto's
     return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) session.current = null; };
   },
 };

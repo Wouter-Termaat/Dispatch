@@ -1,4 +1,5 @@
 // La Rangée: vier banen naast elkaar. Tik ze op volgorde (favoriet eerst), bekijk de volgorde en bevestig.
+import { warm } from '../photos.js';
 import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { rowToComparisons } from '../model.js';
 import { startSession, commit, undoLast, endSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
@@ -11,7 +12,7 @@ import * as sound from '../sound.js';
 
 export default {
   nav: null, title: 'La Rangée',
-  mount({ bg, fg, params, go }) {
+  async mount({ bg, fg, params, go }) {
     const m0 = model();
     const filter = filterFromParams(params);
     const mode = params.get('mode') === 'twijfel' ? 'twijfel' : 'normal';
@@ -104,6 +105,7 @@ export default {
       if (tempo.add(ms / 1000 / 4)) toast(`${TRIMREM.titel}. ${TRIMREM.sub}`, 2600);
       const finished = s.rows >= s.length;
       const next = !finished ? choose() : null;   // direct kiezen met het vorige model; de nieuwe fit loopt in de worker
+      warm(next);
       later(() => {
         flash.classList.remove('show');
         if (finished) return finish();
@@ -148,7 +150,7 @@ export default {
 
     sound.liftHill();
     progress();
-    render(choose());
+    const first = choose(); await warm(first, 350); if (fg.isConnected && !fg.closest('.out')) render(first);
     return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) session.current = null; };
   },
 };

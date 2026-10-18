@@ -1,6 +1,6 @@
 // Kleine UI-helpers: escapen, baanprofiel-art (uit de mockup), kaarten, toast, bottom sheet, haptiek.
 import * as sound from './sound.js';
-import { photoOf } from './photos.js';
+import { photoOf, isReady } from './photos.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -58,13 +58,15 @@ export function art(name, maker, w = 320, h = 260) {
 }
 /** Beeld voor een baan: een eigen Foto-URL, anders de foto uit de fotomap, met het getekende profiel eronder tot hij binnen is. */
 export function artFor(c, w, h, { mini = false } = {}) {
-  const drawn = art(c?.name || '?', c?.manufacturer || '', w, h);
   const p = c && photoOf(c.id);
   const src = c?.photo_url || (p && (mini ? p.mini : p.card));
-  if (!src) return drawn;
+  if (!src) return art(c?.name || '?', c?.manufacturer || '', w, h);
   // fotomap: inzoompunt, en CORS zodat de service worker ze mag bewaren
   const pos = !c.photo_url && p ? ` style="object-position:${p.x}% ${p.y}%" crossorigin="anonymous"` : '';
-  return `${drawn}<img class="ph" src="${esc(src)}" alt=""${pos} decoding="async" onload="this.classList.add('in')" onerror="this.remove()"><i class="phfade"></i>`;
+  // het getekende profiel ligt er altijd onder (voor als de foto toch niet laadt). Al gedecodeerd: de foto staat er
+  // meteen, zonder overgang; anders schuift hij er zacht overheen zodra hij binnen is.
+  const now = isReady(src);
+  return `${art(c?.name || '?', c?.manufacturer || '', w, h)}<img class="ph${now ? ' in now' : ''}" src="${esc(src)}" alt=""${pos} decoding="async"${now ? '' : ` onload="this.classList.add('in')"`} onerror="this.remove()"><i class="phfade"></i>`;
 }
 export function meta(c) { return [c?.park, c?.manufacturer].filter(Boolean).map(esc).join(' · '); }
 export function cardHtml(c, cls = '', w = 320, h = 260) {
