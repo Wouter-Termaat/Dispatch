@@ -10,7 +10,11 @@ export function isClosed(d = now()) { const h = d.getHours(); return h >= 23 || 
 
 export function initStage() {
   if (isHalloween()) document.documentElement.classList.add('halloween');
+  // telefoons en tablets: lichter renderen (geen parallax, geen bewegende maskers, geen blur over bewegend beeld).
+  // Te veel grote lagen tegelijk laat Chrome op Android stukken van de pagina weglaten en knipperen.
+  if (isLite()) document.documentElement.classList.add('lite');
 }
+export const isLite = () => matchMedia('(pointer: coarse)').matches || new URLSearchParams(location.search).has('lite');
 
 /** Gedeelde achtergrond: variant 'stage' (podiumvloer voor ranken) of 'dim' (rustig, voor lijsten). */
 export function backdrop(bg, variant = '') {

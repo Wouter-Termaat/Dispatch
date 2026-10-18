@@ -69,6 +69,7 @@ function prefetch() {
   if (prefetched || net?.saveData || /2g|3g/.test(net?.effectiveType || '')) return; prefetched = true;   // traag of databesparing: alleen laden wat in beeld komt
   const list = Object.values(map).map(p => p.card);
   const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
-  const next = () => { const src = list.shift(); if (!src) return; const img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async'; img.onload = img.onerror = () => setTimeout(() => idle(next), 120); img.src = src; };
+  // alleen de bytes ophalen (die bewaart de service worker), niet decoderen: 181 gedecodeerde foto's vullen het geheugen van een telefoon
+  const next = () => { const src = list.shift(); if (!src) return; fetch(src, { mode: 'cors', priority: 'low' }).then(r => r.blob()).catch(() => {}).finally(() => setTimeout(() => idle(next), 150)); };
   setTimeout(() => idle(next), 2500);   // eerst het scherm, dan de foto's
 }

@@ -6,9 +6,9 @@ import { mkdir, writeFile } from 'node:fs/promises';
 
 const only = process.argv.slice(2).find(a => !a.startsWith('--')) || '';
 const out = process.argv.includes('--laptop') ? 'test-results/audit-lap' : 'test-results/audit'; await mkdir(out, { recursive: true });
-const server = await serve(process.argv.includes('--laptop') ? 8134 : 8131);
+const server = await serve(process.argv.includes('--laptop') ? 8134 : 8136);
 const browser = await chromium.launch({ channel: 'chrome', args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] });
-const base = `http://localhost:${process.argv.includes('--laptop') ? 8134 : 8131}/?demo=1`;
+const base = `http://localhost:${process.argv.includes('--laptop') ? 8134 : 8136}/?demo=1`;
 const PHONES = {
   s8: { ...devices['Galaxy S8'] },                      // 360 x 740
   p7: { ...devices['Pixel 7'] },                        // 412 x 915
@@ -57,7 +57,7 @@ const CHECK = () => {
     if (!sc && (r.right > W + 1 || r.left < -1)) issues.push(`buiten beeld (x): ${name(el)} ${Math.round(r.left)}..${Math.round(r.right)}`);
     if (!sc && (r.bottom > H + 1)) issues.push(`buiten beeld (y): ${name(el)} onderkant ${Math.round(r.bottom)}`);
     if (!sc && navOn && !el.closest('#nav') && !el.closest('#sheet') && r.bottom > navTop + 4 && r.top < H) issues.push(`onder de navigatie: ${name(el)}`);
-    const small = Math.min(r.width, r.height) < 32 && !el.closest('.chips.active, .note, .bk-why') && !el.matches('.stip, input, .nl');
+    const small = Math.min(r.width, r.height) < 32 && !el.closest('.chips.active, .note, .bk-why') && !el.matches('.stip, .wdot, input, .nl')   // witte stippen zijn bewust klein; hun tikvlak is via ::after groter;
     if (small && el.tagName !== 'INPUT') issues.push(`klein tikvlak ${Math.round(r.width)}x${Math.round(r.height)}: ${name(el)}`);
   }
   // tekst die uit zijn vak loopt

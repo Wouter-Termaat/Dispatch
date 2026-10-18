@@ -2,6 +2,7 @@
 // Parallax op muis (laptop) of kantelen (telefoon), draaiende wieken, lampjes die golven, en een opbouw bij binnenkomst.
 // Coördinaten zijn die van de PSD (1134 × 1417); assets/scene/scene.json bevat per laag [x, y, breedte, hoogte].
 import { reduceMotion } from './ui.js';
+import { isLite } from './stage.js';
 import { dot } from './stippen.js';
 
 const HUB = [566, 612];   // naaf van de molen
@@ -64,7 +65,7 @@ export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = f
   // parallax
   const lyrs = [...world.querySelectorAll('.lyr')].map(el => ({ el, d: +el.dataset.d }));
   let tx = 0, ty = 0, x = 0, y = 0, raf = 0, alive = true, t0 = performance.now();
-  const reduce = reduceMotion();
+  const reduce = reduceMotion() || isLite();   // telefoon: stilstaande lagen, alleen wieken, lampjes en licht bewegen
   const amp = mini ? 10 : 26;
   const onMove = e => { const r = host.getBoundingClientRect(); tx = ((e.clientX - r.left) / r.width - .5) * 2; ty = ((e.clientY - r.top) / r.height - .5) * 2; };
   const onTilt = e => { if (e.gamma == null) return; tx = Math.max(-1, Math.min(1, e.gamma / 25)); ty = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); };
@@ -84,7 +85,7 @@ export async function buildScene(host, { focus = [150, 330, 984, 1330], mini = f
   }
   function vis() { cancelAnimationFrame(raf); if (!document.hidden && alive) raf = requestAnimationFrame(loop); }
   // opbouw: lagen komen van achter naar voor binnen
-  if (!reduce) { host.classList.add('enter'); requestAnimationFrame(() => requestAnimationFrame(() => host.classList.remove('enter'))); }
+  if (!reduceMotion()) { host.classList.add('enter'); requestAnimationFrame(() => requestAnimationFrame(() => host.classList.remove('enter'))); }
   lyrs.forEach((l, i) => l.el.style.setProperty('--i', i));
 
   return {

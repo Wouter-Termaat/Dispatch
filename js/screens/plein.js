@@ -41,7 +41,15 @@ export default {
     };
     document.fonts.ready.then(placeIdot); const roI = new ResizeObserver(placeIdot); roI.observe(fg.querySelector('.sp-head h1'));
     const sceneEl = fg.querySelector('#scene');
-    const scene = await buildScene(sceneEl, { closed, focus: wide ? [0, 120, 1134, 1330] : [150, 60, 984, 1330] });
+    // telefoon: de scène vult alleen de ruimte tussen titel en paneel, ingezoomd op de molen, zodat die nooit achter het paneel valt
+    const frame = () => {
+      if (wide || innerHeight < 500) { sceneEl.style.top = sceneEl.style.bottom = ''; return; }   // liggend: de hele scène als achtergrond
+      const root = fg.querySelector('.spelen'), head = fg.querySelector('.sp-head'), panel = fg.querySelector('.vb-panel');
+      sceneEl.style.top = Math.max(0, head.offsetTop + head.offsetHeight - 40) + 'px';
+      sceneEl.style.bottom = Math.max(0, root.clientHeight - panel.offsetTop - 40) + 'px';
+    };
+    frame(); addEventListener('resize', frame);
+    const scene = await buildScene(sceneEl, { closed, focus: wide ? [0, 120, 1134, 1330] : [250, 340, 884, 1010] });
 
     const render = () => {
       const m = model(), rem = remaining(), mode = MODES.find(x => x.k === sel);
@@ -64,16 +72,15 @@ export default {
         fg.querySelector('#xtop').innerHTML = m.ranking.slice(0, 3).map((id, i) => { const c = coaster(id); return `<li data-id="${esc(id)}"><i>${i + 1}</i><div><b>${esc(c.name)}</b><small>${meta(c)}</small></div></li>`; }).join('');
       }
     };
-    render();
+    render(); frame();
     const off = on(w => { if (w === 'model' || w === 'data') render(); });
 
     const modes = fg.querySelector('#modes');
-    modes.onclick = e => { const b = e.target.closest('.mode-t'); if (!b) return; buzz(5); sel = b.dataset.k; setLastMode(sel); render(); b.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); };
-    requestAnimationFrame(() => modes.querySelector('.on')?.scrollIntoView({ inline: 'center', block: 'nearest' }));
+    modes.onclick = e => { const b = e.target.closest('.mode-t'); if (!b) return; buzz(5); sel = b.dataset.k; setLastMode(sel); render(); };
     fg.querySelector('#xtop')?.addEventListener('click', e => { const li = e.target.closest('li'); if (li) openCoaster(li.dataset.id); });
     fg.querySelector('#start').onclick = () => { buzz(8); startMode(sel, go); };
 
     // Witte Stip: tik het straatbordje Point Blanc
-    return () => { roI.disconnect(); off(); scene.stop(); };
+    return () => { roI.disconnect(); off(); scene.stop(); removeEventListener('resize', frame); };
   },
 };

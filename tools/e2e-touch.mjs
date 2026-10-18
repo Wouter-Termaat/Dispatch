@@ -20,9 +20,10 @@ await page.goto(base + '#/'); await page.evaluate(() => { localStorage.clear(); 
 await page.waitForSelector('.vb-panel'); await wait(1500); await shot('01-spelen');
 ok(await page.$('.spelen.vb .vb-scene .world'), 'Spelen is variant B (scène + glazen paneel)');
 
-// spelvormen horizontaal scrollen en Toernooi kiezen
-const scrolled = await page.$eval('#modes', el => { el.scrollLeft = 400; return el.scrollLeft > 0; });
-ok(scrolled, 'spelvormen scrollen horizontaal');
+// alle spelvormen staan in beeld binnen het paneel (geen scrollen), en Toernooi kiezen
+const inPanel = await page.evaluate(() => { const p = document.querySelector('.vb-panel').getBoundingClientRect(); return [...document.querySelectorAll('.mode-t')].every(b => { const r = b.getBoundingClientRect(); return r.left >= p.left && r.right <= p.right && r.bottom <= innerHeight; }); });
+ok(inPanel, 'alle zes spelvormen in beeld binnen het paneel');
+ok(await page.evaluate(() => document.documentElement.classList.contains('lite')), 'telefoon draait in de lichte modus');
 await page.tap('.mode-t[data-k=toernooi]'); await wait(300);
 ok((await page.$eval('#start', e => e.textContent)).includes('Toernooi'), 'tik op Toernooi zet de startknop');
 await page.tap('.mode-t[data-k=duel]'); await wait(200);

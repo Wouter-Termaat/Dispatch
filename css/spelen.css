@@ -56,3 +56,45 @@
   .sp-extra .big{flex-direction:column;align-items:flex-start;gap:4px}
   .sp-status .pct{display:none}
 }
+
+/* ---------- telefoon (html.lite): lichter renderen ----------
+   Elke laag met will-change, blend-mode of bewegend masker kost op een telefoon een eigen stuk grafisch geheugen.
+   Te veel tegelijk en Chrome laat stukken weg (molen, knoppen) of gaat knipperen. Hier blijft alleen over wat goedkoop beweegt. */
+.lite .scene .lyr{will-change:auto}
+.lite .scene .wave-r,.lite .scene .wave-x{-webkit-mask:none;mask:none;animation:bulbPulse 3.2s ease-in-out infinite}
+@keyframes bulbPulse{0%,100%{opacity:.35}50%{opacity:.85}}
+.lite .scene .glow{filter:brightness(1.6)}
+.lite .scene .rays,.lite .backdrop .bd-rays{animation:none}
+.lite .backdrop .bd-beam::after{display:none}
+.lite .vb-panel{-webkit-backdrop-filter:none;backdrop-filter:none;background:linear-gradient(180deg,rgba(34,22,44,.93),rgba(16,10,22,.97))}
+.lite .ph{filter:none}
+
+/* telefoon en smal scherm: alle zes spelvormen in beeld, drie naast elkaar, niets valt buiten het paneel */
+@media (max-width:899px), (max-aspect-ratio:5/4){
+  .vb .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;overflow:visible;padding:12px 16px 10px}
+  .vb .modes .mode-t{width:auto;height:84px;gap:4px}
+  .vb .mode-t .mi svg{width:26px;height:26px}
+  .vb .mode-t b{font-size:13.5px}
+  .vb .mode-t small{font-size:7.5px}
+  .vb .mode-t.on{transform:translateY(-2px)}
+  .vb .mode-t.on::after{inset:-4px}
+}
+@media (max-height:500px){
+  .vb .modes{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .vb .modes .mode-t{height:70px}
+}
+/* korrel en blur over bewegend beeld: op een telefoon de grootste veroorzakers van knipperen en een waas */
+.lite .grain{display:none}
+.lite .ghost,.lite .sheet-back,.lite .stop{-webkit-backdrop-filter:none;backdrop-filter:none}
+.lite .ghost{background:rgba(20,12,28,.72)}
+.lite .mode-t.on::after{filter:none}
+/* elke knipperende ster, kaars of gloed met blend-mode wordt een eigen laag, en alles erboven ook: op de telefoon stil */
+.lite .scene .stars i,.lite .scene .halo,.lite .scene .doorlight{animation:none}
+.lite .scene .halo,.lite .scene .doorlight,.lite .scene .glow,.lite .scene .rays{mix-blend-mode:normal}
+.lite .scene .wave-r,.lite .scene .wave-x{animation:none;opacity:.6}
+.lite .backdrop .bd-stars i{animation:none;opacity:.5}
+.lite .scene .beam{animation:none}
+.lite .scene .beam.b1{transform:rotate(26deg)}
+.lite .scene .beam.b2{transform:rotate(-28deg)}
+.lite .scene .rays{display:none}
+@media (max-height:500px){ .pb-sign{right:auto;left:26px} }
