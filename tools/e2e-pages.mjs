@@ -119,5 +119,19 @@ ok(matches === 15, `toernooi van 16 aangrenzende banen: 15 matches gespeeld (${m
 await page.click('#aff'); await page.waitForSelector('.aff'); await wait(3000); await shot('42-affiche-toernooi');
 ok((await page.$eval('.aff', e => e.textContent)).includes('Kampioen'), 'affiche noemt de kampioen');
 
+// focus: Top 10 en Laatste 10 houden de duels binnen dat deel van de ranking (plus de rand)
+for (const [f, rij] of [['top10', false], ['laatste10', true]]) {
+  await page.goto(base + '#/'); await page.waitForSelector('#modes'); await wait(300);
+  await page.click(`.mode-t[data-k=${rij ? 'rij' : 'duel'}]`); await page.click(`[data-f=${f}]`); await wait(200);
+  const allowed = await page.evaluate(async f => { const m = await import('./js/modes.js'); return m.focusSet(f).all; }, f);
+  await page.click('#start'); await page.waitForSelector(rij ? '#line .card' : '#stage .card'); await wait(600);
+  const ids = await page.$$eval(rij ? '#line .card' : '#stage .card', cs => cs.map(c => c.dataset.id));
+  ok(ids.length && ids.every(id => allowed.includes(id)) && (await page.textContent('body')).includes(f === 'top10' ? 'Top 10' : 'Laatste 10'), `focus ${f}: alle kaarten uit dat deel van de ranking (${ids.length} van ${allowed.length} toegestaan)`);
+  await page.click('#close'); await wait(400);
+}
+await page.goto(base + '#/'); await page.waitForSelector('#modes'); await page.click('.mode-t[data-k=toernooi]'); await wait(200);
+ok(await page.$eval('#focus', e => e.hidden), 'focus verdwijnt bij Toernooi');
+await page.click('.mode-t[data-k=duel]'); await page.click('[data-f=alles]');
+
 ok(!errors.length, 'geen consolefouten' + (errors.length ? ':\n  ' + errors.join('\n  ') : ''));
 await browser.close(); server.close();

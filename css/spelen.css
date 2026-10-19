@@ -13,7 +13,7 @@
 .vb .sp-extra{display:none}
 @media (min-width:900px) and (min-aspect-ratio:5/4){
   .vb-panel{display:grid;grid-template-columns:240px 1fr;column-gap:26px;padding:20px 24px;width:min(980px,calc(100% - 60px));margin-bottom:18px}
-  .vb .sp-extra{display:block;grid-row:1/5}
+  .vb .sp-extra{display:block;grid-row:1/6}
   .vb .sp-label,.vb .modes,.vb .mode-desc,.vb .btn{grid-column:2}
   .vb .modes{justify-content:flex-start;padding-left:0}
   .vb .btn.big{justify-self:start}
@@ -98,3 +98,13 @@
 .lite .scene .beam.b2{transform:rotate(-28deg)}
 .lite .scene .rays{display:none}
 @media (max-height:500px){ .pb-sign{right:auto;left:26px} }
+
+/* focus: Alles, Top 10, Top 25, Top 50, Laatste 10 */
+.sp-focus{width:100%;max-width:760px;padding:2px 16px 0}
+.sp-focus[hidden]{display:none}
+.sp-focus .pills{width:100%}
+.sp-focus .pills button{flex:1 1 auto;padding:8px 4px 7px;font-size:9px;letter-spacing:.08em;white-space:nowrap;min-height:34px}
+.sp-focus .pills button[data-f=laatste10]{flex-grow:1.6}
+@media (max-width:380px){ .sp-focus .pills button{font-size:8.5px;letter-spacing:.05em;padding:8px 2px 7px} }
+@media (min-width:900px) and (min-aspect-ratio:5/4){ .vb .sp-focus{grid-column:2;padding:0} .vb .sp-focus .pills{max-width:560px} }
+@media (max-height:500px){ .sp-focus .pills button{min-height:32px;padding:7px 2px 6px} }

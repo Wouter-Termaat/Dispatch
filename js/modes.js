@@ -23,17 +23,49 @@ export const MODES = [
 ];
 export const icon = k => I[k] || '';
 
+// Focus: alleen spelen met een deel van je ranking. Voor Le Duel, La Rangée en Twijfelzone.
+// De rand telt mee: bij Top 10 doen ook een paar banen net eronder mee, zodat een stijger erin kan komen.
+export const FOCUS = [
+  { k: 'alles', t: 'Alles' },
+  { k: 'top10', t: 'Top 10', n: 10 }, { k: 'top25', t: 'Top 25', n: 25 }, { k: 'top50', t: 'Top 50', n: 50 },
+  { k: 'laatste10', t: 'Laatste 10', n: 10, end: true },
+];
+export const FOCUS_MODES = ['duel', 'rij', 'twijfel'];
+const margin = n => Math.max(3, Math.round(n * .25));
+/** De banen die meedoen bij een focus: de kern (precies de top of de onderste N) en de kern plus de rand. */
+export function focusSet(k, key = meKey()) {
+  const f = FOCUS.find(x => x.k === k); const m = model(key); if (!f?.n || !m) return null;
+  const r = m.ranking, n = Math.min(f.n, r.length), w = Math.min(r.length, n + margin(n));
+  return f.end ? { core: r.slice(-n), all: r.slice(-w) } : { core: r.slice(0, n), all: r.slice(0, w) };
+}
+/** Zekerheid en geschatte duels voor alleen de kern van een focus. */
+export function focusStatus(k, key = meKey()) {
+  const fs = focusSet(k, key); const m = model(key); if (!fs || !m) return null;
+  let stable = 0, excess = 0, missing = 0;
+  for (const id of fs.core) {
+    const i = m.idx.get(id), hw = (m.hi[i] - m.lo[i]) / 2, b = m.battles?.get(id) || 0;
+    if (hw <= m.stableHW && b >= 3) stable++;
+    excess += Math.max(0, hw - m.stableHW); missing += Math.max(0, 3 - b);
+  }
+  const duels = Math.ceil(excess / 2.2) + Math.ceil(missing / 2);
+  return { pct: Math.round(stable / fs.core.length * 100), duels, rows: Math.ceil(duels / 3) };
+}
+const LAST_FOCUS = 'dispatch.focus';
+export function lastFocus() { const k = localStorage.getItem(LAST_FOCUS); return FOCUS.some(f => f.k === k) ? k : 'alles'; }
+export function setLastFocus(k) { localStorage.setItem(LAST_FOCUS, k); }
+
 const LAST = 'dispatch.mode';
 export function lastMode() { const k = localStorage.getItem(LAST); return MODES.some(m => m.k === k) ? k : 'duel'; }
 export function setLastMode(k) { localStorage.setItem(LAST, k); }
 
 /** Start een spelvorm. */
-export function startMode(k, go) {
+export function startMode(k, go, focus = 'alles') {
   setLastMode(k);
   if (k !== 'park') sound.fanfare();
-  if (k === 'duel') return go('duel');
-  if (k === 'rij') return go('rangee');
-  if (k === 'twijfel') return go('duel?mode=twijfel');
+  const f = focus !== 'alles' && FOCUS_MODES.includes(k) ? focus : '';
+  if (k === 'duel') return go('duel' + (f ? '?focus=' + f : ''));
+  if (k === 'rij') return go('rangee' + (f ? '?focus=' + f : ''));
+  if (k === 'twijfel') return go('duel?mode=twijfel' + (f ? '&focus=' + f : ''));
   if (k === 'toernooi') return go('toernooi');
   if (k === 'rematch') {
     const m = model(); const list = m ? contradictions(m, compsOf(meKey())) : [];

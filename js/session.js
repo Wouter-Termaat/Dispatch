@@ -5,6 +5,7 @@ import { newBatch } from './store.js';
 import { sessionSummary } from './model.js';
 import { toast } from './ui.js';
 import { TICKETS } from './copy.js';
+import { focusSet, FOCUS } from './modes.js';
 
 export const session = { current: null };
 
@@ -102,14 +103,18 @@ export function lastSummary() { try { return JSON.parse(localStorage.getItem('di
 export function filterFromParams(params) {
   const parks = params.getAll('park');
   if (params.get('mode') === 'park' && parks.length) { const set = new Set(parks); return id => set.has(coaster(id)?.park); }
+  // focus (Top 10 enzovoort): de set ligt vast bij de start van de sessie, ook als de ranking tijdens het spelen verschuift
+  const fs = focusSet(params.get('focus'));
+  if (fs) { const set = new Set(fs.all); return id => set.has(id); }
   return null;
 }
 export function labelFromParams(params, base) {
   const mode = params.get('mode'); const parks = params.getAll('park');
-  if (mode === 'twijfel') return 'Twijfelzone';
+  const fl = FOCUS.find(x => x.k === params.get('focus') && x.n);
+  if (mode === 'twijfel') return fl ? `Twijfelzone · ${fl.t}` : 'Twijfelzone';
   if (mode === 'park') return parks.length === 2 ? `${parks[0]} tegen ${parks[1]}` : `Park-avond · ${parks[0]}`;
   if (mode === 'rematch') return 'Rematch';
-  return base;
+  return fl ? `${base} · ${fl.t}` : base;
 }
 
 /** Trimrem: houdt het tempo bij. Te snel (< 0,6 s per keuze) een paar keer achter elkaar? Dan iets trager. */

@@ -6,7 +6,7 @@ import { esc, buzz, meta } from '../ui.js';
 import { openCoaster } from '../baankaart.js';
 import { PLEIN, fill } from '../copy.js';
 import { buildScene } from '../scene.js';
-import { MODES, icon, lastMode, startMode, setLastMode } from '../modes.js';
+import { MODES, icon, lastMode, startMode, setLastMode, FOCUS, FOCUS_MODES, lastFocus, setLastFocus, focusStatus } from '../modes.js';
 import { dot } from '../stippen.js';
 
 function greeting(name) {
@@ -17,6 +17,7 @@ function greeting(name) {
 const head = () => `<header class="sp-head"><h1 class="neon">D<span class="idot">ı${dot('logo-i')}</span>spatch</h1><div class="eyebrow">Cabaret des Montagnes Russes</div><p class="sp-greet" id="greet"></p></header>`;
 const cards = () => `<div class="modes" id="modes" role="radiogroup" aria-label="Spelvorm">${MODES.map(m => `
   <button class="mode-t" role="radio" data-k="${m.k}"><span class="mi">${icon(m.k)}</span><b>${m.t}</b><small>${m.s}</small></button>`).join('')}</div>`;
+const focusRow = () => `<div class="sp-focus" id="focus" role="radiogroup" aria-label="Welk deel van je ranking"><div class="pills wide">${FOCUS.map(f => `<button role="radio" data-f="${f.k}">${f.t}</button>`).join('')}</div></div>`;
 const extra = () => `<div class="sp-extra"><div class="eyebrow">Jouw ranking</div><div class="big"><b id="xpct"></b><span id="xsub"></span></div><ol id="xtop"></ol></div>`;
 const label = () => `<div class="sp-label"><span class="eyebrow">Kies je spel</span><span class="sp-status" id="status"></span></div>`;
 
@@ -24,11 +25,11 @@ export default {
   nav: 'plein', title: 'Spelen',
   async mount({ bg, fg, go }) {
     const closed = isClosed();
-    let sel = lastMode();
+    let sel = lastMode(), focus = lastFocus();
     const wide = innerWidth >= 900 && innerWidth / innerHeight >= 1.25;
     backdrop(bg);
     fg.innerHTML = `<div class="spelen vb"><div class="vb-scene" id="scene"></div>${head()}
-      <section class="sp-play vb-panel">${extra()}${label()}${cards()}<p class="mode-desc" id="desc"></p><button class="btn big" id="start"></button>
+      <section class="sp-play vb-panel">${extra()}${label()}${cards()}${focusRow()}<p class="mode-desc" id="desc"></p><button class="btn big" id="start"></button>
         <button class="pb-sign" id="pb" data-dot="pointblanc" aria-label="Point Blanc">Point Blanc</button></section>
 </div>`;
 
@@ -61,8 +62,16 @@ export default {
       fg.querySelectorAll('.mode-t').forEach(b => { const on = b.dataset.k === sel; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
       const desc = fg.querySelector('#desc'); if (desc) desc.textContent = mode.d;
       fg.querySelector('#start').innerHTML = `Start ${esc(mode.t)} <span aria-hidden="true">›</span>`;
+      // focus: alleen bij duel, rij en twijfel; de rest kiest zelf welke banen meedoen
+      const fOk = FOCUS_MODES.includes(sel); const fEl = fg.querySelector('#focus');
+      fEl.hidden = !fOk;
+      fEl.querySelectorAll('[data-f]').forEach(b => { const on = b.dataset.f === focus; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+      const fst = fOk && focus !== 'alles' ? focusStatus(focus) : null;
       let st = '';
-      if (m && rem) {
+      if (fst) {
+        const f = FOCUS.find(x => x.k === focus);
+        st = `${esc(f.t)}: ${fst.pct}% zeker · nog ± ${sel === 'rij' ? fst.rows + ' rijen' : fst.duels + ' duels'}`;
+      } else if (m && rem) {
         const pct = Math.round((m.certainty || 0) * 100);
         st = rem.stable ? PLEIN.stabiel : `<span class="pct">${pct}% zeker · </span>nog ± ${sel === 'rij' ? rem.rows + ' rijen' : rem.duels + ' duels'}`;
       }
@@ -79,7 +88,8 @@ export default {
     const modes = fg.querySelector('#modes');
     modes.onclick = e => { const b = e.target.closest('.mode-t'); if (!b) return; buzz(5); sel = b.dataset.k; setLastMode(sel); render(); };
     fg.querySelector('#xtop')?.addEventListener('click', e => { const li = e.target.closest('li'); if (li) openCoaster(li.dataset.id); });
-    fg.querySelector('#start').onclick = () => { buzz(8); startMode(sel, go); };
+    fg.querySelector('#focus').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; buzz(4); focus = b.dataset.f; setLastFocus(focus); render(); };
+    fg.querySelector('#start').onclick = () => { buzz(8); startMode(sel, go, focus); };
 
     // Witte Stip: tik het straatbordje Point Blanc
     return () => { roI.disconnect(); off(); scene.stop(); removeEventListener('resize', frame); };
