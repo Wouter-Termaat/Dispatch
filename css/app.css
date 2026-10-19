@@ -181,7 +181,7 @@ button,.card,.mode-t,.chip,.li,.nav a{-webkit-user-select:none;user-select:none;
 .scene .lyr{pointer-events:none}
 .scene .wdot.hub{position:absolute;width:13px;height:13px;transform:translate(-50%,-50%);pointer-events:auto;z-index:3}
 .scene .wdot.hub::after{inset:-30px}
-.arcdot{position:absolute;left:92.88%;top:97.86%;width:8.4px;height:8.4px;transform:translate(-50%,-50%)}
+.arcdot{position:absolute;left:6.8%;top:88.57%;width:8.4px;height:8.4px;transform:translate(-50%,-50%)}
 .arcdot.pop{animation:none}
 .wdot-bar{cursor:pointer}
 .wdot-bar::after{content:"";position:absolute;inset:-14px;border-radius:50%}

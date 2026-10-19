@@ -25,7 +25,7 @@ export default {
       <div class="notes-c" id="notes"></div></div>`;
     const svg = fg.querySelector('#arcsvg'), pctEl = fg.querySelector('#pct'), notes = fg.querySelector('#notes');
     let s = '';
-    for (let i = 0; i < AN; i++) { const a = Math.PI - (i / (AN - 1)) * Math.PI, x = 125 + 108 * Math.cos(a), y = 124 - 108 * Math.sin(a); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.2" fill="#3a2a44"/>`; }
+    for (let i = 0; i < AN; i++) { const a = Math.PI - (i / (AN - 1)) * Math.PI, x = 125 + 108 * Math.cos(a), y = 124 - 108 * Math.sin(a); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.2" fill="#3a2a44"${i === 0 ? ' opacity="0"' : ''}/>`; }   // het eerste lampje is de witte stip
     svg.innerHTML = s;
     let C = null, timers = [];
 
