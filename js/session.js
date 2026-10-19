@@ -50,6 +50,34 @@ export function undoLast() {
   return null;
 }
 
+/**
+ * Zwaarste keuze van een sessie: een samenspel van twee dingen.
+ * - Gelijkwaardigheid: hoe dicht de twee banen volgens je ranking bij elkaar staan (precies 50/50 is het zwaarst).
+ * - Twijfeltijd: hoe lang je erover deed, vergeleken met je eigen gewone tempo in deze sessie (mediaan per soort, want een
+ *   rij van vier duurt van nature langer dan een duel). Drie keer je gewone tempo is het maximum. Duurde het langer dan
+ *   20 seconden, dan was je waarschijnlijk afgeleid: die tijd telt als gewoon tempo.
+ * Ze worden vermenigvuldigd: lang twijfelen tussen twee banen die ver uit elkaar staan is geen dilemma, en een snelle
+ * keuze tussen twee gelijke banen telt nog wel mee (60%), maar met twijfeltijd erbij wint hij. Gelijk geven telt als extra twijfel.
+ */
+export function hardestChoice(actions, pOf) {
+  const acts = actions.filter(a => (a.type === 'row' || a.type === 'duel') && a.ms > 0);
+  if (!acts.length) return null;
+  const median = type => { const v = acts.filter(a => a.type === type && a.ms <= 20000).map(a => a.ms).sort((x, y) => x - y); return v[v.length >> 1] || 1; };
+  const med = { row: median('row'), duel: median('duel') };
+  let best = null, top = -1;
+  for (const a of acts) {
+    const rel = a.ms > 20000 ? 1 : a.ms / med[a.type];
+    const traag = Math.min(rel, 3) / 3;                                        // 0 tot 1
+    for (const c of a.comps) {
+      if (c.outcome === 'skip') continue;
+      const gelijk = 1 - Math.abs(pOf(c.a, c.b) - .5) * 2;                     // 1 = precies 50/50
+      const score = gelijk * (.6 + .4 * traag) + (c.outcome === 'tie' ? .05 : 0);
+      if (score > top) { top = score; best = [c.a, c.b]; }
+    }
+  }
+  return best;
+}
+
 /** Sluit de sessie af en bewaart de samenvatting voor de affiche. */
 export async function endSession() {
   const s = session.current; session.current = null;
@@ -58,15 +86,7 @@ export async function endSession() {
   const sum = sessionSummary(s.before, after, {});
   const sig = x => 1 / (1 + Math.exp(-x));
   const pOf = (a, b) => { const i = after.idx.get(a), j = after.idx.get(b); return i === undefined || j === undefined ? 0 : sig(after.theta[i] - after.theta[j]); };
-  // zwaarste keuze: de actie waar je het langst over deed; daarbinnen het paar dat het dichtst bij 50/50 lag
-  let hardest = null;
-  const acts = s.actions.filter(a => a.type === 'row' || a.type === 'duel');
-  if (acts.length) {
-    const slow = acts.reduce((x, y) => (y.ms > x.ms ? y : x));
-    let best = null, bd = 9;
-    for (const c of slow.comps) { if (c.outcome === 'skip') continue; const d = Math.abs(pOf(c.a, c.b) - .5); if (d < bd) { bd = d; best = [c.a, c.b]; } }
-    hardest = best;
-  }
+  const hardest = hardestChoice(s.actions, pOf);
   const summary = {
     kind: s.kind, mode: s.mode, label: s.label, date: new Date().toISOString(), key: meKey(),
     rows: s.rows, duels: s.duels, checks: s.checks,
