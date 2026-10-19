@@ -42,7 +42,8 @@ export default {
         <section class="m-sec"><h2 class="eyebrow">Witte stippen</h2>
           <p class="m-count">${found().length === DOTS.length ? 'Alle tien gevonden. Chapeau.' : `${found().length} van ${DOTS.length} gevonden. Ze zitten verstopt in het ontwerp, door de hele app.`}</p>
           <div class="dotgrid">${DOTS.map(d => `<i class="${found().includes(d.id) ? 'got' : ''}" title="${found().includes(d.id) ? d.naam : ''}"></i>`).join('')}</div>
-          ${found().length < DOTS.length ? '<button class="link" id="tip">Geef me een tip</button><p class="m-count" id="tiptext"></p>' : ''}
+          <div class="dot-acts">${found().length < DOTS.length ? '<button class="link" id="tip">Geef me een tip</button>' : ''}${found().length ? '<button class="link" id="dotsreset">Opnieuw zoeken</button>' : ''}</div>
+          ${found().length < DOTS.length ? '<p class="m-count" id="tiptext"></p>' : ''}
         </section>
 
         <section class="m-sec"><h2 class="eyebrow">Kassa</h2>
@@ -68,6 +69,14 @@ export default {
       if (id === 'tip') { const open = DOTS.filter(d => !found().includes(d.id)); const d = open[Math.floor(Math.random() * open.length)]; fg.querySelector('#tiptext').textContent = d.hint; return; }
       if (id === 'add') go('toevoegen');
       else if (id === 'achter') go('achter');
+      else if (id === 'dotsreset') {
+        const st = mySettings();
+        const tekst = st.musicUnlocked ? 'Alle gevonden stippen worden weer verstopt, en de Witte Stip-muziek gaat weer op slot tot je ze alle tien hebt.' : 'Alle gevonden stippen worden weer verstopt.';
+        if (await confirmSheet('Witte stippen opnieuw zoeken?', tekst, 'Opnieuw zoeken', 'Laat maar')) {
+          await saveSetting({ dots: [], musicUnlocked: false, dotsResetAt: Date.now(), ...(st.music === 'wittestip' ? { music: 'orgel' } : {}) });
+          toast('De witte stippen zijn weer verstopt. Veel zoekplezier.');
+        }
+      }
       else if (id === 'xls') exportSheet();
       else if (id === 'logout') { if (await confirmSheet('Uitloggen?', 'Je moet daarna opnieuw je kaartje laten zien.', 'Uitloggen', 'Blijf')) { await S.store.signOut(); go('login'); } }
       else if (id === 'switch') { await S.store.signOut(); go('login'); }

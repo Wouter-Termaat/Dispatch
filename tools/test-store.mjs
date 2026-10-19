@@ -75,3 +75,10 @@ db.profiles = [{ id: 'u1', key: 'wouter', settings: { dots: ['molen', 'boog'] } 
 st2.data.profiles = [{ id: 'u1', key: 'wouter', settings: { dots: ['logo-i'] } }];
 await st2.saveSettings('u1', { sound: false }); await settle(); await st2.flush();
 ok(true, 'instellingen samengevoegd: ' + JSON.stringify(st2.data.profiles[0].settings));
+
+// witte stippen resetten: de reset wint van oudere stippen, daarna tellen nieuwe vondsten weer gewoon op
+const { mergeSettings } = await import('../js/store.js');
+const r1 = mergeSettings({ dots: ['a', 'b'], musicUnlocked: true }, { dots: [], musicUnlocked: false, dotsResetAt: 5 });
+const r2 = mergeSettings(r1, { dots: ['c'] });
+const r3 = mergeSettings({ dots: ['a', 'b'], musicUnlocked: true, dotsResetAt: 1 }, r1);
+ok(r1.dots.length === 0 && !r1.musicUnlocked && r2.dots.join() === 'c' && r2.dotsResetAt === 5 && r3.dots.length === 0, 'witte stippen opnieuw zoeken: reset wint, nieuwe vondsten tellen weer op');

@@ -223,6 +223,10 @@ export function newBatch() { return uuid(); }
 /** Instellingen samenvoegen; gevonden witte stippen worden altijd bij elkaar opgeteld (nooit kwijt door een ander apparaat). */
 export function mergeSettings(base = {}, patch = {}) {
   const out = { ...(base || {}), ...patch };
+  // witte stippen opnieuw beginnen: de nieuwste reset wint, dan geen samenvoegen met de oude stippen
+  const rb = base?.dotsResetAt || 0, rp = patch?.dotsResetAt || 0;
+  if (rp > rb) { out.dots = patch.dots || []; out.musicUnlocked = !!patch.musicUnlocked; return out; }
+  if (rb > rp) out.dotsResetAt = rb;
   if (base?.dots || patch?.dots) out.dots = [...new Set([...(base?.dots || []), ...(patch?.dots || [])])];
   if (base?.musicUnlocked) out.musicUnlocked = true;
   return out;

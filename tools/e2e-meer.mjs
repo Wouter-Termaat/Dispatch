@@ -36,6 +36,13 @@ ok((await settings()).dots?.includes('instellingen') && await page.$('#dotfound.
 await wait(2800);
 ok((await page.$eval('.dotgrid', e => e.querySelectorAll('i.got').length)) === 1, 'voortgang in Meer: 1 van 10');
 await shot('51-muziek');
+// witte stippen opnieuw zoeken
+await page.click('#dotsreset'); await page.waitForSelector('.sheet [data-a=yes]'); await wait(300); await shot('51-stippen-reset');
+await page.click('.sheet [data-a=yes]'); await wait(900);
+ok((await settings()).dots?.length === 0 && (await page.$eval('.dotgrid', e => e.querySelectorAll('i.got').length)) === 0, 'witte stippen opnieuw zoeken: alles weer verstopt');
+await page.click('[data-dot=instellingen]'); await wait(700);
+ok((await settings()).dots?.includes('instellingen'), 'na de reset weer een stip te vinden');
+await wait(2800);
 await page.click('[data-set=music] [data-v=none]'); await wait(300);
 ok(await page.$eval('#music', e => e.hidden), 'muziek uit verbergt de knop');
 
