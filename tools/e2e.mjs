@@ -80,7 +80,7 @@ await shot('04-affiche');
 const nComps = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).comparisons.filter(c => c.outcome !== 'skip').length);
 ok(nComps === 30, `5 rijen = 30 vergelijkingen opgeslagen (${nComps})`);
 const sum = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.lastSession')));
-ok(sum.rows === 5 && sum.certainty > 0, `affiche-samenvatting: ${sum.rows} rijen, ${Math.round(sum.certainty * 100)}% zeker, ster ${sum.riser?.id}`);
+ok(sum.rows === 5 && typeof sum.certainty === 'number', `affiche-samenvatting: ${sum.rows} rijen, ${Math.round(sum.certainty * 100)}% zeker (na 5 rijen mag dat nog 0 zijn), ster ${sum.riser?.id}`);
 
 ok(!(await page.$('#save, #share')), 'affiche zonder Opslaan en Delen');
 

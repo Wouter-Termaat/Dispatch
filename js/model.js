@@ -12,6 +12,7 @@ export const DEFAULTS = {
   stableHalfWidth: null,   // a coaster counts as "zeker" when its 80% rank range is within +/- this (null = max(3, 3.5% of list))
   windowRanks: 12,         // opponents are searched within +/- this many places
   samples: 300,            // Monte Carlo draws for rank ranges
+  tailCap: null,           // optional: clamp the prior z-scores at +/- this, so the top and bottom of the list are not "certain" from the start order alone
 };
 
 // ---------- small numeric helpers ----------
@@ -87,7 +88,8 @@ export function fitModel({ entries, comparisons = [], settings = {}, warm = null
   const SD = Math.max(3, cfg.spreadPerItem * n);
   const mu0 = new Float64Array(n), prec0 = new Float64Array(n);
   sorted.forEach((e, i) => {
-    mu0[i] = SD * probit(1 - (i + 0.5) / n);
+    const z = probit(1 - (i + 0.5) / n);
+    mu0[i] = SD * (cfg.tailCap ? Math.max(-cfg.tailCap, Math.min(cfg.tailCap, z)) : z);   // tailCap: de uitersten minder ver uit elkaar
     prec0[i] = 0.25 * cfg.anchorDuels * (e.prior_strength ?? 1);
   });
   const reride = sorted.map(e => (e.reridden_at ? Date.parse(e.reridden_at) : 0));

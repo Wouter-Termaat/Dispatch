@@ -54,19 +54,18 @@ export function undoLast() {
  * Zwaarste keuze van een sessie: een samenspel van twee dingen.
  * - Gelijkwaardigheid: hoe dicht de twee banen volgens je ranking bij elkaar staan (precies 50/50 is het zwaarst).
  * - Twijfeltijd: hoe lang je erover deed, vergeleken met je eigen gewone tempo in deze sessie (mediaan per soort, want een
- *   rij van vier duurt van nature langer dan een duel). Drie keer je gewone tempo is het maximum. Duurde het langer dan
- *   20 seconden, dan was je waarschijnlijk afgeleid: die tijd telt als gewoon tempo.
+ *   rij van vier duurt van nature langer dan een duel). Drie keer je gewone tempo is het maximum.
  * Ze worden vermenigvuldigd: lang twijfelen tussen twee banen die ver uit elkaar staan is geen dilemma, en een snelle
  * keuze tussen twee gelijke banen telt nog wel mee (60%), maar met twijfeltijd erbij wint hij. Gelijk geven telt als extra twijfel.
  */
 export function hardestChoice(actions, pOf) {
   const acts = actions.filter(a => (a.type === 'row' || a.type === 'duel') && a.ms > 0);
   if (!acts.length) return null;
-  const median = type => { const v = acts.filter(a => a.type === type && a.ms <= 20000).map(a => a.ms).sort((x, y) => x - y); return v[v.length >> 1] || 1; };
+  const median = type => { const v = acts.filter(a => a.type === type).map(a => a.ms).sort((x, y) => x - y); return v[v.length >> 1] || 1; };
   const med = { row: median('row'), duel: median('duel') };
   let best = null, top = -1;
   for (const a of acts) {
-    const rel = a.ms > 20000 ? 1 : a.ms / med[a.type];
+    const rel = a.ms / med[a.type];
     const traag = Math.min(rel, 3) / 3;                                        // 0 tot 1
     for (const c of a.comps) {
       if (c.outcome === 'skip') continue;

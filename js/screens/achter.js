@@ -26,7 +26,7 @@ export default {
       <p>Het model (een Bradley-Terry-model, voor wie het wil weten) rekent bij elke keuze alles opnieuw door. De volgorde waarin je kiest maakt niet uit, en je dagvorm ook niet echt: een verrassende uitslag weegt zwaarder dan een verwachte, gelijk telt als een half, en "weet niet" telt niet mee.</p>
 
       <h2>Hoe zeker is het?</h2>
-      <p>Bij elke baan houdt Dispatch bij tussen welke plekken hij waarschijnlijk staat. Is dat bereik klein genoeg, dan heet hij zeker. Dispatch kiest zelf de banen waar de meeste twijfel over is, tegen banen die er dichtbij staan. Daardoor leer je per tik zo veel mogelijk.</p>
+      <p>Bij elke baan houdt Dispatch bij tussen welke plekken hij waarschijnlijk staat. Is dat bereik klein genoeg en heb je hem minstens drie keer zelf in een battle gehad, dan heet hij zeker. Je Excel-volgorde is alleen een startpunt: zekerheid komt pas met echte battles. Dispatch kiest zelf de banen waar de meeste twijfel over is, tegen banen die er dichtbij staan. Daardoor leer je per tik zo veel mogelijk.</p>
 
       <h2>Waarom je je eigen rang niet ziet</h2>
       <p>Tijdens het ranken zie je nooit op welke plek een baan nu staat. Anders ga je onbewust je oude volgorde verdedigen. Pas op de affiche en in het programma zie je wat er is verschoven.</p>
