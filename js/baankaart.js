@@ -1,4 +1,5 @@
 // De baankaart: bottom sheet met alles over één baan in iemands lijst.
+import { track } from './track.js';
 import { model, me, meKey, otherKey, nameOf, coaster, compsOf, entriesOf, refit, S, emit } from './state.js';
 import { coasterInfo } from './model.js';
 import { isFound } from './stippen.js';
@@ -7,6 +8,7 @@ import { esc, meta, artFor, openSheet, closeSheet, closeSheetThen, confirmSheet,
 export function openCoaster(id, key = meKey()) {
   const c = coaster(id); if (!c) return;
   const m = model(key); const mine = key === meKey();
+  track('baankaart', { id, whose: key, from: (location.hash.split('?')[0] || '#/').slice(2) || 'plein', rank: m && m.idx.has(id) ? m.position[m.idx.get(id)] + 1 : null });
   const entry = entriesOf(key).find(e => e.coaster_id === id);
   const info = entry && m ? coasterInfo(m, id, compsOf(key)) : null;
   const otherK = mine ? otherKey() : meKey();
@@ -56,15 +58,17 @@ export function openCoaster(id, key = meKey()) {
     if (a === 'note') {
       form.innerHTML = `<label class="field"><span>Notitie</span><textarea id="nt" maxlength="500" placeholder="Wat moet je onthouden over deze baan?">${esc(entry.note || '')}</textarea></label><div class="row-btns"><button class="btn" id="ntok">Bewaar</button></div>`;
       form.querySelector('#nt').focus();
-      form.querySelector('#ntok').onclick = async () => { await S.store.upsertEntry({ user_id: me().id, coaster_id: id, note: form.querySelector('#nt').value.trim() || null }); emit('data'); toast('Notitie bewaard.'); openCoaster(id, key); };
+      form.querySelector('#ntok').onclick = async () => { track('note', { id, length: form.querySelector('#nt').value.trim().length }); await S.store.upsertEntry({ user_id: me().id, coaster_id: id, note: form.querySelector('#nt').value.trim() || null }); emit('data'); toast('Notitie bewaard.'); openCoaster(id, key); };
     } else if (a === 'edit') {
       form.innerHTML = coasterForm(c) + '<div class="row-btns"><button class="btn" id="cfok">Bewaar</button></div><p class="fine">De catalogus is gedeeld: dit verandert de baan ook voor ' + esc(nameOf(otherKey())) + '.</p>';
       form.querySelector('#cfok').onclick = async () => {
         const v = readCoasterForm(form); if (!v.name || !v.park) { toast('Naam en park zijn nodig.'); return; }
+        track('coaster_edit', { id, fields: Object.keys(v).filter(k => v[k] !== c[k]) });
         await S.store.upsertCoaster({ id, ...v }); emit('data'); toast('Baan bijgewerkt.'); openCoaster(id, key);
       };
     } else if (a === 'remove') {
       if (!(await confirmSheet('Uit je lijst halen?', `${c.name} verdwijnt uit je programma. Je duels blijven bewaard en tellen weer mee als je hem terugzet.`, 'Haal weg', 'Laat staan'))) return;
+      track('entry_remove', { id, rank: m && m.idx.has(id) ? m.position[m.idx.get(id)] + 1 : null });
       await S.store.deleteEntry(me().id, id); await refit(); toast(`${c.name} is van je lijst gehaald.`);
     } else if (a === 'add') {
       closeSheetThen('#/toevoegen?id=' + encodeURIComponent(id));

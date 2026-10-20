@@ -1,7 +1,8 @@
 // Toernooi: bracket van 16 (of 8) banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
+import { track } from '../track.js';
 import { warm } from '../photos.js';
 import { model, coaster } from '../state.js';
-import { startSession, commit, endSession, session } from '../session.js';
+import { startSession, commit, endSession, abandonSession, session } from '../session.js';
 import { backdrop } from '../stage.js';
 import { rankTop } from './duel.js';
 import { esc, cardHtml, buzz, toast, openSheet, closeSheet, deal } from '../ui.js';
@@ -33,7 +34,7 @@ export default {
     const root = fg.querySelector('#tour');
     let s = null, rounds = [], ri = 0, mi = 0, busy = false, keyH = null, ended = false, total = 0, played = 0, alive = true, advT = 0;
     const prog = () => { fg.querySelector('#prog').style.width = (total ? played / total * 100 : 0) + '%'; fg.querySelector('#count').textContent = total ? `${played} van ${total}` : ''; };
-    fg.querySelector('#close').onclick = () => { if (s && s.actions.length) finish(); else { session.current = null; go(''); } };
+    fg.querySelector('#close').onclick = () => { if (s && s.actions.length) finish(); else { abandonSession('gestopt'); go(''); } };
 
     // ---------- kiezen ----------
     function setup() {
@@ -107,6 +108,7 @@ export default {
     // ---------- kampioen ----------
     function champion(id) {
       s.champion = id; const c = coaster(id);
+      track('champion', { id, label: s.tLabel, field: rounds[0]?.length * 2 || null });
       root.innerHTML = `<div class="champ"><div class="eyebrow">Toernooi · ${esc(s.tLabel)}</div><h2 class="champ-t">Kampioen</h2>
         <div class="champ-card">${cardHtml(c, 'win', 320, 420)}<div class="champ-ring"></div></div>
         <div class="row-btns"><button class="ghost" id="again">Nog een toernooi</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
@@ -127,6 +129,6 @@ export default {
     }
 
     setup(); prog();
-    return () => { alive = false; clearTimeout(advT); document.body.classList.remove('ranking'); keyH && removeEventListener('keydown', keyH); if (!ended && session.current === s) session.current = null; };
+    return () => { alive = false; clearTimeout(advT); document.body.classList.remove('ranking'); keyH && removeEventListener('keydown', keyH); if (!ended && session.current === s) abandonSession(); };
   },
 };

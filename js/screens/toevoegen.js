@@ -1,5 +1,6 @@
 // Nieuwe baan toevoegen: kies uit de catalogus (of voeg een nieuwe toe), gok een plek,
 // daarna ~7 plaatsingsduels (binair zoeken). Opslaan met een zwak anker (1/3).
+import { track } from '../track.js';
 import { warm } from '../photos.js';
 import { S, me, meKey, model, coaster, entriesOf, refit } from '../state.js';
 import { Placement } from '../model.js';
@@ -60,6 +61,7 @@ export default {
         if (dupe) { toast('Die staat al in de catalogus.'); return guessStep(dupe.id); }
         let id = slug(`${v.name} ${v.park}`) || 'baan'; let k = 2; while (coaster(id)) id = slug(`${v.name} ${v.park}`) + '-' + k++;
         await S.store.upsertCoaster({ id, ...v, created_by: me().id });
+        track('coaster_add', { id, park: v.park, manufacturer: v.manufacturer || null, newInCatalog: true });
         guessStep(id);
       };
     }
@@ -116,6 +118,7 @@ export default {
       const id = P.newId;
       await S.store.upsertEntry({ user_id: me().id, coaster_id: id, initial_rank: P.initialRank, prior_strength: 1 / 3, reridden_at: null, note: null });
       if (P.results.length) commit(P.results, 'plaatsing', { type: 'plaatsing', ids: [id] });
+      track('entry_add', { id, guessRank: P.initialRank, steps: P.steps, n: P.ranking.length });
       const m = await refit();
       const rank = m.position[m.idx.get(id)] + 1;
       sound.applause(1.2); buzz([10, 40, 10]);

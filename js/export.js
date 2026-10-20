@@ -99,6 +99,7 @@ function loadExcelJS() {
 /** Bouwt de Excel van een persoon (in de huidige modelvolgorde) en downloadt of deelt hem.
  *  share = true: via het deelmenu (op Android o.a. "Opslaan in Drive"), anders downloaden. */
 export async function exportExcel({ key, name, dynamics, ranking, catalog, share = false }) {
+  import('./track.js').then(t => t.track('export', { whose: key, share, n: ranking.length })).catch(() => {});
   const ExcelJS = await loadExcelJS();
   const rows = ranking.map(id => catalog.get(id)).filter(Boolean).map(c => ({ name: c.name, park: c.park, manufacturer: c.manufacturer, operational: c.operational }));
   const wb = buildWorkbook(ExcelJS, { key, dynamics, rows });

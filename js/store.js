@@ -8,6 +8,7 @@
 //   { t:'delEntry', user_id, coaster_id }  baan uit een lijst halen
 //   { t:'coaster', row }                   catalogus: baan toevoegen of wijzigen
 //   { t:'settings', user_id, settings }    instellingen van een profiel
+//   { t:'events', rows }                   logboek voor statistieken (zie js/track.js); nooit een foutmelding voor de gebruiker
 
 import { forgetPhotos } from './photos.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
@@ -54,6 +55,10 @@ class BaseStore extends EventTarget {
   deleteEntry(user_id, coaster_id) { return this.write({ t: 'delEntry', user_id, coaster_id }); }
   upsertCoaster(row) { return this.write({ t: 'coaster', row }); }
   saveSettings(user_id, settings) { return this.write({ t: 'settings', user_id, settings }); }
+
+  // logboek: gebeurtenissen bufferen en per groepje wegschrijven (de wachtrij hoeft niet bij elke tik te bewegen)
+  log(ev) { (this.evBuf ||= []).push(ev); clearTimeout(this.evT); this.evT = setTimeout(() => this.flushLog(), this.evBuf.length >= 40 ? 0 : 8000); }
+  flushLog() { clearTimeout(this.evT); const rows = this.evBuf || []; if (!rows.length) return; this.evBuf = []; this.persist({ t: 'events', rows }); }
 }
 
 // ---------------------------------------------------------------- demo
@@ -86,6 +91,9 @@ export class LocalStore extends BaseStore {
   async chooseProfile(key) { localStorage.setItem(DEMO_ME, key); this.userId = this.data.profiles.find(p => p.key === key).id; }
   async signOut() { localStorage.removeItem(DEMO_ME); this.userId = null; }
   async reset() { localStorage.removeItem(DEMO_KEY); await this.init(); }
+  // demo: het logboek blijft alleen in het geheugen (handig om te testen), nooit in localStorage
+  log(ev) { (this.events ||= []).push(ev); if (this.events.length > 2000) this.events.shift(); }
+  flushLog() { }
 }
 
 // ---------------------------------------------------------------- Supabase
@@ -110,7 +118,7 @@ export class SupabaseStore extends BaseStore {
     return this;
   }
   get needsLogin() { return !this.userId; }
-  get pending() { return this.queue.length; }
+  get pending() { return this.queue.filter(op => op.t !== 'events').length; }   // het logboek telt niet als "wachtende wijziging"
 
   async signIn(email, password) {
     const { data, error } = await this.sb.auth.signInWithPassword({ email: email.trim(), password });
@@ -204,6 +212,12 @@ export class SupabaseStore extends BaseStore {
         // alleen de velden die in deze wijziging zitten (geen verouderde lokale kopie terugschrijven)
         const row = Object.fromEntries(Object.entries(op.row).filter(([k, v]) => ['id', 'name', 'park', 'manufacturer', 'operational', 'photo_url', 'created_by'].includes(k) && v !== undefined));
         r = await sb.from('coasters').upsert(row, { onConflict: 'id' }); break;
+      }
+      case 'events': {
+        r = await sb.from('events').insert(op.rows.map(({ user_id, type, session, data, created_at }) => ({ user_id, type, session, data, created_at })));
+        // tabel nog niet aangemaakt (sql/stats.sql) of geweigerd: stilletjes overslaan, nooit een melding of blokkade
+        if (r.error && (isPermanent(r.error) || /^PGRST2/.test(String(r.error.code)))) { console.info('logboek overgeslagen:', r.error.message); return; }
+        break;
       }
       case 'settings': {
         // eerst de actuele instellingen van de server lezen en daar deze wijziging op zetten

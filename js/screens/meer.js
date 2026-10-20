@@ -1,4 +1,5 @@
 // Meer: instellingen, export, baan toevoegen, achter de schermen, ticketjes, uitloggen.
+import { track } from '../track.js';
 import { S, me, meKey, mySettings, saveSetting, model, catalog, compsOf, profiles, profileByKey, on } from '../state.js';
 import { esc, toast, buzz, openSheet, closeSheet, confirmSheet } from '../ui.js';
 import { TICKETS } from '../copy.js';
@@ -66,19 +67,20 @@ export default {
       const tog = e.target.closest('[data-tog]');
       if (tog) { buzz(4); await saveSetting({ [tog.dataset.tog]: !mySettings()[tog.dataset.tog] }); return; }
       const id = e.target.closest('button')?.id; if (!id) return;
-      if (id === 'tip') { const open = DOTS.filter(d => !found().includes(d.id)); const d = open[Math.floor(Math.random() * open.length)]; fg.querySelector('#tiptext').textContent = d.hint; return; }
+      if (id === 'tip') { track('dot_tip', { found: found().length }); const open = DOTS.filter(d => !found().includes(d.id)); const d = open[Math.floor(Math.random() * open.length)]; fg.querySelector('#tiptext').textContent = d.hint; return; }
       if (id === 'add') go('toevoegen');
       else if (id === 'achter') go('achter');
       else if (id === 'dotsreset') {
         const st = mySettings();
         const tekst = st.musicUnlocked ? 'Alle gevonden stippen worden weer verstopt, en de Witte Stip-muziek gaat weer op slot tot je ze alle tien hebt.' : 'Alle gevonden stippen worden weer verstopt.';
         if (await confirmSheet('Witte stippen opnieuw zoeken?', tekst, 'Opnieuw zoeken', 'Laat maar')) {
+          track('dots_reset', { had: found().length });
           await saveSetting({ dots: [], musicUnlocked: false, dotsResetAt: Date.now(), ...(st.music === 'wittestip' ? { music: 'orgel' } : {}) });
           toast('De witte stippen zijn weer verstopt. Veel zoekplezier.');
         }
       }
       else if (id === 'xls') exportSheet();
-      else if (id === 'logout') { if (await confirmSheet('Uitloggen?', 'Je moet daarna opnieuw je kaartje laten zien.', 'Uitloggen', 'Blijf')) { await S.store.signOut(); go('login'); } }
+      else if (id === 'logout') { if (await confirmSheet('Uitloggen?', 'Je moet daarna opnieuw je kaartje laten zien.', 'Uitloggen', 'Blijf')) { track('logout', {}); S.store.flushLog?.(); await S.store.signOut(); go('login'); } }
       else if (id === 'switch') { await S.store.signOut(); go('login'); }
       else if (id === 'reset') { if (await confirmSheet('Demo opnieuw beginnen?', 'Alle demovergelijkingen in deze browser worden gewist.', 'Begin opnieuw', 'Laat maar')) { localStorage.clear(); location.reload(); } }
     });

@@ -1,6 +1,7 @@
 // Dispatch: opstart, router en navigatie.
 import { createStore } from './store.js';
 import { initPhotos, photosNeedRefresh } from './photos.js';
+import { track, trackOpen, trackScreen } from './track.js';
 import { S, fitAll, mySettings, meKey, on, emit } from './state.js';
 import { session } from './session.js';
 import { initStage } from './stage.js';
@@ -41,6 +42,7 @@ async function route() {
   let mod;
   try { mod = (await (ROUTES[name] || notFound)()).default; } catch (e) { console.error(e); mod = (await notFound()).default; }
   if (token !== navToken) return;
+  trackScreen(name, params);
   closeSheet(true);
 
   // oud scherm (en eventueel een half geladen scherm) uit
@@ -84,7 +86,7 @@ async function boot() {
   addEventListener('pointerdown', () => sound.unlock(), { once: true });
   document.addEventListener('click', e => { if (e.target.closest('.seg button, .pills button, .chip, .mode-t, .label, #nav a, .tool')) sound.select(); });
 
-  if (!S.store.needsLogin) await fitAll();
+  if (!S.store.needsLogin) { await fitAll(); trackOpen(); }
   S.store.addEventListener('error', e => toast('Opslaan lukte niet: ' + (e.detail?.message || 'onbekende fout')));
   S.store.addEventListener('signedout', () => go('login'));
   watchQueue();
@@ -120,6 +122,7 @@ function watchQueue() {
 /** Na inloggen of profielkeuze: modellen fitten en naar het plein. */
 export async function afterLogin() {
   initPhotos(S.store);
+  track('login', {}); trackOpen();
   sound.setSound(mySettings().sound);
   await fitAll();
   go('');

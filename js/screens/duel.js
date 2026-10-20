@@ -3,7 +3,7 @@
 import { warm } from '../photos.js';
 import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { contradictions } from '../model.js';
-import { startSession, commit, undoLast, endSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
+import { startSession, commit, undoLast, endSession, abandonSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
 import { backdrop } from '../stage.js';
 import { pickDuel } from '../pick.js';
 import { cardHtml, esc, buzz, pick, toast, deal } from '../ui.js';
@@ -129,7 +129,7 @@ export default {
       if (queue) qi = Math.max(0, qi - 1);
       progress(); toast('Vorig duel teruggedraaid.'); render(a.ids);
     };
-    fg.querySelector('#close').onclick = () => (s.actions.some(a => a.type !== 'skip') ? finish() : (session.current = null, go('')));
+    fg.querySelector('#close').onclick = () => (s.actions.some(a => a.type !== 'skip') ? finish() : (abandonSession('gestopt'), go('')));
 
     async function finish() {
       if (ended) return; ended = true; busy = true;
@@ -153,6 +153,6 @@ export default {
     sound.liftHill();
     progress();
     const first = choose(); await warm(first, 350); if (fg.isConnected && !fg.closest('.out')) render(first);   // eerste paar: heel even wachten op de foto's
-    return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) session.current = null; };
+    return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) abandonSession(); };
   },
 };

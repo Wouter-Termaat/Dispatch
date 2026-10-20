@@ -56,6 +56,7 @@ function withEvidence(m, comparisons) {
 
 export async function saveSetting(patch) {
   await S.store.saveSettings(me().id, patch);
+  import('./track.js').then(t => t.track('setting', patch)).catch(() => {});   // los geladen: track.js leunt zelf op state.js
   emit('settings');
   if ('anchorDuels' in patch) refit(meKey());
 }

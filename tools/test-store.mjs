@@ -82,3 +82,15 @@ const r1 = mergeSettings({ dots: ['a', 'b'], musicUnlocked: true }, { dots: [], 
 const r2 = mergeSettings(r1, { dots: ['c'] });
 const r3 = mergeSettings({ dots: ['a', 'b'], musicUnlocked: true, dotsResetAt: 1 }, r1);
 ok(r1.dots.length === 0 && !r1.musicUnlocked && r2.dots.join() === 'c' && r2.dotsResetAt === 5 && r3.dots.length === 0, 'witte stippen opnieuw zoeken: reset wint, nieuwe vondsten tellen weer op');
+
+// logboek: tabel 'events' bestaat nog niet -> stilletjes overslaan, geen foutmelding, wachtrij blokkeert niet
+{
+  let errs = 0; st2.addEventListener('error', () => errs++);
+  const realFrom = st2.sb.from;
+  st2.sb = { ...st2.sb, from: t => t === 'events' ? { insert: async () => ({ error: { message: 'relation "public.events" does not exist', code: '42P01' } }) } : realFrom(t) };
+  net = 'ok'; st2.log({ type: 'choice', data: { ms: 900 }, user_id: 'u1', created_at: new Date().toISOString() }); st2.flushLog();
+  await st2.addComparisons([{ a: 'x', b: 'v', outcome: 'a', batch: 'b9', user_id: 'u1', mode: 'duel', created_at: '2026-10-20T10:00:00Z' }]);
+  await settle(); await st2.flush(); await settle();
+  ok(errs === 0 && st2.queue.length === 0 && db.comparisons.some(c => c.batch === 'b9'), 'logboek zonder tabel: overgeslagen, geen melding, rest gaat door');
+  ok(st2.pending === 0, 'logboek telt niet mee als wachtende wijziging');
+}

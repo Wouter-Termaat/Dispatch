@@ -2,7 +2,7 @@
 import { warm } from '../photos.js';
 import { model, compsOf, meKey, coaster, mySettings } from '../state.js';
 import { rowToComparisons } from '../model.js';
-import { startSession, commit, undoLast, endSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
+import { startSession, commit, undoLast, endSession, abandonSession, filterFromParams, labelFromParams, Tempo, session } from '../session.js';
 import { backdrop } from '../stage.js';
 import { pickRow } from '../pick.js';
 import { cardHtml, esc, buzz, pick, toast, deal } from '../ui.js';
@@ -131,7 +131,7 @@ export default {
       commit(rowToComparisons(row).map(c => ({ ...c, outcome: 'skip' })), cmode, { type: 'skip', ids: row });
       render(choose());
     };
-    fg.querySelector('#close').onclick = () => (s.actions.some(a => a.type !== 'skip') ? finish() : (session.current = null, go('')));
+    fg.querySelector('#close').onclick = () => (s.actions.some(a => a.type !== 'skip') ? finish() : (abandonSession('gestopt'), go('')));
 
     async function finish() {
       if (ended) return; ended = true; locked = true;
@@ -151,7 +151,7 @@ export default {
     sound.liftHill();
     progress();
     const first = choose(); await warm(first, 350); if (fg.isConnected && !fg.closest('.out')) render(first);
-    return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) session.current = null; };
+    return () => { removeEventListener('keydown', key); timers.forEach(clearTimeout); document.body.classList.remove('ranking'); if (!ended && session.current === s) abandonSession(); };
   },
 };
 

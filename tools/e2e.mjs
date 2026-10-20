@@ -108,5 +108,11 @@ ok(nAfter === 5, `6 duels, 1 hersteld = 5 duelvergelijkingen (${nAfter})`);
 await page.click('#close');
 await page.waitForSelector('.aff', { timeout: 5000 });
 
+// logboek (onzichtbaar): keuzes, rondes, schermen en het openen worden vastgelegd
+const ev = await page.evaluate(async () => { const { S } = await import('./js/state.js'); return (S.store.events || []).map(e => ({ type: e.type, session: e.session, data: e.data })); });
+const types = new Set(ev.map(e => e.type));
+const ch = ev.find(e => e.type === 'choice' && e.data.type === 'duel');
+ok(['app_open', 'screen', 'session_start', 'choice', 'session_end'].every(t => types.has(t)) && ch && ch.data.ms > 0 && ch.data.pairs[0].p !== null && ch.session,
+  `logboek: ${ev.length} gebeurtenissen (${[...types].join(', ')})`);
 ok(!errors.length, 'geen consolefouten' + (errors.length ? ':\n  ' + errors.join('\n  ') : ''));
 await browser.close(); server.close();

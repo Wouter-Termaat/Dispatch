@@ -1,5 +1,6 @@
 // Witte stippen: tien kleine witte stipjes, verstopt als ontwerpdetail door de app heen. Tik er een aan en je
 // hebt hem gevonden. Voortgang staat in je profiel (settings.dots), dus ook op je andere apparaten.
+import { track } from './track.js';
 import { mySettings, saveSetting, meKey } from './state.js';
 import * as sound from './sound.js';
 import { buzz, toast, esc } from './ui.js';
@@ -39,6 +40,7 @@ export async function find(id, el) {
   el?.classList.add('got', 'pop'); setTimeout(() => el?.classList.remove('pop'), 700);
   if (isFound(id)) { toast(`Deze witte stip had je al. ${found().length} van ${DOTS.length}.`); return; }
   const list = [...found(), id];
+  track('dot', { id, n: list.length, msSinceOpen: Math.round(performance.now()) });
   sound.sparkle(); buzz([6, 30, 6, 30, 12]);
   const patch = { dots: list };
   if (list.length === DOTS.length) patch.musicUnlocked = true;

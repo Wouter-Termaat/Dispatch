@@ -6,6 +6,7 @@ import { sessionSummary } from './model.js';
 import { toast } from './ui.js';
 import { TICKETS } from './copy.js';
 import { focusSet, FOCUS } from './modes.js';
+import { track, setTrackSession, inputKind } from './track.js';
 
 export const session = { current: null };
 
@@ -13,8 +14,12 @@ export function startSession(kind, { mode = 'normal', label = '', length, filter
   const m = model();
   const before = new Map(m.ranking.map((id, p) => [id, p]));
   try { localStorage.setItem('dispatch.before.' + meKey(), JSON.stringify(Object.fromEntries(before))); } catch { /* geen ruimte */ }
-  session.current = { kind, mode, label, filter, length: length ?? mySettings().sessionLength, startedAt: Date.now(), before,
-    rows: 0, duels: 0, checks: 0, actions: [], ...extra };
+  session.current = { id: newBatch(), kind, mode, label, filter, length: length ?? mySettings().sessionLength, startedAt: Date.now(), before,
+    rows: 0, duels: 0, checks: 0, actions: [], undos: 0, certaintyBefore: m.certainty, ...extra };
+  setTrackSession(session.current.id);
+  const q = new URLSearchParams(location.hash.split('?')[1] || '');
+  track('session_start', { kind, mode, label, focus: q.get('focus'), parks: q.getAll('park'), length: session.current.length,
+    pool: filter ? m.ids.filter(filter).length : m.n, n: m.n, certainty: m.certainty, meanHalfWidth: m.meanHalfWidth, comparisons: countReal() });
   return session.current;
 }
 
@@ -24,17 +29,42 @@ const countReal = () => compsOf(meKey()).filter(c => c.outcome !== 'skip').lengt
 export function commit(comps, cmode, { ms = 0, type = 'row', ids = [] } = {}) {
   const user_id = me().id, batch = newBatch(), t = new Date();
   const before = countReal();
+  logChoice(comps, cmode, { ms, type, ids, batch });
   const rows = comps.map((c, i) => ({ ...c, user_id, batch, mode: cmode, created_at: new Date(t.getTime() + i).toISOString() }));
   S.store.addComparisons(rows);
   refit();
   const s = session.current;
   if (s) {
     if (type === 'row') s.rows++; else if (type === 'duel') s.duels++; else if (type === 'check') s.checks++;
-    s.actions.push({ type, batch, ids, comps, ms });
+    s.actions.push({ type, batch, ids, comps, ms, at: Date.now() });
   }
   const after = before + comps.filter(c => c.outcome !== 'skip').length;
-  for (const tk of TICKETS) if (before < tk.at && after >= tk.at) setTimeout(() => toast(`Ticket verdiend: ${tk.naam}. ${tk.tekst}`, 4200), 700);
+  for (const tk of TICKETS) if (before < tk.at && after >= tk.at) { track('ticket', { naam: tk.naam, at: tk.at }); setTimeout(() => toast(`Ticket verdiend: ${tk.naam}. ${tk.tekst}`, 4200), 700); }
   return batch;
+}
+
+/** Logboek per keuze: wat het model vooraf verwachtte, waar de banen stonden en hoe zeker, hoe lang je erover deed. */
+function logChoice(comps, cmode, { ms, type, ids, batch }) {
+  const m = model(); if (!m) return;
+  const sig = x => 1 / (1 + Math.exp(-x));
+  const at = id => { const i = m.idx.get(id); return i === undefined ? null : { r: m.position[i] + 1, hw: (m.hi[i] - m.lo[i]) / 2, b: m.battles?.get(id) || 0 }; };
+  const pairs = comps.map(c => {
+    const i = m.idx.get(c.a), j = m.idx.get(c.b);
+    const p = i === undefined || j === undefined ? null : +sig(m.theta[i] - m.theta[j]).toFixed(3);   // kans dat a wint volgens het model
+    const won = c.outcome === 'a' ? p : c.outcome === 'b' && p !== null ? +(1 - p).toFixed(3) : null;
+    return { a: c.a, b: c.b, o: c.outcome, p, upset: won !== null && won < .3 };
+  });
+  const s = session.current;
+  track('choice', { batch, type, mode: cmode, ms: Math.round(ms), input: inputKind(), n: (s?.actions.length || 0) + 1,
+    ids, at: Object.fromEntries(ids.map(id => [id, at(id)])), pairs,
+    order: type === 'row' ? ids : undefined, hour: new Date().getHours() });
+}
+
+/** Ronde gestopt zonder afsluiting (weg genavigeerd of niets gekozen). */
+export function abandonSession(reason = 'weg') {
+  const s = session.current; if (!s) return;
+  track('session_end', { completed: false, reason, kind: s.kind, mode: s.mode, label: s.label, ms: Date.now() - s.startedAt, actions: s.actions.length, undos: s.undos, rows: s.rows, duels: s.duels, length: s.length });
+  session.current = null; setTrackSession(null);
 }
 
 /** Draait de laatste batch van deze sessie terug. Geeft de actie terug (of null). */
@@ -42,7 +72,8 @@ export function undoLast() {
   const s = session.current; if (!s) return null;
   for (let i = s.actions.length - 1; i >= 0; i--) {
     const a = s.actions[i]; if (a.type === 'skip') { s.actions.splice(i, 1); continue; }
-    s.actions.splice(i, 1);
+    s.actions.splice(i, 1); s.undos++;
+    track('undo', { batch: a.batch, type: a.type, ids: a.ids, msAfter: a.at ? Date.now() - a.at : null });
     S.store.deleteBatch(me().id, a.batch);
     if (a.type === 'row') s.rows--; else if (a.type === 'duel') s.duels--; else if (a.type === 'check') s.checks--;
     refit();
@@ -95,6 +126,16 @@ export async function endSession() {
     hardest, certainty: after.certainty, champion: s.champion || null,
   };
   try { localStorage.setItem('dispatch.lastSession', JSON.stringify(summary)); } catch { /* */ }
+  const msList = s.actions.filter(a => a.ms > 0).map(a => a.ms).sort((x, y) => x - y);
+  const outs = s.actions.flatMap(a => a.comps.map(c => c.outcome));
+  track('session_end', { completed: true, ...summary, date: undefined, key: undefined,
+    ms: Date.now() - s.startedAt, actions: s.actions.length, undos: s.undos, length: s.length,
+    medianMs: msList[msList.length >> 1] || null, meanMs: msList.length ? Math.round(msList.reduce((x, y) => x + y, 0) / msList.length) : null,
+    fastestMs: msList[0] || null, slowestMs: msList.at(-1) || null,
+    ties: outs.filter(o => o === 'tie').length, skips: outs.filter(o => o === 'skip').length,
+    certaintyBefore: s.certaintyBefore, meanHalfWidth: after.meanHalfWidth,
+    moved: sum.moves.filter(x => x.delta).length, biggestMoves: sum.moves.filter(x => Math.abs(x.delta) >= 3).slice(0, 12).map(x => [x.id, x.from + 1, x.to + 1]) });
+  setTrackSession(null);
   return summary;
 }
 export function lastSummary() { try { return JSON.parse(localStorage.getItem('dispatch.lastSession') || 'null'); } catch { return null; } }

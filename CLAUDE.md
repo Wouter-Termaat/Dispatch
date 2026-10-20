@@ -42,3 +42,8 @@ Dispatch: een webapp voor Wouter en Luca om hun achtbanen-ranglijst opnieuw te r
 - `node tools/e2e.mjs`, `tools/e2e-pages.mjs`, `tools/e2e-meer.mjs` [phone|laptop]: Playwright in demomodus (gebruikt de geïnstalleerde Chrome).
 - End-to-end met Playwright in demomodus: plein laden, een sessie rangée (12 rijen) en een paar duels doen, baankaart openen, export draaien en de xlsx teruglezen.
 - Controleer in de browserconsole dat er geen fouten zijn en dat de WebGL-laag op mobiel vloeiend blijft (anders `scale` in lightfog verlagen).
+
+## Logboek en foto's (later toegevoegd)
+- `js/track.js` legt onzichtbaar gebeurtenissen vast (keuzes met twijfeltijd en modelverwachting, rondes, schermen, stippen, instellingen, fouten) in de tabel `events` (`sql/stats.sql`). Zonder die tabel worden ze stilletjes overgeslagen. `APP_VERSION` in track.js gelijk houden met `CACHE` in `sw.js`.
+- Foto's: afgeschermde bucket `fotos` (`sql/fotos.sql`), gereedschap in `tools/photos/` (zie de kop van elk script). De werkmap `fotos/` gaat nooit in git.
+- Telefoons krijgen `html.lite` (`js/stage.js`): geen parallax en minder grafische lagen. Meten met `node tools/perf-mobile.mjs`.
