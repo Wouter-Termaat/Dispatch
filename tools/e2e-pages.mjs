@@ -130,7 +130,7 @@ for (const [f, rij] of [['top10', false], ['laatste10', true]]) {
   await page.click('#close'); await wait(400);
 }
 await page.goto(base + '#/'); await page.waitForSelector('#modes'); await page.click('.mode-t[data-k=toernooi]'); await wait(200);
-ok(await page.$eval('#focus', e => e.hidden), 'focus verdwijnt bij Toernooi');
+ok(await page.$eval('#focus', e => e.classList.contains('off') && getComputedStyle(e).visibility === 'hidden'), 'focus onzichtbaar bij Toernooi, ruimte blijft');
 await page.click('.mode-t[data-k=duel]'); await page.click('[data-f=alles]');
 
 ok(!errors.length, 'geen consolefouten' + (errors.length ? ':\n  ' + errors.join('\n  ') : ''));

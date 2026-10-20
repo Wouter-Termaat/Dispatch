@@ -64,7 +64,7 @@ export default {
       fg.querySelector('#start').innerHTML = `Start ${esc(mode.t)} <span aria-hidden="true">›</span>`;
       // focus: alleen bij duel, rij en twijfel; de rest kiest zelf welke banen meedoen
       const fOk = FOCUS_MODES.includes(sel); const fEl = fg.querySelector('#focus');
-      fEl.hidden = !fOk;
+      fEl.classList.toggle('off', !fOk); fEl.setAttribute('aria-hidden', !fOk); fEl.inert = !fOk;
       fEl.querySelectorAll('[data-f]').forEach(b => { const on = b.dataset.f === focus; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
       const fst = fOk && focus !== 'alles' ? focusStatus(focus) : null;
       let st = '';

@@ -32,7 +32,7 @@ const SC = [
   ['ranking-parken', '#/programma', async p => { await p.tap('#seg [data-t=park]'); await wait(p, 300); }],
   ['baankaart', '#/programma', async p => { await p.tap('#list .li'); await wait(p, 600); }],
   ['baankaart-wijzig', '#/programma', async p => { await p.tap('#list .li'); await wait(p, 500); await p.tap('[data-a=edit]'); await wait(p, 300); }],
-  ['samen', '#/samen'], ['samen-gezamenlijk', '#/samen', async p => { await p.tap('#seg [data-t=samen]'); await wait(p, 300); }],
+  ['samen', '#/samen'], ['samen-verhalen', '#/samen', async p => { await p.tap('#seg [data-t=verhalen]'); await wait(p, 300); }], ['samen-gezamenlijk', '#/samen', async p => { await p.tap('#seg [data-t=samen]'); await wait(p, 300); }],
   ['samen-bucket', '#/samen', async p => { await p.tap('#seg [data-t=bucket]'); await wait(p, 300); }],
   ['meer', '#/meer'], ['meer-onder', '#/meer', async p => { await p.$eval('.meer', e => (e.scrollTop = 9999)); await wait(p, 300); }],
   ['achter', '#/achter'], ['toevoegen', '#/toevoegen'], ['toevoegen-gok', '#/toevoegen', async p => { await p.tap('#res .res'); await wait(p, 400); }],

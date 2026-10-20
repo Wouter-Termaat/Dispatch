@@ -59,8 +59,8 @@ export default {
       <h2 id="rest">5. De rest van de voorstelling</h2>
       <h3>Ranking</h3>
       <p>Je volledige lijst. Zoek op baan, park of fabrikant, sorteer op bijvoorbeeld onzekerst eerst, meeste duels of stijgers, en bekijk de ranglijst per park of per fabrikant. Tik op een baan voor de baankaart: zijn plek met de balk, van wie hij won en verloor, een eigen notitie, en de knop om gegevens aan te passen of hem van je lijst te halen.</p>
-      <h3>Samen</h3>
-      <p>Wouter en Luca naast elkaar. De smaakmatch laat in procenten zien hoeveel jullie rankings op elkaar lijken. Onder Verhalen staan de opvallendste verschillen, onder Gezamenlijk een ranking van jullie samen, en onder Nog te rijden de banen die de ander wel heeft gereden en jij nog niet.</p>
+      <h3>Inzichten</h3>
+      <p>Bovenaan de smaakmatch: in procenten hoeveel de rankings van Wouter en Luca op elkaar lijken. Onder Jij staan je eigen cijfers: hoeveel en wanneer je speelt, per spelvorm, je grootste stijgers en dalers sinds je Excel en je grootste verrassing. Onder Verhalen staan de opvallendste verschillen tussen jullie, onder Samen een ranking van jullie samen, en onder Nog te rijden de banen die de ander wel heeft gereden en jij nog niet.</p>
       <h3>De affiche</h3>
       <p>Na elke ronde verschijnt een affiche: hoeveel je hebt gespeeld, de grootste stijger en daler, je zwaarste keuze en hoe zeker je ranking nu is. Die zwaarste keuze is een mix van twee dingen: hoe lang je twijfelde, vergeleken met je eigen tempo in die ronde, en hoe dicht de twee banen bij elkaar stonden.</p>
       <h3>Een baan toevoegen</h3>

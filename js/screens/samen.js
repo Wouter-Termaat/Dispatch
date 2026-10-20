@@ -1,27 +1,29 @@
-// Samen: Wouter & Luca. Smaakmatch als boog van lampjes, plagerige kaarten, gezamenlijke ranking, verlanglijst.
+// Inzichten (route #/samen): bovenaan de smaakmatch van Wouter & Luca als boog van lampjes.
+// Tabs: Jij (je eigen cijfers), Verhalen, Samen (gezamenlijke ranking) en Nog te rijden.
 import { model, catalog, coaster, nameOf, meKey, on, profiles, entriesOf } from '../state.js';
 import { compare } from '../model.js';
 import { esc, meta, pick, buzz, reduceMotion } from '../ui.js';
 import { ROAST, fill } from '../copy.js';
 import { openCoaster } from '../baankaart.js';
 import { dot } from '../stippen.js';
+import { myStats } from '../insights.js';
 
-const AN = 27; let tab = 'verhalen';
+const AN = 27; let tab = 'jij';
 
 import { backdrop } from '../stage.js';
 
 export default {
-  nav: 'samen', title: 'Samen',
+  nav: 'samen', title: 'Inzichten',
   mount({ bg, fg }) {
     backdrop(bg, 'dim');
     const A = 'wouter', B = 'luca';
     if (!model(A) || !model(B) || !entriesOf(A).length || !entriesOf(B).length) {
-      fg.innerHTML = `<div class="page center-msg"><h1 class="h-title">Samen</h1><p class="sheet-text">Er zijn twee lijsten nodig om te vergelijken.</p></div>`; return;
+      fg.innerHTML = `<div class="page center-msg"><h1 class="h-title">Inzichten</h1><p class="sheet-text">Er zijn twee lijsten nodig om te vergelijken.</p></div>`; return;
     }
     fg.innerHTML = `<div class="page samen">
       <header class="c-head"><h1>${esc(nameOf(A))}<em>&amp;</em>${esc(nameOf(B))}</h1><div class="eyebrow" id="shared"></div></header>
       <button class="arc" id="arc" aria-label="Smaakmatch opnieuw afspelen"><svg viewBox="0 0 250 140" id="arcsvg"></svg><div class="pct"><b id="pct">0%</b><span class="eyebrow">smaakmatch</span></div>${dot('boog', 'arcdot', 'span')}</button>
-      <nav class="seg center" id="seg"><button data-t="verhalen">Verhalen</button><button data-t="samen">Gezamenlijk</button><button data-t="bucket">Nog te rijden</button></nav>
+      <nav class="seg center" id="seg"><button data-t="jij">Jij</button><button data-t="verhalen">Verhalen</button><button data-t="samen">Samen</button><button data-t="bucket">Nog te rijden</button></nav>
       <div class="notes-c" id="notes"></div></div>`;
     const svg = fg.querySelector('#arcsvg'), pctEl = fg.querySelector('#pct'), notes = fg.querySelector('#notes');
     let s = '';
@@ -76,6 +78,26 @@ export default {
         : `<p class="sheet-text">Niets. ${esc(nameOf(who))} heeft alles van ${esc(nameOf(other))} al gereden.</p>`);
       return block(A, B, C.bucketA) + block(B, A, C.bucketB);
     }
+    // ---------- Jij: je eigen cijfers ----------
+    function mine() {
+      const s = myStats(meKey()); const nmk = id => `<button class="nl" data-id="${esc(id)}" data-k="${meKey()}">${esc(s.name(id))}</button>`;
+      const n = (x, one, more) => `${x} ${x === 1 ? one : more}`;
+      if (!s.total) return `<div class="note"><div class="eyebrow">Nog geen cijfers</div><p>Speel een eerste ronde, dan verschijnen hier je cijfers: hoeveel je speelt, wanneer, en wat er met je ranking gebeurt.</p></div>`;
+      const tile = (b, l) => `<div class="in-tile"><b>${b}</b><span>${l}</span></div>`;
+      const maxMode = Math.max(...s.modes.map(x => x.choices), 1);
+      const partMax = Math.max(...Object.values(s.parts), 1);
+      const D = s.busiestDay ? s.busiestDay.date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' }) : '';
+      const block = (t, body) => body ? `<div class="note"><div class="eyebrow">${t}</div>${body}</div>` : '';
+      return `<div class="in-tiles">${tile(s.total, s.total === 1 ? 'battle' : 'battles')}${tile(s.choices, 'keuzes')}${tile(s.days, s.days === 1 ? 'speeldag' : 'speeldagen')}${tile(s.m ? Math.round(s.m.certainty * 100) + '%' : '0%', 'zeker')}</div>`
+        + block('Per spelvorm', `<div class="in-bars">${s.modes.map(x => `<div class="in-bar"><span>${esc(x.name)}</span><i style="--w:${(x.choices / maxMode * 100).toFixed(0)}%"></i><b>${x.choices}</b></div>`).join('')}</div>`)
+        + block('Wanneer je speelt', `<div class="in-bars">${[['ochtend', 'Ochtend'], ['middag', 'Middag'], ['avond', 'Avond'], ['nacht', 'Nacht']].map(([k, l]) => `<div class="in-bar"><span>${l}</span><i style="--w:${(s.parts[k] / partMax * 100).toFixed(0)}%"></i><b>${s.parts[k]}</b></div>`).join('')}</div>
+            <p>${s.favDay ? `Je speelt het vaakst op ${s.favDay}.` : ''} ${s.busiestDay ? `Je drukste dag was ${D}, met ${n(s.busiestDay.n, 'keuze', 'keuzes')}.` : ''} Langste reeks: ${n(s.longestStreak, 'dag', 'dagen')} achter elkaar${s.currentStreak > 1 ? `, en je zit nu op ${s.currentStreak}` : ''}.</p>`)
+        + block('Sinds je Excel', s.riser || s.faller ? `<p>${s.moved} van je ${s.m.n} banen staan op een andere plek dan in je Excel.${s.riser ? ` De grootste stijger is ${nmk(s.riser.id)}: van plek ${s.riser.from + 1} naar ${s.riser.to + 1}.` : ''}${s.faller ? ` De grootste daler is ${nmk(s.faller.id)}: van plek ${s.faller.from + 1} naar ${s.faller.to + 1}.` : ''}</p>` : '')
+        + block('Je grootste verrassing', s.upset ? `<p>${nmk(s.upset.w)} won ooit van ${nmk(s.upset.l)}, terwijl die nu op plek ${s.rank(s.upset.l)} staat en ${nmk(s.upset.w)} op plek ${s.rank(s.upset.w)}. Volgens Dispatch had dat maar ${Math.max(1, Math.round(s.upset.p * 100))}% kans.</p>` : '')
+        + block('Je banen', `<p>${s.mostPlayed ? `Het vaakst in een battle: ${nmk(s.mostPlayed[0])}, ${s.mostPlayed[1].n} keer.` : ''}${s.bestWin ? ` Hoogste winst: ${nmk(s.bestWin[0])}, ${Math.round(s.bestWin[1] * 100)}% van ${s.bestWin[2]} battles.` : ''}${s.worstWin ? ` Laagste winst: ${nmk(s.worstWin[0])}, ${Math.round(s.worstWin[1] * 100)}%.` : ''}${s.surest ? ` Zekerst op zijn plek: ${nmk(s.surest)} op ${s.rank(s.surest)}.` : ''}${s.unsurest ? ` Nog het meest onzeker: ${nmk(s.unsurest)}.` : ''} ${n(s.certain, 'baan is', 'banen zijn')} nu zeker.</p>`)
+        + block('Twijfel', `<p>${n(s.ties, 'keer', 'keer')} gelijk gegeven${s.total ? ` (${Math.round(s.ties / s.total * 100)}% van je vergelijkingen)` : ''} en ${n(s.skips, 'keer', 'keer')} weet niet.</p>`)
+        + block('Tickets', `<p>${s.lastTicket ? `Je hebt ticket ${esc(s.lastTicket.naam)}.` : 'Nog geen ticket.'}${s.ticket ? ` Nog ${s.ticket.at - s.total} vergelijkingen tot ${esc(s.ticket.naam)}.` : ' Je hebt ze allemaal.'}</p>`);
+    }
     function render(replay = false) {
       C = compare(model(A), model(B), catalog());
       // nog te rijden: alles van de ander dat jij nog niet hebt (niet alleen de top 30), op hun volgorde
@@ -83,7 +105,7 @@ export default {
       C.bucketB = model(A).ranking.filter(id => !model(B).idx.has(id));
       fg.querySelector('#shared').textContent = `${C.shared.length} banen samen gereden`;
       fg.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
-      notes.innerHTML = tab === 'verhalen' ? stories() : tab === 'samen' ? joint() : bucket();
+      notes.innerHTML = tab === 'jij' ? mine() : tab === 'verhalen' ? stories() : tab === 'samen' ? joint() : bucket();
       if (replay) playArc(); else { const P = C.match ?? 0; pctEl.textContent = P + '%'; [...svg.querySelectorAll('circle')].forEach((c, i) => { const on = i < Math.round(AN * P / 100); c.setAttribute('fill', on ? '#ffe3a8' : '#3a2a44'); c.style.filter = on ? 'drop-shadow(0 0 5px rgba(255,200,110,.95))' : 'none'; }); }
     }
     fg.querySelector('#arc').onclick = () => { buzz(4); playArc(); };

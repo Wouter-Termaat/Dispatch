@@ -9,7 +9,7 @@ export const DOTS = [
   { id: 'pointblanc', naam: 'Point Blanc', hint: 'Een straatbordje met een witte naam.' },
   { id: 'logo-i', naam: 'De i van Dispatch', hint: 'Elke letter verdient zijn puntje.' },
   { id: 'molen', naam: 'Het hart van de molen', hint: 'Waar de wieken om draaien.' },
-  { id: 'boog', naam: 'Het eerste lampje', hint: 'Op Samen begint de boog anders dan hij eindigt.' },
+  { id: 'boog', naam: 'Het eerste lampje', hint: 'Op Inzichten begint de boog anders dan hij eindigt.' },
   { id: 'cijfers', naam: 'Tussen de cijfers', hint: 'Een rustig regeltje boven je lijst.' },
   { id: 'instellingen', naam: 'Bij de instellingen', hint: 'Waar je de knoppen van de zaal vindt.' },
   { id: 'bereik', naam: 'Op het balkje', hint: 'Waarschijnlijk tussen plek zoveel en zoveel.' },
