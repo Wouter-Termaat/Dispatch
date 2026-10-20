@@ -6,7 +6,7 @@
 //        setting, music, coaster_add, entry_add, coaster_edit, entry_remove, note, export, baankaart, photo_fail, js_error
 import { S, me } from './state.js';
 
-export const APP_VERSION = 'v14';   // gelijk houden met CACHE in sw.js
+export const APP_VERSION = 'v15';   // gelijk houden met CACHE in sw.js
 let sessionId = null;
 export function setTrackSession(id) { sessionId = id; }
 

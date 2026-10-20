@@ -24,8 +24,7 @@ await page.goto(base + '#/meer'); await page.evaluate(() => { localStorage.clear
 await page.waitForSelector('.meer'); await wait(600); await shot('50-meer');
 
 // instellingen
-await page.click('[data-set=anchorDuels] [data-v="8"]'); await wait(500);
-ok((await settings()).anchorDuels === 8, 'ankersterkte op sterk bewaard');
+ok(!(await page.$('[data-set=anchorDuels]')), 'ankersterkte is geen instelling meer');
 await page.click('[data-set=sessionLength] [data-v="5"]'); await wait(200);
 await page.click('[data-tog=sound]'); await wait(200);
 const s1 = await settings();

@@ -22,7 +22,6 @@ export default {
         <header><div class="eyebrow">${esc(me().name)}${demo ? ' · demo' : ''}</div><h1 class="h-title big">Meer</h1></header>
 
         <section class="m-sec"><h2 class="eyebrow">Instellingen ${dot('instellingen', 'stip-set')}</h2>
-          <div class="m-row"><div><b>Ankersterkte</b><small>Hoe zwaar je startvolgorde (je Excel) meetelt.</small></div>${pills('anchorDuels', [[1, 'Licht'], [3, 'Gemiddeld'], [8, 'Sterk']], st.anchorDuels)}</div>
           <div class="m-row"><div><b>Duels per ronde</b><small>Le Duel en de andere duelspellen.</small></div>${pills('sessionLength', [[5, '5'], [10, '10'], [20, '20']], st.sessionLength)}</div>
           <div class="m-row"><div><b>Rijen per ronde</b><small>La Rangée, vier banen per rij.</small></div>${pills('rowLength', [[3, '3'], [5, '5'], [10, '10']], st.rowLength)}</div>
           <div class="m-row"><div><b>Geluid</b><small>Stationsbel, liftheuvel en applaus.</small></div><button class="tog${st.sound ? ' on' : ''}" data-tog="sound"><i></i>${st.sound ? 'Aan' : 'Uit'}</button></div>
@@ -61,7 +60,6 @@ export default {
       if (pill) {
         const k = pill.parentElement.dataset.set; const raw = pill.dataset.v; const v = isNaN(+raw) ? raw : +raw;
         buzz(4); await saveSetting({ [k]: v });
-        if (k === 'anchorDuels') toast('Ankersterkte aangepast. Je ranking wordt opnieuw berekend.');
         return;
       }
       const tog = e.target.closest('[data-tog]');

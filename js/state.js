@@ -1,7 +1,7 @@
 // App-staat: store, catalogus, profielen en het model per persoon (gefit in een worker).
 import { fitModel, remainingEstimate } from './model.js';
 
-export const DEFAULT_SETTINGS = { anchorDuels: 3, sound: true, music: 'orgel', musicUnlocked: false, showCertainty: false, sessionLength: 10, rowLength: 5 };
+export const DEFAULT_SETTINGS = { sound: true, music: 'orgel', musicUnlocked: false, showCertainty: false, sessionLength: 10, rowLength: 5 };
 
 export const S = {
   store: null,
@@ -41,7 +41,7 @@ export const remaining = key => {
 // Zekerheid. Je Excel-volgorde is een startpunt, geen bewijs: hij telt zwakker mee (de helft van de ankersterkte uit Meer)
 // en de verschillen die hij vooraf aanneemt zijn kleiner (spreadPerItem). Zo zijn de balken eerlijk breed en loopt de
 // zekerheid pas op met echte battles. Een baan telt bovendien pas als zeker na minstens MIN_BATTLES eigen battles.
-const ANCHOR_FACTOR = .5, SPREAD = .045, TAIL_CAP = 2, MIN_BATTLES = 3;   // TAIL_CAP: top en onderkant van je Excel zijn niet vanzelf zeker
+const ANCHOR = 2, SPREAD = .045, TAIL_CAP = 2, MIN_BATTLES = 3;   // TAIL_CAP: top en onderkant van je Excel zijn niet vanzelf zeker
 function withEvidence(m, comparisons) {
   const count = new Map();
   for (const c of comparisons) { if (c.outcome === 'skip') continue; count.set(c.a, (count.get(c.a) || 0) + 1); count.set(c.b, (count.get(c.b) || 0) + 1); }
@@ -58,7 +58,6 @@ export async function saveSetting(patch) {
   await S.store.saveSettings(me().id, patch);
   import('./track.js').then(t => t.track('setting', patch)).catch(() => {});   // los geladen: track.js leunt zelf op state.js
   emit('settings');
-  if ('anchorDuels' in patch) refit(meKey());
 }
 
 // ---------- model in een worker ----------
@@ -74,8 +73,8 @@ function getWorker() {
   return worker;
 }
 function fitOnce(key) {
-  const entries = entriesOf(key), comparisons = compsOf(key), s = settingsOf(key);
-  const settings = { anchorDuels: s.anchorDuels * ANCHOR_FACTOR, spreadPerItem: SPREAD, tailCap: TAIL_CAP };
+  const entries = entriesOf(key), comparisons = compsOf(key);
+  const settings = { anchorDuels: ANCHOR, spreadPerItem: SPREAD, tailCap: TAIL_CAP };   // je Excel-plek telt per baan als ongeveer twee battles
   const w = getWorker();
   if (!w) return Promise.resolve(fitModel({ entries, comparisons, settings, warm: S.models[key] }));
   return new Promise((res, rej) => {
