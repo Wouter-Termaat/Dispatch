@@ -170,10 +170,10 @@
 /* fijne lichtstrepen binnen de bundel */
 .backdrop .bd-beam::before{content:"";position:absolute;inset:0;mix-blend-mode:screen;opacity:.55;
   background:repeating-conic-gradient(from 166deg at 50% 0%,transparent 0deg 1.1deg,rgba(255,244,220,.32) 1.5deg,transparent 2.1deg 3.4deg)}
-/* stof dat in het licht zweeft */
+/* stof dat in het licht zweeft (ruis met stitchTiles: naadloos, anders geeft elke tegel van 600px een harde lijn in de bundel) */
 .backdrop .bd-beam::after{content:"";position:absolute;left:0;right:0;top:-40%;height:140%;opacity:.75;will-change:transform;animation:dust 40s linear infinite;
   background-image:radial-gradient(circle,rgba(255,246,225,.9) 0 1px,transparent 1.6px),radial-gradient(circle,rgba(255,236,200,.6) 0 1.4px,transparent 2px),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .9  0 0 0 0 .75  0 0 0 .55 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .9  0 0 0 0 .75  0 0 0 .55 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:61px 83px,113px 97px,600px 600px}
 @keyframes dust{from{transform:translate3d(0,0,0)}to{transform:translate3d(-30px,28%,0)}}
 .backdrop.dim .bd-beam{opacity:.42}
