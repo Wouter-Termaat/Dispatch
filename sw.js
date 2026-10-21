@@ -1,5 +1,5 @@
 // Service worker: de app blijft openen zonder netwerk. Eerst het netwerk (altijd de nieuwste versie), anders de kopie.
-const CACHE = 'dispatch-v20';
+const CACHE = 'dispatch-v21';
 const PHOTOS = 'dispatch-fotos';   // los van de app-versie: foto's blijven bewaard bij een update
 const SHELL = ['./', 'index.html', 'css/app.css', 'css/screens.css', 'css/ranking.css', 'css/pages.css', 'css/scene.css', 'css/cards.css', 'css/spelen.css', 'js/app.js', 'js/scene.js', 'js/pick.js', 'js/stippen.js', 'js/orgel.js', 'js/config.js', 'js/store.js', 'js/state.js',
   'js/model.js', 'js/model.worker.js', 'js/ui.js', 'js/photos.js', 'js/track.js', 'js/ideeen.js', 'js/insights.js', 'js/stage.js', 'js/session.js', 'js/sound.js', 'js/copy.js', 'js/modes.js', 'js/music.js',
@@ -24,7 +24,8 @@ self.addEventListener('fetch', e => {
   const own = url.origin === location.origin;
   const fonts = /fonts\.(googleapis|gstatic)\.com|cdn\.jsdelivr\.net/.test(url.host);
   if (!own && !fonts) return;   // Supabase en Spotify nooit cachen
-  e.respondWith(fetch(req).then(res => {
+  // eigen bestanden altijd even bij de server navragen (GitHub Pages laat de browser ze anders 10 minuten oud tonen na een update)
+  e.respondWith(fetch(req, own ? { cache: 'no-cache' } : {}).then(res => {
     if (res.ok && (own || fonts)) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
     return res;
   }).catch(() => caches.match(req, { ignoreSearch: own }).then(r => r || (req.mode === 'navigate' ? caches.match('index.html') : undefined))));

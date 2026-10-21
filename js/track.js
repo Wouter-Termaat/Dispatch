@@ -7,7 +7,7 @@
 //        idea, idea_status, idea_delete, idea_copy
 import { S, me } from './state.js';
 
-export const APP_VERSION = 'v20';   // gelijk houden met CACHE in sw.js
+export const APP_VERSION = 'v21';   // gelijk houden met CACHE in sw.js
 let sessionId = null;
 export function setTrackSession(id) { sessionId = id; }
 
