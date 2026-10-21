@@ -8,6 +8,7 @@ import { initStage } from './stage.js';
 import { closeSheet, toast } from './ui.js';
 import * as sound from './sound.js';
 import './stippen.js';
+import { initIdeas, refreshIdeas } from './ideeen.js';
 
 const ROUTES = {
   '': () => import('./screens/plein.js'),
@@ -44,6 +45,7 @@ async function route() {
   if (token !== navToken) return;
   trackScreen(name, params);
   closeSheet(true);
+  refreshIdeas();
 
   // oud scherm (en eventueel een half geladen scherm) uit
   const bgL = document.getElementById('bg'), fgL = document.getElementById('screen');
@@ -90,6 +92,7 @@ async function boot() {
   S.store.addEventListener('error', e => toast('Opslaan lukte niet: ' + (e.detail?.message || 'onbekende fout')));
   S.store.addEventListener('signedout', () => go('login'));
   watchQueue();
+  initIdeas();
   // terug in de app na een tijdje weg: verse data ophalen (zo zie je wat Luca intussen deed)
   document.addEventListener('visibilitychange', async () => {
     const st = S.store;

@@ -75,12 +75,16 @@ h1,h2,h3,h4{font-weight:400}
 .link{background:none;border:0;cursor:pointer;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-dim);padding:6px}
 .link:hover{color:var(--cream)}
 
+/* hover-gloed onder lijstregels: een kleur die overgaat in plaats van opacity. Een opacity-overgang maakt in Chrome tijdelijk
+   een eigen laag, en dat aanmaken en weggooien flitst op de Mac zichtbaar door de overvloeiende lichteffecten heen. */
+@property --glow{syntax:'<color>';inherits:false;initial-value:rgba(255,200,130,0)}
+
 /* nav */
 .nav{position:absolute;left:0;right:0;bottom:0;height:var(--nav-h);z-index:60;display:flex;justify-content:center;gap:0;align-items:flex-start;padding:10px 10px var(--safe-b);
   background:linear-gradient(180deg,rgba(13,8,20,0),rgba(13,8,20,.92) 35%);transition:transform .45s cubic-bezier(.5,0,.2,1),opacity .35s}
-.nav a{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim);text-decoration:none;opacity:.75;cursor:pointer;width:min(96px,25%);transition:color .3s,opacity .3s}
-.nav a:hover{opacity:1}
-.nav a.on{opacity:1;color:var(--gold)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:color-mix(in srgb,var(--cream-dim) 75%,transparent);text-decoration:none;cursor:pointer;width:min(96px,calc((100% - 104px) / 4));transition:color .3s}
+.nav a:hover{color:var(--cream-dim)}
+.nav a.on{color:var(--gold)}
 .nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.3}
 .nav a.on svg{filter:drop-shadow(0 0 6px rgba(255,200,120,.6))}
 .nav.away{transform:translateY(110%);opacity:0;pointer-events:none}
@@ -161,7 +165,7 @@ h1,h2,h3,h4{font-weight:400}
   .ghost:hover{color:var(--cream-dim);box-shadow:inset 0 0 0 1px var(--hair-soft)}
   .mode-t:hover{color:var(--cream-dim);box-shadow:inset 0 0 0 1px var(--hair-soft),0 10px 24px rgba(0,0,0,.45)}
   .mode-t.on:hover{color:var(--gold);transform:translateY(-4px);box-shadow:inset 0 0 0 1px var(--gold),0 0 30px rgba(255,170,90,.35),0 14px 28px rgba(0,0,0,.5)}
-  .li:hover::before,.m-link:hover::before,.mode:hover::before{opacity:0}
+  .li:hover::before,.m-link:hover::before,.mode:hover::before{--glow:rgba(255,200,130,0)}
 }
 button,.card,.mode-t,.chip,.li,.nav a{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .pills button{min-width:42px}

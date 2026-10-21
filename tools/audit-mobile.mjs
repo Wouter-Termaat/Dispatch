@@ -60,6 +60,11 @@ const CHECK = () => {
     const small = Math.min(r.width, r.height) < 32 && !el.closest('.chips.active, .note, .bk-why') && !el.matches('.stip, .wdot, input, .nl')   // witte stippen zijn bewust klein; hun tikvlak is via ::after groter;
     if (small && el.tagName !== 'INPUT') issues.push(`klein tikvlak ${Math.round(r.width)}x${Math.round(r.height)}: ${name(el)}`);
   }
+  // de hoekknoppen (ideeënbus en muziek) mogen niet over een knop van het scherm vallen
+  if (document.getElementById('sheet').hidden) for (const cb of [...document.querySelectorAll('#ideabtn, .music-btn')].filter(vis)) {
+    const a = cb.getBoundingClientRect();
+    for (const el of ui) { if (inScroller(el)) continue; const r = el.getBoundingClientRect(); if (r.left < a.right - 1 && r.right > a.left + 1 && r.top < a.bottom - 1 && r.bottom > a.top + 1) issues.push(`hoekknop ${cb.id || cb.className} overlapt ${name(el)}`); }
+  }
   // tekst die uit zijn vak loopt
   for (const el of [...document.querySelectorAll('#screen .nm, #screen b, #screen h1, #screen h2, #screen .eyebrow, #screen small, #screen p, #sheet h3, #sheet p')].filter(vis)) {
     if (el.scrollWidth > el.clientWidth + 2 && getComputedStyle(el).overflow === 'visible' && getComputedStyle(el).whiteSpace === 'nowrap') issues.push(`tekst loopt uit: ${name(el)}`);

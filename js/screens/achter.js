@@ -71,6 +71,8 @@ export default {
       <p>In Meer exporteer je je ranking naar Excel, in het vertrouwde format van je oude lijst. Op je telefoon kun je hem ook direct delen of in Drive zetten.</p>
       <h3>Witte stippen</h3>
       <p>Ergens in het ontwerp zitten tien witte stippen verstopt. Tik er een aan en hij is gevonden. Waar ze zitten, staat niet in dit boekje. In Meer kun je wel om een tip vragen. Wie ze alle tien vindt, krijgt er iets voor terug.</p>
+      <h3>De ideeënbus</h3>
+      <p>Linksonder op elk scherm hangt een brievenbus. Iets bedacht, of klopt er iets niet? Post een idee of een bug, en onder In de bus lezen jullie allebei wat erin zit. Bij een bug gaat vanzelf mee op welk scherm je zat en op welk apparaat. Af en toe gaan Wouter en Claude de bus samen langs, en dan zie je bij elk briefje of het op de planning staat, gedaan is of niet doorgaat.</p>
       <h3>De sfeer</h3>
       <p>Het park leeft mee met de klok. Na elf uur 's avonds gaan de lichten uit en zijn alleen de sterren nog wakker, en rond Halloween hangt er iets kils in de lucht. Muziek staat aan of uit in Meer.</p>
 

@@ -3,10 +3,11 @@
 // Bestaat die tabel nog niet, dan worden ze overgeslagen. Ranken wacht hier nooit op.
 //
 // Typen: app_open, login, logout, screen, session_start, choice, undo, session_end, champion, ticket, dot, dots_reset,
-//        setting, music, coaster_add, entry_add, coaster_edit, entry_remove, note, export, baankaart, photo_fail, js_error
+//        setting, music, coaster_add, entry_add, coaster_edit, entry_remove, note, export, baankaart, photo_fail, js_error,
+//        idea, idea_status, idea_delete, idea_copy
 import { S, me } from './state.js';
 
-export const APP_VERSION = 'v17';   // gelijk houden met CACHE in sw.js
+export const APP_VERSION = 'v18';   // gelijk houden met CACHE in sw.js
 let sessionId = null;
 export function setTrackSession(id) { sessionId = id; }
 

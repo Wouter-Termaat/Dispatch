@@ -47,3 +47,9 @@ Dispatch: een webapp voor Wouter en Luca om hun achtbanen-ranglijst opnieuw te r
 - `js/track.js` legt onzichtbaar gebeurtenissen vast (keuzes met twijfeltijd en modelverwachting, rondes, schermen, stippen, instellingen, fouten) in de tabel `events` (`sql/stats.sql`). Zonder die tabel worden ze stilletjes overgeslagen. `APP_VERSION` in track.js gelijk houden met `CACHE` in `sw.js`.
 - Foto's: afgeschermde bucket `fotos` (`sql/fotos.sql`), gereedschap in `tools/photos/` (zie de kop van elk script). De werkmap `fotos/` gaat nooit in git.
 - Telefoons krijgen `html.lite` (`js/stage.js`): geen parallax en minder grafische lagen. Meten met `node tools/perf-mobile.mjs`.
+- Laptop (vooral Chrome op de Mac): lagen die bij hover ontstaan en weer verdwijnen geven geflikker door de blend-modes en het glazen paneel. Hover-effecten daarom zonder opacity- of transform-overgang op elementen zonder vaste laag (zie `--glow` in app.css). Meten met `node tools/hover-layers.mjs` en `node tools/perf-desktop.mjs`.
+
+## Ideeënbus
+- `js/ideeen.js`: brievenbus linksonder op elk scherm, briefjes (idee of bug) in de tabel `ideas` (`sql/ideeen.sql`): categorie, tekst, van wie (`user_id`), status (nieuw, gepland, gedaan, niet), antwoord en context (scherm, apparaat, versie).
+- Zonder die tabel bewaart de store nieuwe briefjes apart op het toestel (`dispatch.parked.v1`) en verstuurt ze zodra de tabel er is.
+- Sessie met Claude: in de bus op "Kopieer voor Claude" tikken en plakken. Status en antwoord zetten met een `update public.ideas ...` (voorbeeld onderaan sql/ideeen.sql) of in de app per briefje.

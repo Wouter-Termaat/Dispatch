@@ -59,9 +59,9 @@
 .backdrop{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 70% at 50% -10%,#2c1d3c 0%,#1b1226 45%,#100a17 100%)}
 .backdrop .bd-sun{position:absolute;left:50%;top:-52vh;width:min(1400px,max(820px,160vw));aspect-ratio:1134/945;transform:translateX(-50%);opacity:.24;
   background:url(../assets/scene/sunburst.webp) center/contain no-repeat;-webkit-mask:radial-gradient(50% 50% at 50% 70%,#000 20%,transparent 75%);mask:radial-gradient(50% 50% at 50% 70%,#000 20%,transparent 75%)}
-.backdrop .bd-rays{position:absolute;left:50%;top:-8vh;width:200vmax;height:200vmax;margin-left:-100vmax;margin-top:-100vmax;border-radius:50%;opacity:.5;
+.backdrop .bd-rays{position:absolute;left:50%;top:-8vh;width:120vmax;height:120vmax;margin-left:-60vmax;margin-top:-60vmax;border-radius:50%;opacity:.5;
   background:repeating-conic-gradient(from 0deg,rgba(236,199,127,0) 0 4deg,rgba(236,199,127,.07) 4.4deg,rgba(236,199,127,0) 4.8deg 9deg);
-  -webkit-mask:radial-gradient(circle,#000 0,transparent 42%);mask:radial-gradient(circle,#000 0,transparent 42%);animation:spin 300s linear infinite}
+  -webkit-mask:radial-gradient(circle closest-side,#000 0,transparent 99%);mask:radial-gradient(circle closest-side,#000 0,transparent 99%);animation:spin 300s linear infinite}
 .backdrop .bd-stars{position:absolute;inset:0 0 50% 0}
 .backdrop .bd-stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff3d6;box-shadow:0 0 6px rgba(255,236,190,.9);opacity:.2;animation:tw2 6s ease-in-out infinite}
 @keyframes tw2{50%{opacity:.85}}
@@ -94,6 +94,9 @@
   color:var(--cream-dim);background:linear-gradient(180deg,rgba(44,30,58,.92),rgba(20,12,28,.96));box-shadow:inset 0 0 0 1px var(--hair-soft),0 10px 24px rgba(0,0,0,.45);
   transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,color .25s,background .25s}
 .mode-t:hover{color:var(--cream);transform:translateY(-2px)}
+/* met muis: elke tegel een vaste eigen laag. Anders maakt Chrome bij elke hover tijdelijk lagen aan in het glazen paneel,
+   en dat geeft op de Mac geflikker. Ook tekent de lampjesrand dan alleen de tegel opnieuw, niet het hele paneel. */
+@media (hover:hover) and (pointer:fine){ .mode-t,.pb-sign{will-change:transform} }
 .mode-t .mi svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:filter .3s}
 .mode-t b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:14.5px;color:var(--cream)}
 .mode-t small{font-size:8px;letter-spacing:.2em;text-transform:uppercase;opacity:.8}

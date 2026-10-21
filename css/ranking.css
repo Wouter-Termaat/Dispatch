@@ -116,6 +116,7 @@
   .r-q h2{font-size:19px} .r-q p{display:none} .r-q{margin-top:4px}
   .foot{padding:8px 16px 2px}
   .d-line{padding-bottom:6px}
+  body.ranking .d-line{min-height:44px}   /* ruimte voor de hoekknoppen (ideeënbus en muziek) */
 }
 @media (min-width:600px) and (min-aspect-ratio:5/4) and (max-height:600px){
   .d-wrap{padding:10px 40px 0;align-items:center}

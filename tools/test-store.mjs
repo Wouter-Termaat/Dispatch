@@ -94,3 +94,23 @@ ok(r1.dots.length === 0 && !r1.musicUnlocked && r2.dots.join() === 'c' && r2.dot
   ok(errs === 0 && st2.queue.length === 0 && db.comparisons.some(c => c.batch === 'b9'), 'logboek zonder tabel: overgeslagen, geen melding, rest gaat door');
   ok(st2.pending === 0, 'logboek telt niet mee als wachtende wijziging');
 }
+
+// ideeënbus zonder tabel: briefje apart bewaard, rest gaat door; zodra de tabel er is, gaat het alsnog mee
+{
+  const st3 = new SupabaseStore(); st3.userId = 'u1';
+  st3.data = { coasters: [...db.coasters], profiles: [{ id: 'u1', key: 'wouter', settings: {} }], entries: [], comparisons: [], ideas: [] };
+  let errs = 0; st3.addEventListener('error', () => errs++);
+  let haveTable = false; const ideasDb = [];
+  st3.sb = { auth: st.sb.auth, from: t => t !== 'ideas' ? builder(t) : {
+    insert: async r => (haveTable ? (ideasDb.push(r), { error: null }) : { error: { message: 'Could not find the table public.ideas', code: 'PGRST205' } }),
+    select() { return { range: () => ({ order: async () => (haveTable ? { data: ideasDb, error: null } : { data: null, error: { code: 'PGRST205', message: 'geen tabel' } }) }) }; },
+  } };
+  net = 'ok';
+  await st3.addIdea({ id: 'i1', user_id: 'u1', kind: 'bug', text: 'Flikkert op de Mac', created_at: '2026-10-21T09:00:00Z' });
+  await st3.addComparisons([{ a: 'x', b: 'k', outcome: 'a', batch: 'b10', user_id: 'u1', mode: 'duel', created_at: '2026-10-21T09:00:01Z' }]);
+  await settle(); await st3.flush(); await settle();
+  ok(errs === 0 && st3.queue.length === 0 && st3.parked.length === 1 && db.comparisons.some(c => c.batch === 'b10'), 'idee zonder tabel: apart bewaard, geen melding, rest gaat door');
+  ok(st3.data.ideas.length === 1 && st3.data.ideas[0].kind === 'bug' && st3.data.ideas[0].user_id === 'u1', 'idee staat lokaal met categorie, tekst en afzender');
+  haveTable = true; await st3.load(); await settle(); await st3.flush(); await settle();
+  ok(ideasDb.length === 1 && ideasDb[0].text === 'Flikkert op de Mac' && st3.parked.length === 0, 'tabel er: bewaard idee alsnog verstuurd');
+}

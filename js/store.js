@@ -9,6 +9,9 @@
 //   { t:'coaster', row }                   catalogus: baan toevoegen of wijzigen
 //   { t:'settings', user_id, settings }    instellingen van een profiel
 //   { t:'events', rows }                   logboek voor statistieken (zie js/track.js); nooit een foutmelding voor de gebruiker
+//   { t:'idea', row }                      ideeënbus: een nieuw idee of een bug posten (zie js/ideeen.js)
+//   { t:'ideaSet', id, patch }             ideeënbus: status van een briefje wijzigen
+//   { t:'delIdea', id }                    ideeënbus: je eigen briefje terughalen
 
 import { forgetPhotos } from './photos.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
@@ -17,7 +20,7 @@ import { uuid } from './ui.js';
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm';
 
 class BaseStore extends EventTarget {
-  constructor() { super(); this.data = { coasters: [], profiles: [], entries: [], comparisons: [] }; }
+  constructor() { super(); this.data = { coasters: [], profiles: [], entries: [], comparisons: [], ideas: [] }; }
   emit(type, detail) { this.dispatchEvent(new CustomEvent(type, { detail })); }
   get pending() { return 0; }
 
@@ -39,6 +42,9 @@ class BaseStore extends EventTarget {
         break;
       }
       case 'settings': { const p = d.profiles.find(p => p.id === op.user_id); if (p) p.settings = mergeSettings(p.settings, op.settings); break; }
+      case 'idea': d.ideas = [...(d.ideas || []).filter(x => x.id !== op.row.id), { status: 'nieuw', reply: null, context: {}, ...op.row }]; break;
+      case 'ideaSet': d.ideas = (d.ideas || []).map(x => (x.id === op.id ? { ...x, ...op.patch } : x)); break;
+      case 'delIdea': d.ideas = (d.ideas || []).filter(x => x.id !== op.id); break;
     }
   }
 
@@ -55,6 +61,9 @@ class BaseStore extends EventTarget {
   deleteEntry(user_id, coaster_id) { return this.write({ t: 'delEntry', user_id, coaster_id }); }
   upsertCoaster(row) { return this.write({ t: 'coaster', row }); }
   saveSettings(user_id, settings) { return this.write({ t: 'settings', user_id, settings }); }
+  addIdea(row) { return this.write({ t: 'idea', row }); }
+  setIdea(id, patch) { return this.write({ t: 'ideaSet', id, patch }); }
+  deleteIdea(id) { return this.write({ t: 'delIdea', id }); }
 
   // logboek: gebeurtenissen bufferen en per groepje wegschrijven (de wachtrij hoeft niet bij elke tik te bewegen)
   log(ev) { (this.evBuf ||= []).push(ev); clearTimeout(this.evT); this.evT = setTimeout(() => this.flushLog(), this.evBuf.length >= 40 ? 0 : 8000); }
@@ -69,14 +78,14 @@ export class LocalStore extends BaseStore {
   async init() {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(DEMO_KEY) || 'null'); } catch { saved = null; }
-    if (saved && saved.coasters?.length) this.data = saved;
+    if (saved && saved.coasters?.length) this.data = { ideas: [], ...saved };
     else {
       const seed = await (await fetch('data/seed.json')).json();
       this.data = {
         coasters: seed.coasters.map(c => ({ photo_url: null, ...c })),
         profiles: seed.profiles.map(p => ({ settings: {}, ...p })),
         entries: seed.entries.map(e => ({ prior_strength: 1, reridden_at: null, note: null, ...e })),
-        comparisons: [],
+        comparisons: [], ideas: [],
       };
       this.save();
     }
@@ -97,15 +106,18 @@ export class LocalStore extends BaseStore {
 }
 
 // ---------------------------------------------------------------- Supabase
-const QUEUE_KEY = 'dispatch.queue.v1', CACHE_KEY = 'dispatch.cache.v1';
+const QUEUE_KEY = 'dispatch.queue.v1', CACHE_KEY = 'dispatch.cache.v1', PARKED_KEY = 'dispatch.parked.v1';
+// tabel bestaat (nog) niet: PostgREST kent hem niet, of Postgres zelf niet
+const missingTable = e => /^PGRST2/.test(String(e?.code)) || e?.code === '42P01';
 
 export class SupabaseStore extends BaseStore {
-  constructor() { super(); this.kind = 'supabase'; this.queue = []; this.flushing = false; }
+  constructor() { super(); this.kind = 'supabase'; this.queue = []; this.parked = []; this.flushing = false; }
 
   async init() {
     const { createClient } = await import(SUPABASE_JS);
     this.sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'dispatch.auth' } });
     try { this.queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch { this.queue = []; }
+    try { this.parked = JSON.parse(localStorage.getItem(PARKED_KEY) || '[]'); } catch { this.parked = []; }
     const { data } = await this.sb.auth.getSession();
     this.userId = data.session?.user?.id || null;
     if (this.userId) await this.load();
@@ -146,18 +158,24 @@ export class SupabaseStore extends BaseStore {
   // Leest alles in (beide profielen). Valt terug op de laatste kopie als het netwerk weg is.
   async load() {
     try {
-      const [coasters, profiles, entries, comparisons] = await Promise.all([
-        this.selectAll('coasters', 'id'), this.selectAll('profiles', 'id'), this.selectAll('entries', 'coaster_id'), this.selectAll('comparisons', 'id')]);
-      this.data = { coasters, profiles: profiles.map(p => ({ ...p, settings: p.settings || {} })), entries, comparisons };
+      // de ideeënbus mag ontbreken (sql/ideeen.sql nog niet gedraaid): dan gewoon zonder, de rest laadt door
+      let ideasOk = true;
+      const [coasters, profiles, entries, comparisons, ideas] = await Promise.all([
+        this.selectAll('coasters', 'id'), this.selectAll('profiles', 'id'), this.selectAll('entries', 'coaster_id'), this.selectAll('comparisons', 'id'),
+        this.selectAll('ideas', 'created_at').catch(e => { if (!missingTable(e)) throw e; ideasOk = false; return []; })]);
+      this.data = { coasters, profiles: profiles.map(p => ({ ...p, settings: p.settings || {} })), entries, comparisons, ideas };
+      // briefjes die bewaard werden omdat de tabel er nog niet was: nu alsnog versturen
+      if (ideasOk && this.parked.length) { this.queue.push(...this.parked); this.parked = []; this.saveParked(); this.saveQueue(); }
       try { localStorage.setItem(CACHE_KEY, JSON.stringify(this.data)); } catch { /* te groot: dan zonder kopie */ }
       this.offline = false; this.loadedAt = Date.now();
     } catch (e) {
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (!cached) throw e;
-      this.data = cached; this.offline = true;
+      this.data = { ideas: [], ...cached }; this.offline = true;
     }
     this.normalize();
     // wijzigingen die nog in de wachtrij staan, opnieuw toepassen bovenop de verse data
+    for (const op of this.parked) this.apply(op);
     for (const op of this.queue) {
       if (op.t === 'comps' && this.data.comparisons.some(c => c.batch === op.rows[0]?.batch)) continue;   // al op de server
       this.apply(op);
@@ -165,6 +183,7 @@ export class SupabaseStore extends BaseStore {
     this.flush();
   }
 
+  saveParked() { try { localStorage.setItem(PARKED_KEY, JSON.stringify(this.parked)); } catch (e) { console.warn(e); } }
   saveQueue() { try { localStorage.setItem(QUEUE_KEY, JSON.stringify(this.queue)); } catch (e) { console.warn(e); } this.emit('queue', this.queue.length); }
   async persist(op) { this.queue.push(op); this.saveQueue(); this.flush(); }
 
@@ -217,6 +236,18 @@ export class SupabaseStore extends BaseStore {
         r = await sb.from('events').insert(op.rows.map(({ user_id, type, session, data, created_at }) => ({ user_id, type, session, data, created_at })));
         // tabel nog niet aangemaakt (sql/stats.sql) of geweigerd: stilletjes overslaan, nooit een melding of blokkade
         if (r.error && (isPermanent(r.error) || /^PGRST2/.test(String(r.error.code)))) { console.info('logboek overgeslagen:', r.error.message); return; }
+        break;
+      }
+      case 'idea': case 'ideaSet': case 'delIdea': {
+        const { id, user_id, kind, text, status = 'nieuw', context = {}, created_at } = op.row || {};
+        r = op.t === 'idea' ? await sb.from('ideas').insert({ id, user_id, kind, text, status, context, created_at })
+          : op.t === 'ideaSet' ? await sb.from('ideas').update(op.patch).eq('id', op.id)
+          : await sb.from('ideas').delete().eq('id', op.id);
+        // tabel nog niet aangemaakt: het briefje apart bewaren (niet de rest van de wachtrij blokkeren) en later versturen
+        if (r.error && missingTable(r.error)) {
+          if (op.t === 'delIdea') this.parked = this.parked.filter(p => (p.row?.id || p.id) !== op.id); else this.parked.push(op);
+          this.saveParked(); return;
+        }
         break;
       }
       case 'settings': {

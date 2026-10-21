@@ -16,8 +16,8 @@
   -webkit-mask:linear-gradient(180deg,transparent,#000 14px,#000 calc(100% - 50px),transparent);mask:linear-gradient(180deg,transparent,#000 14px,#000 calc(100% - 50px),transparent)}
 .list::-webkit-scrollbar{display:none}
 .li{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;padding:11px 0;border:0;border-bottom:1px solid rgba(236,199,127,.08);cursor:pointer;position:relative;width:100%;background:none;text-align:left}
-.li::before{content:"";position:absolute;inset:0 -22px;opacity:0;transition:opacity .4s;background:radial-gradient(60% 120% at 30% 50%,rgba(255,200,130,.10),transparent)}
-.li:hover::before,.li:focus-visible::before{opacity:1}
+.li::before{content:"";position:absolute;inset:0 -22px;transition:--glow .4s;background:radial-gradient(60% 120% at 30% 50%,var(--glow),transparent)}
+.li:hover::before,.li:focus-visible::before{--glow:rgba(255,200,130,.10)}
 .li .rk{font-family:var(--serif);font-size:21px;color:var(--cream-dim);text-align:right;font-variant-numeric:lining-nums}
 .li.g .rk{color:var(--top1);text-shadow:0 0 12px rgba(255,200,120,.5)}.li.s .rk{color:var(--top2)}.li.b .rk{color:var(--top3)}
 .li .nm{font-family:var(--serif);font-size:15.5px;line-height:1.15;color:var(--cream)}
@@ -137,8 +137,8 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
 .m-link{display:grid;grid-template-columns:1fr auto;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid rgba(236,199,127,.08);padding:14px 0;cursor:pointer;position:relative}
 .m-link em{grid-row:1/3;grid-column:2;align-self:center;font-style:normal;color:var(--gold);font-size:18px}
 .m-link small{grid-column:1}
-.m-link::before{content:"";position:absolute;inset:0 -22px;opacity:0;transition:opacity .3s;background:radial-gradient(60% 120% at 30% 50%,rgba(255,200,130,.10),transparent)}
-.m-link:hover::before{opacity:1}
+.m-link::before{content:"";position:absolute;inset:0 -22px;transition:--glow .3s;background:radial-gradient(60% 120% at 30% 50%,var(--glow),transparent)}
+.m-link:hover::before{--glow:rgba(255,200,130,.10)}
 .m-count{margin-top:12px;font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--cream-dim)}
 .row-btns.left{justify-content:flex-start}
 .stip{width:5px;height:5px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.28);cursor:pointer;margin-left:auto;position:relative}

@@ -79,6 +79,30 @@ ok(await page.$('.scene.closed') && (await page.textContent('#greet')).includes(
 await page.goto(base + '&nu=2026-10-31T21:00#/'); await page.reload(); await wait(1500); await shot('56-halloween');
 ok(await page.evaluate(() => document.documentElement.classList.contains('halloween')), 'halloween-sfeer tussen 24 oktober en 2 november');
 
+// ideeënbus: op elk scherm dezelfde plek, idee en bug posten, samen te zien
+await page.goto(base + '#/'); await page.reload(); await page.waitForSelector('.vb-panel'); await wait(600);
+const pos = async () => page.$eval('#ideabtn', b => { const r = b.getBoundingClientRect(); return Math.round(r.left) + ',' + Math.round(r.bottom); });
+const p1 = await pos(); await page.click('#nav a[data-tab=samen]'); await wait(700); const p2 = await pos(); await page.click('#nav a[data-tab=programma]'); await wait(700); const p3 = await pos();
+ok(p1 === p2 && p2 === p3, `ideeënbus op elk scherm op dezelfde plek (${p1})`);
+await page.click('#ideabtn'); await wait(500);
+await page.fill('#ibtext', 'Een spelvorm met alleen nieuwe banen'); await page.click('#ibsend'); await wait(1400);
+await page.click('.ib-tabs [data-t=post]'); await page.click('[data-k=bug]'); await page.fill('#ibtext', 'Knop doet niets op Ranking'); await page.click('#ibsend'); await wait(1400);
+await shot('57-ideeenbus');
+const ideas = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).ideas);
+const me = await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).profiles.find(p => p.key === 'wouter').id);
+ok(ideas.length === 2 && ideas.every(x => x.user_id === me && x.text && ['idee', 'bug'].includes(x.kind)) && ideas.find(x => x.kind === 'bug').context.screen === 'Ranking', 'briefjes bewaard met categorie, tekst, afzender en scherm');
+ok((await page.$$('.ib-card')).length === 2 && (await page.$$('.ib-group.s-nieuw .ib-card')).length === 2, 'beide briefjes zichtbaar onder In de bus');
+await page.click('#ibf [data-f=bug]'); await wait(200);
+ok((await page.$$('.ib-card')).length === 1, 'filter op bugs');
+await page.click('.ib-card .ib-main'); await page.click('.ib-card [data-s=gepland]'); await wait(300);
+ok((await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).ideas.find(x => x.kind === 'bug').status)) === 'gepland' && !!(await page.$('.ib-group.s-gepland')), 'status op de planning gezet');
+// Luca ziet het briefje van Wouter, met een rood cijfertje op de brievenbus
+await page.keyboard.press('Escape'); await wait(500); await page.evaluate(() => localStorage.setItem('dispatch.demo.me', 'luca')); await page.reload(); await page.waitForSelector('#ideabtn:not([hidden])'); await wait(800);
+ok(await page.$eval('.ib-badge', b => !b.hidden && b.textContent === '2'), 'Luca ziet 2 nieuwe briefjes op de brievenbus');
+await page.click('#ideabtn'); await page.click('.ib-tabs [data-t=bus]'); await wait(300);
+ok((await page.$$('.ib-card')).length === 2 && !(await page.$('.ib-card [data-del]')) && await page.$eval('.ib-badge', b => b.hidden), 'Luca leest de bus, kan Wouters briefjes niet terughalen, cijfertje weg');
+await page.keyboard.press('Escape'); await page.evaluate(() => localStorage.setItem('dispatch.demo.me', 'wouter'));
+
 // manifest en iconen
 const man = await (await page.request.get('http://localhost:8129/manifest.webmanifest')).json();
 const icons = await Promise.all(man.icons.map(i => page.request.get('http://localhost:8129/' + i.src).then(r => r.status())));
