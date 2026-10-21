@@ -25,7 +25,7 @@ const SC = [
   ['spelen', '#/'], ['spelen-rij', '#/', async p => { await p.tap('.mode-t[data-k=rij]'); await wait(p, 300); }],
   ['park-kies', '#/', async p => { await p.tap('.mode-t[data-k=park]'); await p.tap('#start'); await wait(p, 600); }],
   ['duel', '#/duel'], ['duel-gekozen', '#/duel', async p => { await p.tap('#stage .card.a'); await wait(p, 120); }],
-  ['rangee', '#/rangee'], ['rangee-bevestig', '#/rangee', async p => { const c = await p.$$('#line .card'); await c[1].tap(); await c[0].tap(); await c[3].tap(); await wait(p, 500); }],
+  ['rangee', '#/rangee'], ['rangee-slepen', '#/rangee', async p => { const c = await p.$$('#line .card'); const a = await c[3].boundingBox(), b = await c[0].boundingBox(); await p.mouse.move(a.x + a.width / 2, a.y + a.height / 2); await p.mouse.down(); await p.mouse.move(b.x + b.width, a.y + a.height / 2, { steps: 8 }); await wait(p, 200); }],
   ['ranking', '#/programma'], ['ranking-ext', '#/programma', async p => { await p.tap('#vbtn'); await wait(p, 300); }],
   ['ranking-zoek', '#/programma', async p => { await p.tap('#q'); await p.keyboard.type('vek'); await wait(p, 400); }],
   ['ranking-label', '#/programma', async p => { await p.fill('#q', 'eft'); await wait(p, 300); await p.tap('#sugg [data-s]'); await wait(p, 300); }],

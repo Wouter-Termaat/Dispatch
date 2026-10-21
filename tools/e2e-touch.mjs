@@ -37,9 +37,17 @@ await page.tap('#home'); await page.waitForSelector('.vb-panel'); ok(true, 'Klaa
 
 // La Rangée met bevestigen
 await page.tap('.mode-t[data-k=rij]'); await page.tap('#start'); await page.waitForSelector('#line .card'); await wait(800);
-let c = await page.$$('#line .card'); await c[2].tap(); await c[0].tap(); await c[1].tap(); await wait(500); await shot('04-bevestig');
-ok(await page.$('.scr.confirming'), 'rangée: bevestigstap na drie tikken');
+ok(await page.$eval('#undo', b => b.disabled), 'rangée: Herstel grijs aan het begin van de ronde');
+{ // met de vinger de kaart van plek 3 naar plek 1 slepen
+  const cdp = await page.context().newCDPSession(page); const c = await page.$$('#line .card');
+  const a = await c[2].boundingBox(), b = await c[0].boundingBox(); const y = a.y + a.height / 2, x0 = a.x + a.width / 2, x1 = b.x + b.width / 2;
+  const tp = (type, x) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y, id: 1 }] });
+  const id = await c[2].getAttribute('data-id');
+  await tp('touchStart', x0); for (let i = 1; i <= 14; i++) { await tp('touchMove', x0 + (x1 - x0) * i / 14); await wait(16); } await tp('touchEnd'); await wait(450); await shot('04-bevestig');
+  ok(await page.$eval(`#line .card[data-id="${id}"] .num`, n => n.textContent) === '1', 'rangée: met de vinger naar plek 1 gesleept');
+}
 await page.tap('#ok'); await wait(700);
+ok(!(await page.$eval('#undo', b => b.disabled)), 'rangée: Herstel actief na een rij');
 ok((await page.$eval('#count', e => e.textContent)) === '1 van 5', 'rangée: 1 van 5 na bevestigen');
 await page.tap('#close'); await page.waitForSelector('.aff', { timeout: 8000 }); await wait(500); await page.tap('#home'); await page.waitForSelector('.vb-panel');
 

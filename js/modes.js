@@ -15,7 +15,7 @@ const I = {
 
 export const MODES = [
   { k: 'duel', t: 'Le Duel', s: '1 tegen 1', d: 'Twee banen. Tik de beste.', unit: 'duels' },
-  { k: 'rij', t: 'La Rangée', s: 'rij van 4', d: 'Vier banen op volgorde, dan bevestigen.', unit: 'rijen' },
+  { k: 'rij', t: 'La Rangée', s: 'rij van 4', d: 'Vier banen op volgorde slepen, dan bevestigen.', unit: 'rijen' },
   { k: 'twijfel', t: 'Twijfelzone', s: 'duels', d: 'Alleen je onzekerste banen.', unit: 'duels' },
   { k: 'park', t: 'Park-avond', s: 'duels', d: 'Duels binnen één park.', unit: 'duels' },
   { k: 'rematch', t: 'Rematch', s: 'duels', d: 'Tegenstrijdigheden opnieuw.', unit: 'duels' },

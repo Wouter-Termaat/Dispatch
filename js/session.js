@@ -26,10 +26,10 @@ export function startSession(kind, { mode = 'normal', label = '', length, filter
 const countReal = () => compsOf(meKey()).filter(c => c.outcome !== 'skip').length;
 
 /** Slaat vergelijkingen op als één batch. comps: [{a,b,outcome}]. Geeft de batch-id terug. */
-export function commit(comps, cmode, { ms = 0, type = 'row', ids = [] } = {}) {
+export function commit(comps, cmode, { ms = 0, type = 'row', ids = [], meta = {} } = {}) {
   const user_id = me().id, batch = newBatch(), t = new Date();
   const before = countReal();
-  logChoice(comps, cmode, { ms, type, ids, batch });
+  logChoice(comps, cmode, { ms, type, ids, batch, meta });
   const rows = comps.map((c, i) => ({ ...c, user_id, batch, mode: cmode, created_at: new Date(t.getTime() + i).toISOString() }));
   S.store.addComparisons(rows);
   refit();
@@ -44,7 +44,7 @@ export function commit(comps, cmode, { ms = 0, type = 'row', ids = [] } = {}) {
 }
 
 /** Logboek per keuze: wat het model vooraf verwachtte, waar de banen stonden en hoe zeker, hoe lang je erover deed. */
-function logChoice(comps, cmode, { ms, type, ids, batch }) {
+function logChoice(comps, cmode, { ms, type, ids, batch, meta }) {
   const m = model(); if (!m) return;
   const sig = x => 1 / (1 + Math.exp(-x));
   const at = id => { const i = m.idx.get(id); return i === undefined ? null : { r: m.position[i] + 1, hw: (m.hi[i] - m.lo[i]) / 2, b: m.battles?.get(id) || 0 }; };
@@ -57,7 +57,7 @@ function logChoice(comps, cmode, { ms, type, ids, batch }) {
   const s = session.current;
   track('choice', { batch, type, mode: cmode, ms: Math.round(ms), input: inputKind(), n: (s?.actions.length || 0) + 1,
     ids, at: Object.fromEntries(ids.map(id => [id, at(id)])), pairs,
-    order: type === 'row' ? ids : undefined, hour: new Date().getHours() });
+    order: type === 'row' ? ids : undefined, hour: new Date().getHours(), ...meta });
 }
 
 /** Ronde gestopt zonder afsluiting (weg genavigeerd of niets gekozen). */

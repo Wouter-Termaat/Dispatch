@@ -30,7 +30,7 @@ export default {
       <h2 id="spelvormen">3. De spelvormen</h2>
       <p>Op Spelen kies je hoe je wilt spelen. Een ronde duurt standaard tien keuzes, en daarna krijg je de affiche met wat er is veranderd.</p>
       ${mode('duel', 'Le Duel', '1 tegen 1', 'Twee banen, één keuze. Tik de beste, of gebruik op de laptop de pijltjes. De snelste manier om even tien minuten weg te tikken, en de spelvorm voor elke dag.')}
-      ${mode('rij', 'La Rangée', 'rij van 4', 'Vier banen op een rij. Tik ze op volgorde van beste naar minste en bevestig. Tik de laatste nog eens om hem terug te nemen. Eén rij zijn zes duels tegelijk, dus dit is de snelste weg naar een zekere ranking. Een ronde is vijf rijen.')}
+      ${mode('rij', 'La Rangée', 'rij van 4', 'Vier banen op een rij, in willekeurige volgorde. Sleep je favoriet naar links, naar plek 1, en de rest erachter. De nummers lopen vanzelf mee. Klopt de volgorde? Dan bevestig je. Op de laptop kan het ook met de pijltjes en Enter. Eén rij zijn zes duels tegelijk, dus dit is de snelste weg naar een zekere ranking. Een ronde is vijf rijen.')}
       ${mode('twijfel', 'Twijfelzone', 'duels', 'Alleen de banen waar Dispatch nog het minst zeker over is. Lastige keuzes, maar hier leert hij per tik het meest.')}
       ${mode('park', 'Park-avond', 'duels', 'Kies een park en speel alleen duels tussen de banen daarvan. Bij een klein park komt elk paar precies één keer langs, bij een groot park duurt de avond wat langer.')}
       ${mode('rematch', 'Rematch', 'duels', 'Dispatch zoekt keuzes die elkaar tegenspreken. Een rondje zoals A boven B, B boven C en toch C boven A, of een uitslag die heel onwaarschijnlijk was. Die speel je opnieuw. Je oude keuze blijft staan, de nieuwe telt mee als extra stem. Is er niets tegenstrijdigs, dan hoor je dat je opvallend consequent bent.')}
@@ -40,7 +40,7 @@ export default {
       <p>Bij Le Duel, La Rangée en Twijfelzone kun je kiezen met welk deel van je ranking je speelt. De rand doet ook mee: bij Top 10 zitten er een paar banen net onder je top 10 bij, zodat een stijger er nog in kan komen. De statusregel laat dan zien hoe zeker dat deel is.</p>
 
       <h3>De knoppen onder de kaarten</h3>
-      <p><b>Gelijk</b> als je ze echt even goed vindt: dat telt als een halve winst voor allebei. <b>Weet niet</b> als je een van de twee niet meer goed weet: die keuze telt niet mee. <b>Herstel</b> draait je laatste keuze terug. Tik je heel snel achter elkaar, dan gaat de <b>trimrem</b> erop en komen de kaarten iets trager binnen. Een goede keuze heeft heel even tijd nodig.</p>
+      <p><b>Gelijk</b> als je ze echt even goed vindt: dat telt als een halve winst voor allebei. <b>Weet niet</b> als je een van de twee niet meer goed weet: die keuze telt niet mee. <b>Herstel</b> draait je laatste keuze terug en laat die opnieuw zien; aan het begin van een ronde is er nog niets te herstellen en is hij grijs. Tik je heel snel achter elkaar, dan gaat de <b>trimrem</b> erop en komen de kaarten iets trager binnen. Een goede keuze heeft heel even tijd nodig.</p>
 
       <h2 id="rekenen">4. Hoe Dispatch rekent</h2>
       <h3>Een kracht per baan</h3>

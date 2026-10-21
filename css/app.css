@@ -70,6 +70,7 @@ h1,h2,h3,h4{font-weight:400}
   letter-spacing:.24em;text-transform:uppercase;padding:12px 16px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair-soft);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:color .25s,box-shadow .25s,transform .15s;text-decoration:none}
 .ghost:hover{color:var(--cream);box-shadow:inset 0 0 0 1px var(--hair)}
 .ghost:active{transform:scale(.97)}
+.ghost[disabled]{opacity:.35;pointer-events:none}
 .ghost.on{color:var(--gold);box-shadow:inset 0 0 0 1px var(--hair),0 0 14px rgba(255,190,110,.2)}
 .ghost[disabled]{opacity:.4;pointer-events:none}
 .link{background:none;border:0;cursor:pointer;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-dim);padding:6px}

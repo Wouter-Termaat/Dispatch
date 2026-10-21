@@ -35,41 +35,44 @@ await page.click('#start');
 await page.waitForSelector('#line .card');
 await page.waitForTimeout(500);
 const times = [];
-for (let r = 0; r < 5; r++) {
-  await page.waitForFunction(() => document.querySelectorAll('#line .card:not(.enter)').length === 4 && !document.querySelector('#line .card.picked'));
+const ready = () => page.waitForFunction(() => document.querySelectorAll('#line .card:not(.enter)').length === 4 && !document.querySelector('#line .card.dragging'));
+const placeOrder = () => page.$$eval('#line .card', cs => cs.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left).map(c => c.dataset.id + ':' + c.querySelector('.num').textContent));
+async function drag(from, to) {
+  const order = await placeOrder();
+const byId = async i => page.$(`#line .card[data-id="${order[i].split(':')[0]}"]`);
+  const a = await (await byId(from)).boundingBox(), b = await (await byId(to)).boundingBox();
+  const y = a.y + a.height / 2; await page.mouse.move(a.x + a.width / 2, y); await page.mouse.down();
+  for (let i = 1; i <= 14; i++) { await page.mouse.move(a.x + a.width / 2 + (b.x - a.x) * i / 14, y); await page.waitForTimeout(16); }
+  await page.mouse.up(); await page.waitForTimeout(350);
+}
+for (let r = 0; r < 6; r++) {   // 6 keer bevestigen: één rij wordt onderweg hersteld
+  await ready();
+  if (r === 0) {
+    const before = await placeOrder();
+    await drag(3, 0); await shot('02-rangee');
+    const after = await placeOrder();
+    ok(after[0].split(':')[0] === before[3].split(':')[0] && after.map(x => x.split(':')[1]).join('') === '1234', 'slepen: kaart van plek 4 naar plek 1, nummers lopen mee');
+  }
   if (r === 2) {
-    // twee tikken, screenshot, dan Herstel (wist de keuzes)
-    const c = await page.$$('#line .card'); await c[1].click(); await c[3].click(); await page.waitForTimeout(250); await shot('03-rangee-keuze');
-    await page.click('#undo');
-    ok(await page.$$eval('#line .card.picked', x => x.length) === 0, 'Herstel wist de keuzes in de rij');
+    // Herstel draait de vorige rij terug
+    const n = await page.textContent('#count');
+    await page.click('#undo'); await page.waitForTimeout(400);
+    ok((await page.textContent('#count')) !== n, 'Herstel draait de vorige rij terug');
+    await ready();
   }
   await page.waitForTimeout(1900); // mensentempo, anders gaat Trimrem (bewust) aan
   const t = await page.evaluate(() => new Promise(res => {
-    const cards = [...document.querySelectorAll('#line .card')];
-    const before = cards.map(c => c.dataset.id).join();
-    cards[2].click(); cards[0].click(); cards[3].click();   // vierde gaat vanzelf, daarna de bevestigstap
-    if (!document.querySelector('.scr.confirming')) { res(-2); return; }
+    const before = [...document.querySelectorAll('#line .card')].map(c => c.dataset.id).join();
     document.querySelector('#ok').click();
     const t0 = performance.now();
     const poll = () => {
       const now = [...document.querySelectorAll('#line .card')];
-      const ready = now.length === 4 && now.map(c => c.dataset.id).join() !== before && !now.some(c => c.classList.contains('picked'));
+      const ready = now.length === 4 && now.map(c => c.dataset.id).join() !== before && !now.some(c => c.classList.contains('win'));
       if (ready) res(performance.now() - t0); else if (document.querySelector('.aff, #check:not([hidden])')) res(-1); else requestAnimationFrame(poll);
     };
     poll();
   }));
-  if (t === -2) ok(false, 'bevestigstap verschijnt na vier keuzes');
   if (t >= 0) times.push(t);
-  if (r === 0) {
-    await page.waitForTimeout(120); await shot('02-rangee');
-    // bevestigstap: kiezen, bekijken, Opnieuw
-    await page.waitForFunction(() => document.querySelectorAll('#line .card:not(.enter)').length === 4 && !document.querySelector('#line .card.picked'));
-    await page.waitForTimeout(500);
-    const c = await page.$$('#line .card'); await c[1].click(); await c[0].click(); await c[2].click(); await page.waitForTimeout(450); await shot('02b-bevestig');
-    ok(await page.$('.scr.confirming #ok:not([hidden])'), 'na vier keuzes: volgorde zichtbaar met Bevestig en Opnieuw');
-    await page.click('#again'); await page.waitForTimeout(250);
-    ok(await page.$$eval('#line .card.picked', x => x.length) === 0, 'Opnieuw wist de volgorde');
-  }
 }
 const max = Math.max(...times), avg = times.reduce((a, b) => a + b, 0) / times.length;
 ok(max < 500, `volgende rij staat klaar binnen 0,5 s (gemiddeld ${avg.toFixed(0)} ms, max ${max.toFixed(0)} ms, ${times.length} metingen)`);

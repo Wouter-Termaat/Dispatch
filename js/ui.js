@@ -97,7 +97,7 @@ if (typeof document !== 'undefined') {
   };
   const reset = el => { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); };
   if (fine) {
-    document.addEventListener('pointermove', e => { const el = e.target.closest?.('.card'); if (el && !reduceMotion()) tilt(el, e.clientX, e.clientY); }, { passive: true });
+    document.addEventListener('pointermove', e => { const el = e.target.closest?.('.card'); if (el && !el.classList.contains('dragging') && !reduceMotion()) tilt(el, e.clientX, e.clientY); }, { passive: true });
     document.addEventListener('pointerout', e => { const el = e.target.closest?.('.card'); if (el && !el.contains(e.relatedTarget)) reset(el); }, { passive: true });
   } else {
     document.addEventListener('pointerdown', e => { const el = e.target.closest?.('.card'); if (el && !reduceMotion()) { tilt(el, e.clientX, e.clientY, .7); setTimeout(() => reset(el), 260); } }, { passive: true });

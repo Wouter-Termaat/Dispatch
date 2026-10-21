@@ -69,7 +69,8 @@ export default {
     lineEl.textContent = hint();
     let pair = null, busy = false, shownAt = 0, ties = 0, ended = false, qi = 0, timers = [];
     const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
-    const progress = () => { const n = s.duels; count.textContent = `${n} van ${s.length}`; prog.style.width = Math.min(100, n / s.length * 100) + '%'; };
+    // Herstel kan pas als er in deze ronde iets te herstellen is
+    const progress = () => { const n = s.duels; count.textContent = `${n} van ${s.length}`; prog.style.width = Math.min(100, n / s.length * 100) + '%'; fg.querySelector('#undo').disabled = !s.actions.some(a => a.type !== 'skip'); };
 
     const played = new Set();
     const pk = p => [...p].sort().join('|');
