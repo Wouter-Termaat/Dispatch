@@ -16,7 +16,7 @@ function greeting(name) {
 }
 const head = () => `<header class="sp-head"><h1 class="neon">D<span class="idot">ı${dot('logo-i')}</span>spatch</h1><div class="eyebrow">Cabaret des Montagnes Russes</div><p class="sp-greet" id="greet"></p></header>`;
 const cards = () => `<div class="modes" id="modes" role="radiogroup" aria-label="Spelvorm">${MODES.map(m => `
-  <button class="mode-t" role="radio" data-k="${m.k}"><span class="mi">${icon(m.k)}</span><b>${m.t}</b><small>${m.s}</small></button>`).join('')}</div>`;
+  <button class="mode-t" role="radio" data-k="${m.k}" title="${m.d}"><span class="mi">${icon(m.k)}</span><b>${m.t}</b><small>${m.s}</small></button>`).join('')}</div>`;
 const focusRow = () => `<div class="sp-focus" id="focus" role="radiogroup" aria-label="Welk deel van je ranking"><div class="pills wide">${FOCUS.map(f => `<button role="radio" data-f="${f.k}">${f.t}</button>`).join('')}</div></div>`;
 const extra = () => `<div class="sp-extra"><div class="eyebrow">Jouw ranking</div><div class="big"><b id="xpct"></b><span id="xsub"></span></div><ol id="xtop"></ol></div>`;
 const label = () => `<div class="sp-label"><span class="eyebrow">Kies je spel</span><span class="sp-status" id="status"></span></div>`;
@@ -29,7 +29,7 @@ export default {
     const wide = innerWidth >= 900 && innerWidth / innerHeight >= 1.25;
     backdrop(bg);
     fg.innerHTML = `<div class="spelen vb"><div class="vb-scene" id="scene"></div>${head()}
-      <section class="sp-play vb-panel">${extra()}${label()}${cards()}${focusRow()}<p class="mode-desc" id="desc"></p><button class="btn big" id="start"></button>
+      <section class="sp-play vb-panel">${extra()}${label()}${cards()}${focusRow()}<button class="btn big" id="start"></button>
         <button class="pb-sign" id="pb" data-dot="pointblanc" aria-label="Point Blanc">Point Blanc</button></section>
 </div>`;
 
@@ -61,7 +61,6 @@ export default {
       else if (isHalloween()) line += ' ' + esc(PLEIN.halloween);
       fg.querySelector('#greet').innerHTML = line;
       fg.querySelectorAll('.mode-t').forEach(b => { const on = b.dataset.k === sel; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
-      const desc = fg.querySelector('#desc'); if (desc) desc.textContent = mode.d;
       fg.querySelector('#start').innerHTML = `Start ${esc(mode.t)} <span aria-hidden="true">›</span>`;
       // focus: alleen bij duel, rij en twijfel; de rest kiest zelf welke banen meedoen
       const fOk = FOCUS_MODES.includes(sel); const fEl = fg.querySelector('#focus');

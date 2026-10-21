@@ -13,12 +13,11 @@
 .vb .sp-extra{display:none}
 @media (min-width:900px) and (min-aspect-ratio:5/4){
   .vb-panel{display:grid;grid-template-columns:240px 1fr;column-gap:26px;padding:20px 24px;width:min(980px,calc(100% - 60px));margin-bottom:18px}
-  .vb .sp-extra{display:block;grid-row:1/6}
-  .vb .sp-label,.vb .modes,.vb .mode-desc,.vb .btn{grid-column:2}
+  .vb .sp-extra{display:block;grid-row:1/5}
+  .vb .sp-label,.vb .modes,.vb .btn{grid-column:2}
   .vb .modes{justify-content:flex-start;padding-left:0}
   .vb .btn.big{justify-self:start}
   .vb .sp-label{padding:0}
-  .vb .mode-desc{text-align:left;padding:0}
 }
 
 @media (min-width:900px) and (min-aspect-ratio:5/4){
@@ -37,7 +36,6 @@
   .vb-panel{padding:8px 0 10px;margin-bottom:6px;width:min(720px,calc(100% - 40px))}
   .vb .mode-t{height:78px;width:92px}
   .vb .mode-t .mi svg{width:24px;height:24px}
-  .vb .mode-desc{display:none}
   .vb .btn.big{padding:12px 30px 10px}
 }
 /* straatbordje Point Blanc aan het paneel (Witte Stip) */
