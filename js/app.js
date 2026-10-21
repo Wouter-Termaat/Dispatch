@@ -107,7 +107,12 @@ async function boot() {
   document.getElementById('boot').classList.add('gone');
   setTimeout(() => document.getElementById('boot')?.remove(), 700);
   import('./music.js').then(m => m.initMusic()).catch(() => {});
-  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    // nieuwe versie actief: één keer herladen, zodat nooit een mix van oude en nieuwe bestanden op het scherm staat (niet midden in een ronde)
+    const had = !!navigator.serviceWorker.controller; let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!had || reloaded || session.current) return; reloaded = true; location.reload(); });
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 }
 
 // Kleine indicator als er wijzigingen wachten op verbinding
