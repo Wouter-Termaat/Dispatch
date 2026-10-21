@@ -51,7 +51,8 @@ export default {
       sceneEl.style.bottom = Math.max(0, root.clientHeight - panel.offsetTop - 40) + 'px';
     };
     frame(); addEventListener('resize', frame);
-    const scene = await buildScene(sceneEl, { closed, focus: wide ? [0, 120, 1134, 1330] : [250, 340, 884, 1010] });
+    // alleen de molen voor de globe: huisjes, hek, straat met deurlicht, lantaarns, auto's en het stel blijven weg (rustiger)
+    const scene = await buildScene(sceneEl, { closed, focus: wide ? [0, 120, 1134, 1330] : [250, 340, 884, 1010], drop: ['buildings-l', 'buildings-r', 'fence', 'street', 'inside', 'lamp-l', 'lamp-r', 'cars-l', 'cars-r', 'couple'] });
 
     const render = () => {
       const m = model(), rem = remaining(), mode = MODES.find(x => x.k === sel);

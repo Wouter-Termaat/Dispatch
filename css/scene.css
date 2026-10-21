@@ -162,8 +162,9 @@
 /* ---------- lichtbundels v2: groter, zachte randen, strepen en stof in het licht ---------- */
 .backdrop .bd-beam{top:-14vh;width:min(110vw,1300px);height:165vh;filter:none;opacity:.62;clip-path:none;
   background:linear-gradient(180deg,rgba(255,232,185,.62) 0%,rgba(255,214,150,.26) 35%,rgba(255,200,130,.09) 70%,transparent 95%);
-  -webkit-mask:conic-gradient(from 166deg at 50% 0%,transparent 0deg,rgba(0,0,0,.35) 5deg,#000 11deg,#000 17deg,rgba(0,0,0,.35) 23deg,transparent 28deg);
-  mask:conic-gradient(from 166deg at 50% 0%,transparent 0deg,rgba(0,0,0,.35) 5deg,#000 11deg,#000 17deg,rgba(0,0,0,.35) 23deg,transparent 28deg)}
+  /* zachte rand zonder knik: veel tussenstappen, anders zie je een harde lijn waar het licht ophoudt */
+  -webkit-mask:conic-gradient(from 164deg at 50% 0%,rgba(0,0,0,0) 0deg,rgba(0,0,0,0.03) 3deg,rgba(0,0,0,0.1) 5.5deg,rgba(0,0,0,0.24) 8deg,rgba(0,0,0,0.46) 10.5deg,rgba(0,0,0,0.7) 12.5deg,rgba(0,0,0,0.9) 14.5deg,rgba(0,0,0,1) 16deg,rgba(0,0,0,0.9) 17.5deg,rgba(0,0,0,0.7) 19.5deg,rgba(0,0,0,0.46) 21.5deg,rgba(0,0,0,0.24) 24deg,rgba(0,0,0,0.1) 26.5deg,rgba(0,0,0,0.03) 29deg,rgba(0,0,0,0) 32deg);
+  mask:conic-gradient(from 164deg at 50% 0%,rgba(0,0,0,0) 0deg,rgba(0,0,0,0.03) 3deg,rgba(0,0,0,0.1) 5.5deg,rgba(0,0,0,0.24) 8deg,rgba(0,0,0,0.46) 10.5deg,rgba(0,0,0,0.7) 12.5deg,rgba(0,0,0,0.9) 14.5deg,rgba(0,0,0,1) 16deg,rgba(0,0,0,0.9) 17.5deg,rgba(0,0,0,0.7) 19.5deg,rgba(0,0,0,0.46) 21.5deg,rgba(0,0,0,0.24) 24deg,rgba(0,0,0,0.1) 26.5deg,rgba(0,0,0,0.03) 29deg,rgba(0,0,0,0) 32deg)}
 .backdrop .bd-beam.l{left:calc(4% - min(55vw,650px))}
 .backdrop .bd-beam.r{right:calc(4% - min(55vw,650px))}
 /* fijne lichtstrepen binnen de bundel */
@@ -178,5 +179,5 @@
 .backdrop.dim .bd-beam{opacity:.42}
 .scene .beam{width:420px;height:1700px;filter:none;opacity:.55;clip-path:none;
   background:linear-gradient(0deg,rgba(255,214,150,0),rgba(255,224,170,.38) 18%,rgba(255,214,150,.14) 65%,transparent);
-  -webkit-mask:linear-gradient(90deg,transparent 22%,rgba(0,0,0,.4) 38%,#000 47%,#000 53%,rgba(0,0,0,.4) 62%,transparent 78%);mask:linear-gradient(90deg,transparent 22%,rgba(0,0,0,.4) 38%,#000 47%,#000 53%,rgba(0,0,0,.4) 62%,transparent 78%)}
+  -webkit-mask:linear-gradient(90deg,rgba(0,0,0,0) 20%,rgba(0,0,0,0.04) 26%,rgba(0,0,0,0.14) 31%,rgba(0,0,0,0.32) 36%,rgba(0,0,0,0.6) 41%,rgba(0,0,0,0.88) 46%,rgba(0,0,0,1) 50%,rgba(0,0,0,0.88) 54%,rgba(0,0,0,0.6) 59%,rgba(0,0,0,0.32) 64%,rgba(0,0,0,0.14) 69%,rgba(0,0,0,0.04) 74%,rgba(0,0,0,0) 80%);mask:linear-gradient(90deg,rgba(0,0,0,0) 20%,rgba(0,0,0,0.04) 26%,rgba(0,0,0,0.14) 31%,rgba(0,0,0,0.32) 36%,rgba(0,0,0,0.6) 41%,rgba(0,0,0,0.88) 46%,rgba(0,0,0,1) 50%,rgba(0,0,0,0.88) 54%,rgba(0,0,0,0.6) 59%,rgba(0,0,0,0.32) 64%,rgba(0,0,0,0.14) 69%,rgba(0,0,0,0.04) 74%,rgba(0,0,0,0) 80%)}
 @media (prefers-reduced-motion:reduce){ .backdrop .bd-beam::after{animation:none} }
