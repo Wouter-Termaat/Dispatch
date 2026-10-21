@@ -71,6 +71,7 @@
 .backdrop .bd-floor::before{content:"";position:absolute;inset:0;opacity:.18;background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(236,199,127,.35) 58px 59px);
   transform:perspective(400px) rotateX(62deg);transform-origin:50% 0;-webkit-mask:linear-gradient(180deg,#000,transparent 85%);mask:linear-gradient(180deg,#000,transparent 85%)}
 .backdrop.dim .bd-sun{opacity:.14}
+.backdrop.plein .bd-sun{display:none}
 
 /* ---------- Spelen ---------- */
 :root{--page:#140c1c;--night:#120a18}

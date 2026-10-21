@@ -27,7 +27,7 @@ export default {
     const closed = isClosed();
     let sel = lastMode(), focus = lastFocus();
     const wide = innerWidth >= 900 && innerWidth / innerHeight >= 1.25;
-    backdrop(bg);
+    backdrop(bg, 'plein');   // zonder de vage globe van de achtergrond: de scène heeft zijn eigen globe, twee over elkaar gaf harde lijnen in de lichtbundels
     fg.innerHTML = `<div class="spelen vb"><div class="vb-scene" id="scene"></div>${head()}
       <section class="sp-play vb-panel">${extra()}${label()}${cards()}${focusRow()}<button class="btn big" id="start"></button>
         <button class="pb-sign" id="pb" data-dot="pointblanc" aria-label="Point Blanc">Point Blanc</button></section>
