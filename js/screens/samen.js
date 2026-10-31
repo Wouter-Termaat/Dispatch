@@ -1,12 +1,13 @@
 // Inzichten (route #/samen): bovenaan de smaakmatch van Wouter & Luca als boog van lampjes.
-// Tabs: Jij (je eigen cijfers), Verhalen, Samen (gezamenlijke ranking) en Nog te rijden.
+// Tabs: Jij (je eigen cijfers), Stempels (de kermiskaart), Verhalen, Samen (gezamenlijke ranking) en Nog te rijden.
 import { model, catalog, coaster, nameOf, meKey, on, profiles, entriesOf } from '../state.js';
 import { compare } from '../model.js';
-import { esc, meta, pick, buzz, reduceMotion } from '../ui.js';
+import { esc, meta, pick, buzz, reduceMotion, openSheet } from '../ui.js';
 import { ROAST, fill } from '../copy.js';
 import { openCoaster } from '../baankaart.js';
 import { dot } from '../stippen.js';
 import { myStats } from '../insights.js';
+import { stampsOf, checkStamps, fmtOf, LEVELS, TOTAL_LEVELS } from '../stempels.js';
 
 const AN = 27; let tab = 'jij';
 
@@ -14,8 +15,10 @@ import { backdrop } from '../stage.js';
 
 export default {
   nav: 'samen', title: 'Inzichten',
-  mount({ bg, fg }) {
+  mount({ bg, fg, params }) {
     backdrop(bg, 'dim');
+    if (params?.get('tab')) tab = params.get('tab');
+    let who = meKey();
     const A = 'wouter', B = 'luca';
     if (!model(A) || !model(B) || !entriesOf(A).length || !entriesOf(B).length) {
       fg.innerHTML = `<div class="page center-msg"><h1 class="h-title">Inzichten</h1><p class="sheet-text">Er zijn twee lijsten nodig om te vergelijken.</p></div>`; return;
@@ -23,7 +26,7 @@ export default {
     fg.innerHTML = `<div class="page samen">
       <header class="c-head"><h1>${esc(nameOf(A))}<em>&amp;</em>${esc(nameOf(B))}</h1><div class="eyebrow" id="shared"></div></header>
       <button class="arc" id="arc" aria-label="Smaakmatch opnieuw afspelen"><svg viewBox="0 0 250 140" id="arcsvg"></svg><div class="pct"><b id="pct">0%</b><span class="eyebrow">smaakmatch</span></div>${dot('boog', 'arcdot', 'span')}</button>
-      <nav class="seg center" id="seg"><button data-t="jij">Jij</button><button data-t="verhalen">Verhalen</button><button data-t="samen">Samen</button><button data-t="bucket">Nog te rijden</button></nav>
+      <nav class="seg center" id="seg"><button data-t="jij">Jij</button><button data-t="kaart">Stempels</button><button data-t="verhalen">Verhalen</button><button data-t="samen">Samen</button><button data-t="bucket">Te rijden</button></nav>
       <div class="notes-c" id="notes"></div></div>`;
     const svg = fg.querySelector('#arcsvg'), pctEl = fg.querySelector('#pct'), notes = fg.querySelector('#notes');
     let s = '';
@@ -96,8 +99,37 @@ export default {
         + block('Je grootste verrassing', s.upset ? `<p>${nmk(s.upset.w)} won ooit van ${nmk(s.upset.l)}, terwijl die nu op plek ${s.rank(s.upset.l)} staat en ${nmk(s.upset.w)} op plek ${s.rank(s.upset.w)}. Volgens Dispatch had dat maar ${Math.max(1, Math.round(s.upset.p * 100))}% kans.</p>` : '')
         + block('Je banen', `<p>${s.mostPlayed ? `Het vaakst in een battle: ${nmk(s.mostPlayed[0])}, ${s.mostPlayed[1].n} keer.` : ''}${s.bestWin ? ` Hoogste winst: ${nmk(s.bestWin[0])}, ${Math.round(s.bestWin[1] * 100)}% van ${s.bestWin[2]} battles.` : ''}${s.worstWin ? ` Laagste winst: ${nmk(s.worstWin[0])}, ${Math.round(s.worstWin[1] * 100)}%.` : ''}${s.surest ? ` Zekerst op zijn plek: ${nmk(s.surest)} op ${s.rank(s.surest)}.` : ''}${s.unsurest ? ` Nog het meest onzeker: ${nmk(s.unsurest)}.` : ''} ${n(s.certain, 'baan is', 'banen zijn')} nu zeker.</p>`)
         + block('Twijfel', `<p>${n(s.ties, 'keer', 'keer')} gelijk gegeven${s.total ? ` (${Math.round(s.ties / s.total * 100)}% van je vergelijkingen)` : ''} en ${n(s.skips, 'keer', 'keer')} weet niet.</p>`)
-        + block('Tickets', `<p>${s.lastTicket ? `Je hebt ticket ${esc(s.lastTicket.naam)}.` : 'Nog geen ticket.'}${s.ticket ? ` Nog ${s.ticket.at - s.total} vergelijkingen tot ${esc(s.ticket.naam)}.` : ' Je hebt ze allemaal.'}</p>`);
+        ;
     }
+    // ---------- Stempels: de kermiskaart ----------
+    function stampText(st) {
+      if (st.level === 3) return st.lower ? `Goud, met ${fmtOf(st, st.value)} kans` : `Goud, ${fmtOf(st, st.value)} ${st.unit}`;
+      if (st.lower) return st.value >= 1 ? `${LEVELS[st.level]}: ${fmtOf(st, st.next)} kans of minder` : `Beste: ${fmtOf(st, st.value)}. ${LEVELS[st.level]} bij ${fmtOf(st, st.next)}`;
+      return `${fmtOf(st, Math.min(st.value, st.next))} van ${fmtOf(st, st.next)} ${st.unit}`;
+    }
+    function kaart() {
+      const list = stampsOf(who), done = list.reduce((a, st) => a + st.level, 0), cats = [...new Set(list.map(st => st.cat))];
+      const card = st => {
+        const hidden = st.cat === 'Verborgen' && !st.level;   // verborgen stempels blijven een vraagteken tot je de eerste hebt
+        const w = st.level === 3 ? 100 : st.lower ? (st.value >= 1 ? 0 : Math.min(99, (1 - st.value) / (1 - st.next) * 100)) : Math.min(99, st.value / st.next * 100);
+        return `<button class="st l${st.level}" data-st="${st.id}"><span class="st-medal">${hidden ? '<b>?</b>' : st.ic}</span>
+          <span class="st-txt"><b>${hidden ? 'Verborgen' : esc(st.name)}</b><small>${hidden ? 'Ergens in de app' : stampText(st)}</small><i class="st-bar" style="--w:${w.toFixed(0)}%"></i></span>
+          <span class="st-pips">${[0, 1, 2].map(i => `<i class="${i < st.level ? 'on' : ''}"></i>`).join('')}</span></button>`;
+      };
+      return `<div class="st-top"><div class="pills" id="who">${[A, B].map(k => `<button data-who="${k}" class="${k === who ? 'on' : ''}">${esc(nameOf(k))}</button>`).join('')}</div>
+          <div class="st-sum"><b>${done}</b><span>van ${TOTAL_LEVELS} stempels</span></div><i class="st-total" style="--w:${(done / TOTAL_LEVELS * 100).toFixed(1)}%"></i></div>`
+        + cats.map(c => `<h3 class="eyebrow st-cat">${esc(c)}</h3><div class="st-grid">${list.filter(st => st.cat === c).map(card).join('')}</div>`).join('');
+    }
+    function stampSheet(id) {
+      const st = stampsOf(who).find(x => x.id === id); if (!st) return;
+      const hidden = st.cat === 'Verborgen' && !st.level;
+      const fmtDate = d => (d ? new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'al eerder');
+      openSheet(`<div class="sheet-pad st-sheet"><div class="st-big l${st.level}"><span class="st-medal">${hidden ? '<b>?</b>' : st.ic}</span></div>
+        <div class="eyebrow">${esc(st.cat)}</div><h3 class="h-title">${hidden ? 'Verborgen' : esc(st.name)}</h3>
+        <p class="sheet-text">${hidden ? 'Deze stempel zit ergens in de app verstopt.' : `Voor ${st.lower ? 'een winst bij zo weinig' : 'het aantal'} ${esc(st.unit)}.`}</p>
+        <div class="st-levels">${st.levels.map((t, i) => `<div class="st-lv${i < st.level ? ' got' : ''} lv${i + 1}"><i></i><b>${LEVELS[i]}</b><span>${hidden ? '?' : fmtOf(st, t) + (st.lower ? ' kans' : '')}</span><small>${i < st.level ? 'behaald ' + fmtDate(st.dates[i]) : i === st.level ? 'volgende' : ''}</small></div>`).join('')}</div></div>`);
+    }
+
     function render(replay = false) {
       C = compare(model(A), model(B), catalog());
       // nog te rijden: alles van de ander dat jij nog niet hebt (niet alleen de top 30), op hun volgorde
@@ -105,18 +137,21 @@ export default {
       C.bucketB = model(A).ranking.filter(id => !model(B).idx.has(id));
       fg.querySelector('#shared').textContent = `${C.shared.length} banen samen gereden`;
       fg.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
-      notes.innerHTML = tab === 'jij' ? mine() : tab === 'verhalen' ? stories() : tab === 'samen' ? joint() : bucket();
+      notes.innerHTML = tab === 'jij' ? mine() : tab === 'kaart' ? kaart() : tab === 'verhalen' ? stories() : tab === 'samen' ? joint() : bucket();
       if (replay) playArc(); else { const P = C.match ?? 0; pctEl.textContent = P + '%'; [...svg.querySelectorAll('circle')].forEach((c, i) => { const on = i < Math.round(AN * P / 100); c.setAttribute('fill', on ? '#ffe3a8' : '#3a2a44'); c.style.filter = on ? 'drop-shadow(0 0 5px rgba(255,200,110,.95))' : 'none'; }); }
     }
     fg.querySelector('#arc').onclick = () => { buzz(4); playArc(); };
-    fg.querySelector('#seg').onclick = e => { const b = e.target.closest('button'); if (!b) return; tab = b.dataset.t; notes.scrollTop = 0; render(); };
+    fg.querySelector('#seg').onclick = e => { const b = e.target.closest('button'); if (!b) return; tab = b.dataset.t; notes.scrollTop = 0; render(); if (tab === 'kaart') checkStamps(); };
     notes.addEventListener('click', e => {
+      const w = e.target.closest('[data-who]'); if (w) { buzz(3); who = w.dataset.who; render(); return; }
+      const st = e.target.closest('[data-st]'); if (st) { buzz(4); stampSheet(st.dataset.st); return; }
       const t = e.target.closest('[data-id]'); if (!t) return; buzz(4);
       const id = t.dataset.id; const key = t.dataset.k || (entriesOf(meKey()).some(x => x.coaster_id === id) ? meKey() : profiles().find(p => entriesOf(p.key).some(x => x.coaster_id === id))?.key);
       openCoaster(id, key || meKey());
     });
     render(true);
-    const off = on(w => { if (w === 'model' || w === 'data') render(); });
+    if (tab === 'kaart') checkStamps();
+    const off = on(w => { if (w === 'model' || w === 'data' || (w === 'settings' && tab === 'kaart')) render(); });
     return () => { off(); timers.forEach(clearTimeout); };
   },
 };

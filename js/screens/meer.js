@@ -1,8 +1,8 @@
-// Meer: instellingen, export, baan toevoegen, achter de schermen, ticketjes, uitloggen.
+// Meer: instellingen, export, baan toevoegen, achter de schermen, kermiskaart, uitloggen.
 import { track } from '../track.js';
 import { S, me, meKey, mySettings, saveSetting, model, catalog, compsOf, profiles, profileByKey, on } from '../state.js';
 import { esc, toast, buzz, openSheet, closeSheet, confirmSheet } from '../ui.js';
-import { TICKETS } from '../copy.js';
+import { stampsOf, TOTAL_LEVELS } from '../stempels.js';
 import { dot, DOTS, found } from '../stippen.js';
 
 const pills = (name, opts, cur) => `<div class="pills" data-set="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(v) === String(cur) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
@@ -35,8 +35,8 @@ export default {
           <button class="m-link" id="achter"><b>Achter de schermen</b><small>Waarom Dispatch werkt zoals het werkt.</small><em>›</em></button>
         </section>
 
-        <section class="m-sec"><h2 class="eyebrow">Ticketjes</h2><p class="m-count">${n} vergelijkingen tot nu toe.</p>
-          <div class="tickets">${TICKETS.map(t => `<div class="tk${n >= t.at ? ' got' : ''}"><span class="eyebrow">${t.at}</span><b>${esc(t.naam)}</b><small>${n >= t.at ? esc(t.tekst) : `Nog ${t.at - n} te gaan.`}</small></div>`).join('')}</div>
+        <section class="m-sec"><h2 class="eyebrow">Kermiskaart</h2>
+          <button class="m-link" id="kaart"><b>${stampsOf(meKey()).reduce((a, st) => a + st.level, 0)} van ${TOTAL_LEVELS} stempels</b><small>${n} vergelijkingen tot nu toe. Bekijk je kaart onder Inzichten.</small><em>›</em></button>
         </section>
 
         <section class="m-sec"><h2 class="eyebrow">Witte stippen</h2>
@@ -68,6 +68,7 @@ export default {
       if (id === 'tip') { track('dot_tip', { found: found().length }); const open = DOTS.filter(d => !found().includes(d.id)); const d = open[Math.floor(Math.random() * open.length)]; fg.querySelector('#tiptext').textContent = d.hint; return; }
       if (id === 'add') go('toevoegen');
       else if (id === 'achter') go('achter');
+      else if (id === 'kaart') go('samen?tab=kaart');
       else if (id === 'dotsreset') {
         const st = mySettings();
         const tekst = st.musicUnlocked ? 'Alle gevonden stippen worden weer verstopt, en de Witte Stip-muziek gaat weer op slot tot je ze alle tien hebt.' : 'Alle gevonden stippen worden weer verstopt.';

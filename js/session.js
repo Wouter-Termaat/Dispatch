@@ -3,8 +3,7 @@
 import { S, me, meKey, model, refit, compsOf, coaster, mySettings } from './state.js';
 import { newBatch } from './store.js';
 import { sessionSummary } from './model.js';
-import { toast } from './ui.js';
-import { TICKETS } from './copy.js';
+import { recordRound } from './stempels.js';
 import { focusSet, FOCUS } from './modes.js';
 import { track, setTrackSession, inputKind } from './track.js';
 
@@ -28,7 +27,6 @@ const countReal = () => compsOf(meKey()).filter(c => c.outcome !== 'skip').lengt
 /** Slaat vergelijkingen op als één batch. comps: [{a,b,outcome}]. Geeft de batch-id terug. */
 export function commit(comps, cmode, { ms = 0, type = 'row', ids = [], meta = {} } = {}) {
   const user_id = me().id, batch = newBatch(), t = new Date();
-  const before = countReal();
   logChoice(comps, cmode, { ms, type, ids, batch, meta });
   const rows = comps.map((c, i) => ({ ...c, user_id, batch, mode: cmode, created_at: new Date(t.getTime() + i).toISOString() }));
   S.store.addComparisons(rows);
@@ -38,8 +36,6 @@ export function commit(comps, cmode, { ms = 0, type = 'row', ids = [], meta = {}
     if (type === 'row') s.rows++; else if (type === 'duel') s.duels++; else if (type === 'check') s.checks++;
     s.actions.push({ type, batch, ids, comps, ms, at: Date.now() });
   }
-  const after = before + comps.filter(c => c.outcome !== 'skip').length;
-  for (const tk of TICKETS) if (before < tk.at && after >= tk.at) { track('ticket', { naam: tk.naam, at: tk.at }); setTimeout(() => toast(`Ticket verdiend: ${tk.naam}. ${tk.tekst}`, 4200), 700); }
   return batch;
 }
 
@@ -136,6 +132,7 @@ export async function endSession() {
     certaintyBefore: s.certaintyBefore, meanHalfWidth: after.meanHalfWidth,
     moved: sum.moves.filter(x => x.delta).length, biggestMoves: sum.moves.filter(x => Math.abs(x.delta) >= 3).slice(0, 12).map(x => [x.id, x.from + 1, x.to + 1]) });
   setTrackSession(null);
+  recordRound(s, after, sum).catch(e => console.warn('stempels', e));   // kermiskaart: tellers per ronde en nieuwe stempels
   return summary;
 }
 export function lastSummary() { try { return JSON.parse(localStorage.getItem('dispatch.lastSession') || 'null'); } catch { return null; } }

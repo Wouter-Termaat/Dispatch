@@ -88,7 +88,7 @@ async function boot() {
   addEventListener('pointerdown', () => sound.unlock(), { once: true });
   document.addEventListener('click', e => { if (e.target.closest('.seg button, .pills button, .chip, .mode-t, .label, #nav a, .tool')) sound.select(); });
 
-  if (!S.store.needsLogin) { await fitAll(); trackOpen(); }
+  if (!S.store.needsLogin) { await fitAll(); trackOpen(); import('./stempels.js').then(m => m.checkStamps()).catch(() => {}); }
   S.store.addEventListener('error', e => toast('Opslaan lukte niet: ' + (e.detail?.message || 'onbekende fout')));
   S.store.addEventListener('signedout', () => go('login'));
   watchQueue();
@@ -131,6 +131,7 @@ function watchQueue() {
 export async function afterLogin() {
   initPhotos(S.store);
   track('login', {}); trackOpen();
+  import('./stempels.js').then(m => m.checkStamps()).catch(() => {});
   sound.setSound(mySettings().sound);
   await fitAll();
   go('');

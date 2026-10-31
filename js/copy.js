@@ -44,12 +44,6 @@ export const PLEIN = {
 };
 
 
-// Credits: verzamelbare ticketjes
-export const TICKETS = [
-  { at: 100, naam: 'Stamgast', tekst: '100 vergelijkingen. De portier kent je naam.' },
-  { at: 500, naam: 'Abonnement', tekst: '500 vergelijkingen. Je hebt een vaste stoel.' },
-  { at: 1000, naam: 'Erelid', tekst: '1000 vergelijkingen. Er hangt een portret van je in de foyer.' },
-];
 
 // 404
 export const NIET_GEVONDEN = 'Deze attractie is tijdelijk gesloten wegens een technische storing.';

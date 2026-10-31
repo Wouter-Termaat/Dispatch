@@ -1,6 +1,5 @@
 // Inzichten: jouw cijfers, berekend uit je eigen vergelijkingen en je huidige model. Alles lokaal, niets extra opgeslagen.
 import { model, compsOf, entriesOf, coaster } from './state.js';
-import { TICKETS } from './copy.js';
 
 export const MODE_NAMES = { duel: 'Le Duel', rangee: 'La Rangée', twijfel: 'Twijfelzone', park: 'Park-avond', rematch: 'Rematch', toernooi: 'Toernooi', koning: 'Koning van de heuvel', plaatsing: 'Plaatsing', check: 'Controle' };
 const DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
@@ -67,8 +66,6 @@ export function myStats(key) {
     const p = sig(m.theta[i] - m.theta[j]); if (!up || p < up.p) up = { w, l, p, at: c.created_at };
   }
   out.upset = up && up.p < .5 ? up : null;
-  out.ticket = TICKETS.find(t => out.total < t.at) || null;
-  out.lastTicket = [...TICKETS].reverse().find(t => out.total >= t.at) || null;
   out.name = id => coaster(id)?.name || id;
   out.rank = id => m.position[m.idx.get(id)] + 1;
   return out;

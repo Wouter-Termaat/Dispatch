@@ -152,7 +152,7 @@ export default {
           commit([{ a: cur, b: ch, outcome: w === cur ? 'a' : 'b' }], 'koning', { type: 'duel', ids: [cur, ch], ms: performance.now() - t0, meta: { streak } });
           el.classList.add('win'); other.classList.add('lose'); buzz(8); sound.bell();
           if (w === cur) streak++; else { cur = ch; streak = 0; }
-          if (streak > best.n) best = { id: cur, n: streak };
+          if (streak > best.n) { best = { id: cur, n: streak }; s.kingBest = streak; }
           next = played < KING_LEN ? challenger() : null; if (next) warm([next]);
           advT = setTimeout(() => {
             if (!alive) return;
