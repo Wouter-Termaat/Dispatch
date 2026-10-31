@@ -1,5 +1,5 @@
 // Toernooi: bracket van 16 (of 8) banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
-// Met Koning van de heuvel: de winnaar blijft staan en krijgt steeds een nieuwe uitdager uit zijn buurt in je ranking.
+// Met King of the Hill: de winnaar blijft staan en krijgt steeds een nieuwe uitdager uit zijn buurt in je ranking.
 import { track } from '../track.js';
 import { warm } from '../photos.js';
 import { model, coaster } from '../state.js';
@@ -11,7 +11,7 @@ import * as sound from '../sound.js';
 import { dot } from '../stippen.js';
 import { withBonus } from '../pick.js';
 
-const KING_LEN = 10;   // duels per ronde Koning van de heuvel
+const KING_LEN = 10;   // duels per ronde King of the Hill
 const CROWN = '<svg viewBox="0 0 32 24" aria-hidden="true"><path d="M3 20 L5 7 L11 13 L16 3 L21 13 L27 7 L29 20 Z"/><path d="M4 22.5 H28"/></svg>';
 
 const ROUND = { 16: ['Achtste finale', 'Kwartfinale', 'Halve finale', 'Finale'], 8: ['Kwartfinale', 'Halve finale', 'Finale'], 4: ['Halve finale', 'Finale'] };
@@ -49,7 +49,7 @@ export default {
           <button class="mode" data-k="random"><b>Knock-out</b><span>Zestien banen uit een willekeurig stuk van je ranking, in een bracket.</span><em>›</em></button>
           <button class="mode" data-k="manufacturer"><b>Per fabrikant</b><span>De beste van één fabrikant (8 of 16).</span><em>›</em></button>
           <button class="mode" data-k="park"><b>Per park</b><span>De beste van één park.</span><em>›</em></button>
-          <button class="mode" data-k="koning"><b>Koning van de heuvel</b><span>Begint ergens willekeurig in je ranking. De winnaar blijft staan, de uitdagers komen uit de buurt. ${KING_LEN} duels.</span><em>›</em></button>
+          <button class="mode" data-k="koning"><b>King of the Hill</b><span>De winnaar blijft staan. ${KING_LEN} duels.</span><em>›</em></button>
         </div></div>`;
       root.querySelectorAll('.mode').forEach(b => b.onclick = () => {
         buzz(5); const k = b.dataset.k;
@@ -113,7 +113,7 @@ export default {
     }
 
 
-    // ---------- Koning van de heuvel ----------
+    // ---------- King of the Hill ----------
     // Uitdagers komen uit de buurt van de koning (binnen 12 plekken, anders 25), onzekere banen en banen met weinig
     // battles iets vaker. Elke baan doet per ronde maar één keer mee als uitdager.
     function king() {
@@ -135,28 +135,29 @@ export default {
         return null;
       };
       total = KING_LEN; played = 0;
-      s = startSession('toernooi', { mode: 'koning', label: 'Koning van de heuvel', length: KING_LEN });
-      s.tLabel = 'Koning van de heuvel'; sound.liftHill(); prog();
+      s = startSession('toernooi', { mode: 'koning', label: 'King of the Hill', length: KING_LEN });
+      s.tLabel = 'King of the Hill'; sound.liftHill(); prog();
       let next = challenger(); warm([cur, next]);
       const duel = keepKing => {
         const ch = next; used.add(ch);
-        root.innerHTML = `<div class="d-head"><div class="eyebrow">Koning van de heuvel · duel ${played + 1} van ${KING_LEN}</div></div>
-          <div class="d-wrap"><div class="d-stage" id="stage">${cardHtml(coaster(cur), 'a king' + (keepKing ? '' : ' enter'), 320, 240)}${cardHtml(coaster(ch), 'b enter', 320, 240)}<div class="or">of</div></div></div>
-          <div class="d-line">${streak ? `De koning staat al ${streak} ${streak === 1 ? 'duel' : 'duels'}. Wie wint?` : 'Een nieuwe koning. Wie wint?'}</div>`;
+        const crowned = played > 0;   // in het eerste duel is er nog geen koning
+        root.innerHTML = `<div class="d-head"><div class="eyebrow">King of the Hill · duel ${played + 1} van ${KING_LEN}</div></div>
+          <div class="d-wrap"><div class="d-stage" id="stage">${cardHtml(coaster(cur), 'a' + (crowned ? ' king' : '') + (keepKing ? '' : ' enter'), 320, 240)}${cardHtml(coaster(ch), 'b enter', 320, 240)}<div class="or">of</div></div></div>
+          <div class="d-line">${!crowned ? 'Wie wordt de eerste koning?' : streak > 1 ? `De koning won al ${streak} keer op rij. Wie wint?` : 'Een nieuwe koning. Houdt hij stand?'}</div>`;
         const st = root.querySelector('#stage'); const [A, B] = st.querySelectorAll('.card'); busy = false;
-        A.insertAdjacentHTML('beforeend', `<i class="crown">${CROWN}</i>`);
+        if (crowned) A.insertAdjacentHTML('beforeend', `<i class="crown">${CROWN}</i>`);
         deal(keepKing ? [B] : [A, B], { stagger: 60 });
         const t0 = performance.now();
         const pickW = (w, el, other) => {
           if (busy) return; busy = true; played++; prog();
           commit([{ a: cur, b: ch, outcome: w === cur ? 'a' : 'b' }], 'koning', { type: 'duel', ids: [cur, ch], ms: performance.now() - t0, meta: { streak } });
           el.classList.add('win'); other.classList.add('lose'); buzz(8); sound.bell();
-          if (w === cur) streak++; else { cur = ch; streak = 0; }
+          if (w === cur) streak++; else { cur = ch; streak = 1; }
           if (streak > best.n) { best = { id: cur, n: streak }; s.kingBest = streak; }
           next = played < KING_LEN ? challenger() : null; if (next) warm([next]);
           advT = setTimeout(() => {
             if (!alive) return;
-            if (!next) return champion(best.n ? best.id : cur, best.n ? `Langst op de troon: ${best.n} ${best.n === 1 ? 'duel' : 'duels'}` : 'Laatste koning');
+            if (!next) return champion(best.id, `Langst op de troon: ${best.n} ${best.n === 1 ? 'duel' : 'duels'} gewonnen`);
             duel(true);   // de (nieuwe) koning blijft liggen, alleen de uitdager komt binnen
           }, 520);
         };

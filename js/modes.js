@@ -19,7 +19,7 @@ export const MODES = [
   { k: 'twijfel', t: 'Twijfelzone', s: 'duels', d: 'Alleen je onzekerste banen.', unit: 'duels' },
   { k: 'park', t: 'Park-avond', s: 'duels', d: 'Duels binnen één park.', unit: 'duels' },
   { k: 'rematch', t: 'Rematch', s: 'duels', d: 'Tegenstrijdigheden opnieuw.', unit: 'duels' },
-  { k: 'toernooi', t: 'Toernooi', s: 'bracket', d: 'Zestien banen in een bracket, één kampioen.', unit: '' },
+  { k: 'toernooi', t: 'Toernooi', s: 'kampioen', d: 'Knock-out, per fabrikant, per park of King of the Hill.', unit: '' },
 ];
 export const icon = k => I[k] || '';
 

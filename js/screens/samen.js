@@ -107,18 +107,18 @@ export default {
       if (st.lower) return st.value >= 1 ? `${LEVELS[st.level]}: ${fmtOf(st, st.next)} kans of minder` : `Beste: ${fmtOf(st, st.value)}. ${LEVELS[st.level]} bij ${fmtOf(st, st.next)}`;
       return `${fmtOf(st, Math.min(st.value, st.next))} van ${fmtOf(st, st.next)} ${st.unit}`;
     }
+    // de kaart: alleen de stempels zelf, als een stempelkaart met lege plekken; uitleg en voortgang via een tik
     function kaart() {
-      const list = stampsOf(who), done = list.reduce((a, st) => a + st.level, 0), cats = [...new Set(list.map(st => st.cat))];
-      const card = st => {
+      const list = stampsOf(who), done = list.reduce((a, st) => a + st.level, 0);
+      const cell = st => {
         const hidden = st.cat === 'Verborgen' && !st.level;   // verborgen stempels blijven een vraagteken tot je de eerste hebt
-        const w = st.level === 3 ? 100 : st.lower ? (st.value >= 1 ? 0 : Math.min(99, (1 - st.value) / (1 - st.next) * 100)) : Math.min(99, st.value / st.next * 100);
-        return `<button class="st l${st.level}" data-st="${st.id}"><span class="st-medal">${hidden ? '<b>?</b>' : st.ic}</span>
-          <span class="st-txt"><b>${hidden ? 'Verborgen' : esc(st.name)}</b><small>${hidden ? 'Ergens in de app' : stampText(st)}</small><i class="st-bar" style="--w:${w.toFixed(0)}%"></i></span>
+        return `<button class="sb l${st.level}" data-st="${st.id}" aria-label="${esc(hidden ? 'Verborgen stempel' : st.name)}, ${st.level ? LEVELS[st.level - 1].toLowerCase() : 'nog niet behaald'}">
+          <span class="st-medal">${hidden ? '<b>?</b>' : st.ic}</span><b>${hidden ? '?' : esc(st.name)}</b>
           <span class="st-pips">${[0, 1, 2].map(i => `<i class="${i < st.level ? 'on' : ''}"></i>`).join('')}</span></button>`;
       };
       return `<div class="st-top"><div class="pills" id="who">${[A, B].map(k => `<button data-who="${k}" class="${k === who ? 'on' : ''}">${esc(nameOf(k))}</button>`).join('')}</div>
-          <div class="st-sum"><b>${done}</b><span>van ${TOTAL_LEVELS} stempels</span></div><i class="st-total" style="--w:${(done / TOTAL_LEVELS * 100).toFixed(1)}%"></i></div>`
-        + cats.map(c => `<h3 class="eyebrow st-cat">${esc(c)}</h3><div class="st-grid">${list.filter(st => st.cat === c).map(card).join('')}</div>`).join('');
+          <div class="st-sum"><b>${done}</b><span>van ${TOTAL_LEVELS} stempels</span></div></div>
+        <div class="st-board"><div class="st-board-in">${list.map(cell).join('')}</div></div>`;
     }
     function stampSheet(id) {
       const st = stampsOf(who).find(x => x.id === id); if (!st) return;
@@ -127,6 +127,7 @@ export default {
       openSheet(`<div class="sheet-pad st-sheet"><div class="st-big l${st.level}"><span class="st-medal">${hidden ? '<b>?</b>' : st.ic}</span></div>
         <div class="eyebrow">${esc(st.cat)}</div><h3 class="h-title">${hidden ? 'Verborgen' : esc(st.name)}</h3>
         <p class="sheet-text">${hidden ? 'Deze stempel zit ergens in de app verstopt.' : `Voor ${st.lower ? 'een winst bij zo weinig' : 'het aantal'} ${esc(st.unit)}.`}</p>
+        ${hidden ? '' : `<p class="st-now">${stampText(st)}</p>`}
         <div class="st-levels">${st.levels.map((t, i) => `<div class="st-lv${i < st.level ? ' got' : ''} lv${i + 1}"><i></i><b>${LEVELS[i]}</b><span>${hidden ? '?' : fmtOf(st, t) + (st.lower ? ' kans' : '')}</span><small>${i < st.level ? 'behaald ' + fmtDate(st.dates[i]) : i === st.level ? 'volgende' : ''}</small></div>`).join('')}</div></div>`);
     }
 

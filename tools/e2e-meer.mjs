@@ -94,13 +94,16 @@ ok(ideas.length === 2 && ideas.every(x => x.user_id === me && x.text && ['idee',
 ok((await page.$$('.ib-card')).length === 2 && (await page.$$('.ib-group.s-nieuw .ib-card')).length === 2, 'beide briefjes zichtbaar onder In de bus');
 await page.click('#ibf [data-f=bug]'); await wait(200);
 ok((await page.$$('.ib-card')).length === 1, 'filter op bugs');
-await page.click('.ib-card .ib-main'); await page.click('.ib-card [data-s=gepland]'); await wait(300);
-ok((await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).ideas.find(x => x.kind === 'bug').status)) === 'gepland' && !!(await page.$('.ib-group.s-gepland')), 'status op de planning gezet');
+await page.click('.ib-card .ib-main'); await page.click('.ib-card [data-s=gedaan]'); await wait(300);
+ok((await page.evaluate(() => JSON.parse(localStorage.getItem('dispatch.demo.v1')).ideas.find(x => x.kind === 'bug').status)) === 'gedaan' && (await page.$$('.ib-card')).length === 0, 'op Gedaan gezet: weg uit de bus');
+await page.click('#ibf [data-f=alles]'); await page.click('.ib-tabs [data-t=klaar]'); await wait(200);
+ok((await page.$$('.ib-group.s-gedaan .ib-card')).length === 1, 'staat onder Afgehandeld, bij Gedaan');
+await page.click('.ib-tabs [data-t=bus]'); await wait(200);
 // Luca ziet het briefje van Wouter, met een rood cijfertje op de brievenbus
 await page.keyboard.press('Escape'); await wait(500); await page.evaluate(() => localStorage.setItem('dispatch.demo.me', 'luca')); await page.reload(); await page.waitForSelector('#ideabtn:not([hidden])'); await wait(800);
 ok(await page.$eval('.ib-badge', b => !b.hidden && b.textContent === '2'), 'Luca ziet 2 nieuwe briefjes op de brievenbus');
 await page.click('#ideabtn'); await page.click('.ib-tabs [data-t=bus]'); await wait(300);
-ok((await page.$$('.ib-card')).length === 2 && !(await page.$('.ib-card [data-del]')) && await page.$eval('.ib-badge', b => b.hidden), 'Luca leest de bus, kan Wouters briefjes niet terughalen, cijfertje weg');
+ok((await page.$$('.ib-card')).length === 1 && !(await page.$('.ib-card [data-del]')) && await page.$eval('.ib-badge', b => b.hidden), 'Luca leest de bus, kan Wouters briefjes niet terughalen, cijfertje weg');
 await page.keyboard.press('Escape'); await page.evaluate(() => localStorage.setItem('dispatch.demo.me', 'wouter'));
 
 // manifest en iconen

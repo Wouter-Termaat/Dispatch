@@ -9,6 +9,7 @@ import { track } from './track.js';
 import * as sound from './sound.js';
 
 export const LEVELS = ['Brons', 'Zilver', 'Goud'];
+// lange namen hebben een zacht afbreekstreepje (­), zodat ze op de telefoon netjes over twee regels passen
 const svg = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 const IC = {
   ticket: svg('<path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 0 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 1 0-4V6H3z"/><path d="M15 6v12" stroke-dasharray="1.5 2"/>'),
@@ -34,7 +35,7 @@ export const STAMPS = [
   { cat: 'Battles', id: 'battles', name: 'Stamgast', ic: IC.ticket, levels: [500, 2500, 10000], unit: 'battles', v: c => c.st.total },
 
   { cat: 'Volharding', id: 'reeks', name: 'Vaste klant', ic: IC.vlam, levels: [3, 7, 30], unit: 'dagen op rij gespeeld', v: c => c.st.longestStreak },
-  { cat: 'Volharding', id: 'dagen', name: 'Seizoenskaart', ic: IC.kalender, levels: [10, 50, 150], unit: 'speeldagen', v: c => c.st.days },
+  { cat: 'Volharding', id: 'dagen', name: 'Seizoens­kaart', ic: IC.kalender, levels: [10, 50, 150], unit: 'speeldagen', v: c => c.st.days },
   { cat: 'Volharding', id: 'avond', name: 'Lange avond', ic: IC.lamp, levels: [50, 150, 400], unit: 'keuzes op één dag', v: c => c.st.busiestDay?.n || 0 },
 
   { cat: 'Zekerheid', id: 'zeker', name: 'Op de kaart', ic: IC.meter, levels: [.5, .75, .95], unit: 'van je ranking zeker', fmt: pct, v: c => c.m?.certainty || 0 },
@@ -43,17 +44,17 @@ export const STAMPS = [
   { cat: 'Zekerheid', id: 'opruimer', name: 'Opruimer', ic: IC.sterren, levels: [5, 10, 20], unit: 'banen zeker gemaakt in één ronde', v: c => c.ach.opruimer || 0 },
 
   { cat: 'Spelvormen', id: 'rondreis', name: 'Rondreis', ic: IC.kompas, levels: [1, 10, 25], unit: 'rondes van elke spelvorm', v: c => Math.min(...ROUND_MODES.map(k => c.ach.rounds?.[k] || 0)) },
-  { cat: 'Spelvormen', id: 'kampioen', name: 'Kampioensmaker', ic: icon('toernooi'), levels: [5, 20, 50], unit: 'toernooien uitgespeeld', v: c => c.ach.toernooi || 0 },
-  { cat: 'Spelvormen', id: 'koning', name: 'Koningsmaker', ic: IC.kroon, levels: [4, 7, 10], unit: 'duels één koning op de troon', v: c => c.ach.koning || 0 },
-  { cat: 'Spelvormen', id: 'slepen', name: 'Sleepkampioen', ic: icon('rij'), levels: [25, 250, 1000], unit: 'rijen bij La Rangée', v: c => c.rows },
-  { cat: 'Spelvormen', id: 'parken', name: 'Parkdirecteur', ic: icon('park'), levels: [5, 15, 30], unit: 'parken op een Park-avond', v: c => c.parks },
+  { cat: 'Spelvormen', id: 'kampioen', name: 'Kampioens­maker', ic: icon('toernooi'), levels: [5, 20, 50], unit: 'toernooien uitgespeeld', v: c => c.ach.toernooi || 0 },
+  { cat: 'Spelvormen', id: 'koning', name: 'Konings­maker', ic: IC.kroon, levels: [4, 7, 10], unit: 'duels op rij gewonnen door één koning', v: c => c.ach.koning || 0 },
+  { cat: 'Spelvormen', id: 'slepen', name: 'Sleep­kampioen', ic: icon('rij'), levels: [25, 250, 1000], unit: 'rijen bij La Rangée', v: c => c.rows },
+  { cat: 'Spelvormen', id: 'parken', name: 'Park­directeur', ic: icon('park'), levels: [5, 15, 30], unit: 'parken op een Park-avond', v: c => c.parks },
   { cat: 'Spelvormen', id: 'twijfel', name: 'Twijfelzone overleefd', ic: icon('twijfel'), levels: [5, 25, 100], unit: 'rondes Twijfelzone', v: c => c.ach.rounds?.twijfel || 0 },
 
   { cat: 'Smaak en verrassingen', id: 'underdog', name: 'Underdog', ic: IC.pijl, levels: [.15, .08, .03], lower: true, unit: 'kans of minder, en toch gewonnen', fmt: pct, v: c => c.st.upset?.p ?? 1 },
   { cat: 'Smaak en verrassingen', id: 'sprong', name: 'Grote sprong', ic: IC.sprong, levels: [10, 20, 40], unit: 'plekken gestegen in één ronde', v: c => c.ach.sprong || 0 },
-  { cat: 'Smaak en verrassingen', id: 'troon', name: 'Troonswisseling', ic: icon('rematch'), levels: [1, 3, 10], unit: 'keer een nieuwe nummer 1', v: c => c.ach.troon || 0 },
+  { cat: 'Smaak en verrassingen', id: 'troon', name: 'Troons­wisseling', ic: icon('rematch'), levels: [1, 3, 10], unit: 'keer een nieuwe nummer 1', v: c => c.ach.troon || 0 },
   { cat: 'Smaak en verrassingen', id: 'trouw', name: 'Trouw', ic: IC.hart, levels: [10, 25, 50], unit: 'overwinningen op rij voor één baan', v: c => c.winStreak },
-  { cat: 'Smaak en verrassingen', id: 'gelijk', name: 'Gelijkspeler', ic: IC.gelijk, levels: [25, 100, 250], unit: 'keer gelijk gegeven', v: c => c.st.ties },
+  { cat: 'Smaak en verrassingen', id: 'gelijk', name: 'Gelijk­speler', ic: IC.gelijk, levels: [25, 100, 250], unit: 'keer gelijk gegeven', v: c => c.st.ties },
 
   { cat: 'Verborgen', id: 'stippen', name: 'Witte stippen', ic: IC.stip, levels: [3, 6, 10], unit: 'witte stippen gevonden', v: c => (c.s.dots || []).length },
 ];

@@ -14,7 +14,10 @@ const KINDS = {
   idee: { t: 'Idee', sub: 'Iets nieuws of iets beters', icon: BULB, q: 'Wat is je idee?', ph: 'Bijvoorbeeld: een spelvorm waarin je alleen banen van één park speelt...' },
   bug: { t: 'Bug', sub: 'Er klopt iets niet', icon: BUG, q: 'Wat ging er mis?', ph: 'Wat deed je, wat gebeurde er, en wat had je verwacht?' },
 };
-const STATUS = [['nieuw', 'Nieuw'], ['gepland', 'Op de planning'], ['gedaan', 'Gedaan'], ['niet', 'Niet gedaan']];
+// Nieuw staat in de bus (de inbox); Gedaan en Niet gedaan gaan naar Afgehandeld. Oude 'gepland' telt als nieuw.
+const STATUS = [['nieuw', 'Nieuw'], ['gedaan', 'Gedaan'], ['niet', 'Niet gedaan']];
+const statusOf = x => (x.status === 'gedaan' || x.status === 'niet' ? x.status : 'nieuw');
+const isOpen = x => statusOf(x) === 'nieuw';
 const MAX = 1000;
 const MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
@@ -27,7 +30,7 @@ const setSeen = () => { try { localStorage.setItem(seenKey(), new Date().toISOSt
 /** Nieuw voor jou: briefjes van de ander die je nog niet zag, en je eigen briefjes die intussen een andere status kregen. */
 function unseen() {
   const u = me(); if (!u) return 0; const seen = getSeen();
-  return ideas().filter(x => (x.user_id !== u.id ? x.created_at > seen : x.status !== 'nieuw' && (x.updated_at || '') > seen)).length;
+  return ideas().filter(x => (x.user_id !== u.id ? x.created_at > seen : !isOpen(x) && (x.updated_at || '') > seen)).length;
 }
 
 export function initIdeas() {
@@ -74,7 +77,7 @@ export function openBus(tab = 'post') {
   const body = openSheet(`<div class="sheet-pad ib">
       <div class="ib-head"><span class="ib-box" id="ibbox">${BOX}</span><div><div class="eyebrow">Brievenbus</div><h3 class="h-title">De ideeënbus</h3></div></div>
       <p class="sheet-text">Iets bedacht, of iets kapot? Post het hier. Wouter en Claude gaan de bus af en toe samen langs, en dan zie je hier wat ermee gebeurt.</p>
-      <div class="seg ib-tabs" role="tablist"><button role="tab" data-t="post">Posten</button><button role="tab" data-t="bus">In de bus <i id="ibn"></i></button></div>
+      <div class="seg ib-tabs" role="tablist"><button role="tab" data-t="post">Posten</button><button role="tab" data-t="bus">In de bus <i id="ibn"></i></button><button role="tab" data-t="klaar">Afgehandeld <i id="ibk"></i></button></div>
       <div class="ib-pane" id="ibpane"></div></div>`, { cls: 'ib-sheet', onClose: () => refreshIdeas() });
 
   const pane = body.querySelector('#ibpane');
@@ -84,7 +87,7 @@ export function openBus(tab = 'post') {
     if (t === 'post') renderPost(); else { renderBus(); setSeen(); refreshIdeas(); }
   };
   body.querySelector('.ib-tabs').onclick = e => { const b = e.target.closest('[data-t]'); if (b) setTab(b.dataset.t); };
-  const count = () => { const n = ideas().filter(x => x.status === 'nieuw' || x.status === 'gepland').length; body.querySelector('#ibn').textContent = n || ''; };
+  const count = () => { const n = ideas().filter(isOpen).length, k = ideas().length - n; body.querySelector('#ibn').textContent = n || ''; body.querySelector('#ibk').textContent = k || ''; };
 
   function renderPost() {
     const k = KINDS[draft.kind], c = context(screen);
@@ -135,15 +138,17 @@ export function openBus(tab = 'post') {
   }
 
   function renderBus() {
-    const u = me(), all = ideas(), seen = getSeen();
+    // In de bus: alleen wat nog niet bekeken is. Afgehandeld: Gedaan en Niet gedaan, apart
+    const u = me(), done = tab === 'klaar', all = ideas().filter(x => isOpen(x) !== done), seen = getSeen();
     const n = k => all.filter(x => k === 'alles' || x.kind === k).length;
-    const list = all.filter(x => filter === 'alles' || x.kind === filter).sort((a, b) => (b.created_at > a.created_at ? 1 : -1));
-    const groups = STATUS.map(([s, t]) => [s, t, list.filter(x => (x.status || 'nieuw') === s)]).filter(g => g[2].length);
+    const list = all.filter(x => filter === 'alles' || x.kind === filter).sort((a, b) => ((done ? b.updated_at || b.created_at : b.created_at) > (done ? a.updated_at || a.created_at : a.created_at) ? 1 : -1));
+    const groups = done ? STATUS.slice(1).map(([s, t]) => [s, t, list.filter(x => statusOf(x) === s)]).filter(g => g[2].length) : list.length ? [['nieuw', '', list]] : [];
     pane.innerHTML = `<div class="ib-bar"><div class="pills" id="ibf">${[['alles', 'Alles'], ['idee', 'Ideeën'], ['bug', 'Bugs']].map(([k, t]) =>
         `<button data-f="${k}" class="${k === filter ? 'on' : ''}">${t} <i>${n(k)}</i></button>`).join('')}</div>
-        ${all.length ? '<button class="link ib-copy" id="ibcopy">Kopieer voor Claude</button>' : ''}</div>
-      ${groups.length ? groups.map(([s, t, xs]) => `<section class="ib-group s-${s}"><h4 class="eyebrow">${t} <i>${xs.length}</i></h4>${xs.map(x => card(x, u, seen)).join('')}</section>`).join('')
-        : `<div class="ib-empty">${BOX}<p>${all.length ? 'Hier zit nog niets in.' : 'De bus is nog leeg.'}</p><button class="link" id="ibfirst">Post het eerste briefje ›</button></div>`}`;
+        ${!done && all.length ? '<button class="link ib-copy" id="ibcopy">Kopieer voor Claude</button>' : ''}</div>
+      ${groups.length ? groups.map(([s, t, xs]) => `<section class="ib-group s-${s}">${t ? `<h4 class="eyebrow">${t} <i>${xs.length}</i></h4>` : ''}${xs.map(x => card(x, u, seen)).join('')}</section>`).join('')
+        : done ? `<div class="ib-empty">${BOX}<p>Nog niets afgehandeld.</p></div>`
+        : `<div class="ib-empty">${BOX}<p>${ideas().length ? 'Alles is bekeken. De bus is leeg.' : 'De bus is nog leeg.'}</p><button class="link" id="ibfirst">Post een briefje ›</button></div>`}`;
     pane.querySelector('#ibf').onclick = e => { const b = e.target.closest('[data-f]'); if (b) { filter = b.dataset.f; renderBus(); } };
     pane.querySelector('#ibfirst')?.addEventListener('click', () => setTab('post'));
     pane.querySelector('#ibcopy')?.addEventListener('click', copyAll);
@@ -167,10 +172,10 @@ export function openBus(tab = 'post') {
 
   function card(x, u, seen) {
     const k = KINDS[x.kind] || KINDS.idee, mine = x.user_id === u.id, c = x.context || {};
-    const isNew = !mine ? x.created_at > seen : x.status !== 'nieuw' && (x.updated_at || '') > seen;
+    const isNew = !mine ? x.created_at > seen : !isOpen(x) && (x.updated_at || '') > seen;
     const meta = [profileById(x.user_id)?.name || 'Onbekend', when(x.created_at), c.screen && `op ${c.screen}`].filter(Boolean).map(esc).join(' · ');
     const tech = x.kind === 'bug' && c.version ? `<p class="ib-tech">${esc([device(c), c.w && `${c.w}×${c.h}`, c.version].filter(Boolean).join(' · '))}</p>` : '';
-    return `<article class="ib-card k-${x.kind} s-${x.status || 'nieuw'}${mine ? ' mine' : ''}" data-id="${esc(x.id)}" data-s="${esc(x.status || 'nieuw')}">
+    return `<article class="ib-card k-${x.kind} s-${statusOf(x)}${mine ? ' mine' : ''}" data-id="${esc(x.id)}" data-s="${statusOf(x)}">
       <button class="ib-main" aria-expanded="false">
         <span class="ib-stamp">${k.icon}<span>${k.t}</span></span>
         ${isNew ? '<span class="ib-new">nieuw</span>' : ''}
@@ -178,16 +183,16 @@ export function openBus(tab = 'post') {
         <span class="ib-meta">${meta}</span>
         ${x.reply ? `<span class="ib-reply"><b>Antwoord</b>${esc(x.reply)}</span>` : ''}
       </button>
-      <div class="ib-acts">${tech}<div class="ib-status" role="radiogroup" aria-label="Status">${STATUS.map(([s, t]) => `<button role="radio" data-s="${s}" aria-checked="${s === (x.status || 'nieuw')}">${t}</button>`).join('')}</div>
-        ${mine && (x.status || 'nieuw') === 'nieuw' ? '<button class="link ib-del" data-del>Terughalen</button>' : ''}</div>
+      <div class="ib-acts">${tech}<div class="ib-status" role="radiogroup" aria-label="Status">${STATUS.map(([s, t]) => `<button role="radio" data-s="${s}" aria-checked="${s === statusOf(x)}">${t}</button>`).join('')}</div>
+        ${mine && isOpen(x) ? '<button class="link ib-del" data-del>Terughalen</button>' : ''}</div>
     </article>`;
   }
 
   // de open briefjes als platte tekst, om in een sessie met Claude te plakken
   async function copyAll() {
     const all = ideas().slice().sort((a, b) => (a.created_at > b.created_at ? 1 : -1));
-    const open = all.filter(x => x.status === 'nieuw' || x.status === 'gepland');
-    const line = x => { const c = x.context || {}; return `[${(KINDS[x.kind]?.t || x.kind).toUpperCase()}, ${x.status}] ${profileById(x.user_id)?.name || '?'}, ${when(x.created_at)}, scherm ${c.screen || '?'} (${[device(c), c.w && `${c.w}x${c.h}`, c.version].filter(Boolean).join(', ')})\nid ${x.id}\n${x.text}${x.reply ? `\nAntwoord: ${x.reply}` : ''}`; };
+    const open = all.filter(isOpen);
+    const line = x => { const c = x.context || {}; return `[${(KINDS[x.kind]?.t || x.kind).toUpperCase()}, ${statusOf(x)}] ${profileById(x.user_id)?.name || '?'}, ${when(x.created_at)}, scherm ${c.screen || '?'} (${[device(c), c.w && `${c.w}x${c.h}`, c.version].filter(Boolean).join(', ')})\nid ${x.id}\n${x.text}${x.reply ? `\nAntwoord: ${x.reply}` : ''}`; };
     const txt = `Ideeënbus Dispatch, ${open.length} open van ${all.length} briefjes\n\n${(open.length ? open : all).map(line).join('\n\n')}\n`;
     try { await navigator.clipboard.writeText(txt); toast('Gekopieerd. Plak het in je sessie met Claude.'); }
     catch { toast('Kopiëren lukte niet in deze browser.'); }

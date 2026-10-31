@@ -311,20 +311,27 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;width:1
 .samen .seg::-webkit-scrollbar{display:none}
 @media (max-width:430px){ .samen .seg{gap:12px} .samen .seg button{letter-spacing:.14em} }
 @media (max-width:380px){ .samen .seg{gap:9px} .samen .seg button{letter-spacing:.1em;font-size:9.5px} }
-.st-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 4px;padding-bottom:12px}
+.st-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 12px}
 .st-sum{text-align:right}
 .st-sum b{font-family:var(--logo);font-weight:400;font-size:30px;color:#fff1d2;text-shadow:0 0 16px rgba(255,200,120,.5)}
 .st-sum span{display:block;font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--cream-dim)}
-.st-total{position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:rgba(236,199,127,.14);overflow:hidden}
-.st-total::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:linear-gradient(90deg,#c99a4e,#ffe1a6);box-shadow:0 0 10px rgba(255,200,120,.8)}
-.st-cat{margin:20px 0 9px;color:var(--champ)}
-.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
-.st{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;width:100%;text-align:left;border:0;cursor:pointer;padding:10px 12px 10px 10px;border-radius:14px;
-  background:linear-gradient(180deg,rgba(40,27,52,.7),rgba(20,12,28,.85));box-shadow:inset 0 0 0 1px var(--hair-soft);color:var(--cream-dim);transition:box-shadow .2s}
-.st:hover{box-shadow:inset 0 0 0 1px var(--hair)}
-.st-medal{position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:rgba(203,185,148,.45);
-  background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.05),rgba(10,6,14,.6));box-shadow:inset 0 0 0 1.5px rgba(203,185,148,.22);border:0}
-.st-medal::before{content:"";position:absolute;inset:4px;border-radius:50%;border:1px dashed rgba(203,185,148,.25)}
+/* de stempelkaart: een kaartje met perforatierand, de stempels in een raster, lege plekken gestippeld */
+.st-board{border-radius:16px;padding:5px;background:linear-gradient(160deg,#3a1418,#22090c);box-shadow:0 0 0 1px var(--hair),0 20px 40px rgba(0,0,0,.45)}
+.st-board-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 4px;padding:16px 6px 14px;border:1px dashed rgba(236,199,127,.35);border-radius:12px;
+  background:radial-gradient(120% 70% at 50% 0%,rgba(255,200,130,.10),transparent 60%)}
+@media (min-width:700px){ .st-board-in{gap:22px 10px;padding:24px 16px 20px} }
+.sb{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;cursor:pointer;padding:2px;color:var(--cream-dim);min-width:0}
+.sb > b{font-family:var(--serif);font-weight:400;font-size:11.5px;line-height:1.2;text-align:center;color:var(--cream);max-width:100%;hyphens:manual;overflow-wrap:break-word}
+.sb.l0 > b{color:var(--cream-dim);opacity:.75}
+.sb .st-medal{width:48px;height:48px}
+.sb .st-medal svg{width:21px;height:21px}
+@media (min-width:700px){ .sb .st-medal{width:60px;height:60px} .sb .st-medal svg{width:26px;height:26px} .sb > b{font-size:13px} }
+.sb:hover .st-medal{box-shadow:inset 0 0 0 1.5px var(--hair)}
+.sb.l1:hover .st-medal,.sb.l2:hover .st-medal,.sb.l3:hover .st-medal{filter:brightness(1.08)}
+.sb .st-pips i{width:6px;height:6px}
+.st-medal{position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:rgba(203,185,148,.35);
+  background:rgba(10,6,14,.35);box-shadow:inset 0 0 0 1.5px rgba(203,185,148,.18);border:0}
+.st-medal::before{content:"";position:absolute;inset:4px;border-radius:50%;border:1px dashed rgba(203,185,148,.3)}
 .st-medal svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .st-medal > b{font-family:var(--logo);font-weight:400;font-size:22px}
 .l1 .st-medal{--c:var(--brons)} .l2 .st-medal{--c:var(--zilver)} .l3 .st-medal{--c:var(--goud)}
@@ -332,18 +339,12 @@ input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;width:1
   box-shadow:0 0 0 2px rgba(14,8,20,.8),0 0 0 3px color-mix(in srgb,var(--c) 70%,transparent),0 6px 16px rgba(0,0,0,.45)}
 .l1 .st-medal::before,.l2 .st-medal::before,.l3 .st-medal::before{border-color:color-mix(in srgb,#1d1428 35%,transparent)}
 .l3 .st-medal{box-shadow:0 0 0 2px rgba(14,8,20,.8),0 0 0 3px var(--goud),0 0 22px rgba(255,200,120,.55),0 6px 16px rgba(0,0,0,.45)}
-.st-txt{min-width:0}
-.st-txt b{display:block;font-family:var(--serif);font-weight:400;font-size:16px;color:var(--cream)}
-.st.l0 .st-txt b{color:var(--cream-dim)}
-.st-txt small{display:block;margin-top:2px;font-family:var(--serif);font-style:italic;font-size:12.5px;line-height:1.3}
-.st-bar{display:block;position:relative;margin-top:7px;height:2px;border-radius:2px;background:rgba(236,199,127,.12);overflow:hidden}
-.st-bar::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--champ)}
-.l3 .st-bar::after{background:var(--goud);box-shadow:0 0 8px rgba(255,200,120,.8)}
 .st-pips{display:flex;gap:4px}
 .st-pips i{width:7px;height:7px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(203,185,148,.35)}
 .st-pips i.on:nth-child(1){background:var(--brons);box-shadow:none}
 .st-pips i.on:nth-child(2){background:var(--zilver);box-shadow:none}
 .st-pips i.on:nth-child(3){background:var(--goud);box-shadow:0 0 6px rgba(255,200,120,.8)}
+.st-now{margin-top:6px;font-family:var(--serif);font-style:italic;font-size:14px;color:var(--gold)}
 /* detailblad */
 .st-sheet{text-align:center}
 .st-big{display:grid;place-items:center;margin:6px 0 10px}

@@ -34,7 +34,7 @@ export default {
       ${mode('twijfel', 'Twijfelzone', 'duels', 'Alleen de banen waar Dispatch nog het minst zeker over is. Lastige keuzes, maar hier leert hij per tik het meest.')}
       ${mode('park', 'Park-avond', 'duels', 'Kies een park en speel alleen duels tussen de banen daarvan. Bij een klein park komt elk paar precies één keer langs, bij een groot park duurt de avond wat langer.')}
       ${mode('rematch', 'Rematch', 'duels', 'Dispatch zoekt keuzes die elkaar tegenspreken. Een rondje zoals A boven B, B boven C en toch C boven A, of een uitslag die heel onwaarschijnlijk was. Die speel je opnieuw. Je oude keuze blijft staan, de nieuwe telt mee als extra stem. Is er niets tegenstrijdigs, dan hoor je dat je opvallend consequent bent.')}
-      ${mode('toernooi', 'Toernooi', 'bracket', 'Zestien banen in een bracket, tot er één kampioen over is. Kies <b>Knock-out</b> (zestien banen uit een willekeurig stuk van je ranking), per fabrikant of per park. Elke match telt gewoon mee als vergelijking. Of speel <b>Koning van de heuvel</b>: de winnaar blijft staan en krijgt steeds een nieuwe uitdager uit zijn buurt in je ranking. Na tien duels wordt de baan die het langst op de troon zat gekroond.')}
+      ${mode('toernooi', 'Toernooi', 'kampioen', 'Zestien banen in een bracket, tot er één kampioen over is. Kies <b>Knock-out</b> (zestien banen uit een willekeurig stuk van je ranking), per fabrikant of per park. Elke match telt gewoon mee als vergelijking. Of speel <b>King of the Hill</b>: de winnaar van het eerste duel wordt koning, blijft staan en krijgt steeds een nieuwe uitdager uit zijn buurt in je ranking. Na tien duels wordt de baan met de langste reeks overwinningen gekroond.')}
 
       <h3>Focus: Top 10, Top 25, Top 50 of Laatste 10</h3>
       <p>Bij Le Duel, La Rangée en Twijfelzone kun je kiezen met welk deel van je ranking je speelt. De rand doet ook mee: bij Top 10 zitten er een paar banen net onder je top 10 bij, zodat een stijger er nog in kan komen. De statusregel laat dan zien hoe zeker dat deel is.</p>
@@ -72,7 +72,7 @@ export default {
       <h3>Witte stippen</h3>
       <p>Ergens in het ontwerp zitten tien witte stippen verstopt. Tik er een aan en hij is gevonden. Waar ze zitten, staat niet in dit boekje. In Meer kun je wel om een tip vragen. Wie ze alle tien vindt, krijgt er iets voor terug.</p>
       <h3>De ideeënbus</h3>
-      <p>Linksonder op elk scherm hangt een brievenbus. Iets bedacht, of klopt er iets niet? Post een idee of een bug, en onder In de bus lezen jullie allebei wat erin zit. Bij een bug gaat vanzelf mee op welk scherm je zat en op welk apparaat. Af en toe gaan Wouter en Claude de bus samen langs, en dan zie je bij elk briefje of het op de planning staat, gedaan is of niet doorgaat.</p>
+      <p>Linksonder op elk scherm hangt een brievenbus. Iets bedacht, of klopt er iets niet? Post een idee of een bug, en onder In de bus lezen jullie allebei wat erin zit. Bij een bug gaat vanzelf mee op welk scherm je zat en op welk apparaat. Af en toe gaan Wouter en Claude de bus samen langs. Wat gedaan is of niet doorgaat, verhuist naar Afgehandeld, zodat in de bus alleen staat waar nog niemand naar keek.</p>
       <h3>De sfeer</h3>
       <p>Het park leeft mee met de klok. Na elf uur 's avonds gaan de lichten uit en zijn alleen de sterren nog wakker, en rond Halloween hangt er iets kils in de lucht. Muziek staat aan of uit in Meer.</p>
 
