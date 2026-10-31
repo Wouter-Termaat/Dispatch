@@ -118,8 +118,10 @@ export default {
       if (type === 'duel' && tempo.add(ms / 1000)) toast(`${TRIMREM.titel}. ${TRIMREM.sub}`, 2600);
       progress();
       const next = s.duels >= s.length ? null : choose();
-      warm(next);   // foto's decoderen tijdens de korte pauze, zodat de kaarten direct met foto verschijnen
-      later(() => (next ? render(next) : finish()), outcome === 'skip' || outcome === 'tie' ? 170 : (tempo.slow ? 480 : 270));
+      // foto's decoderen tijdens de korte pauze; is een foto dan nog niet klaar, nog heel even wachten (max 0,45 s),
+      // zodat de kaarten meteen met foto verschijnen in plaats van eerst getekend en dan met een flits de foto
+      warm(next);
+      later(() => (next ? warm(next, 450).then(() => { if (fg.isConnected && !fg.closest('.out')) render(next); }) : finish()), outcome === 'skip' || outcome === 'tie' ? 170 : (tempo.slow ? 480 : 270));
     }
 
     fg.querySelector('#tie').onclick = () => choice('tie');

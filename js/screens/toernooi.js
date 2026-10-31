@@ -1,4 +1,5 @@
 // Toernooi: bracket van 16 (of 8) banen (fabrikant, park of willekeurig uit je top 30). Elke match telt als vergelijking.
+// Met Koning van de heuvel: de winnaar blijft staan en krijgt steeds een nieuwe uitdager uit zijn buurt in je ranking.
 import { track } from '../track.js';
 import { warm } from '../photos.js';
 import { model, coaster } from '../state.js';
@@ -8,6 +9,10 @@ import { rankTop } from './duel.js';
 import { esc, cardHtml, buzz, toast, openSheet, closeSheet, deal } from '../ui.js';
 import * as sound from '../sound.js';
 import { dot } from '../stippen.js';
+import { withBonus } from '../pick.js';
+
+const KING_LEN = 10;   // duels per ronde Koning van de heuvel
+const CROWN = '<svg viewBox="0 0 32 24" aria-hidden="true"><path d="M3 20 L5 7 L11 13 L16 3 L21 13 L27 7 L29 20 Z"/><path d="M4 22.5 H28"/></svg>';
 
 const ROUND = { 16: ['Achtste finale', 'Kwartfinale', 'Halve finale', 'Finale'], 8: ['Kwartfinale', 'Halve finale', 'Finale'], 4: ['Halve finale', 'Finale'] };
 const SEED = { 16: [0, 15, 7, 8, 3, 12, 4, 11, 1, 14, 6, 9, 2, 13, 5, 10], 8: [0, 7, 3, 4, 1, 6, 2, 5], 4: [0, 3, 1, 2] };
@@ -41,12 +46,14 @@ export default {
       root.innerHTML = `<div class="add-in"><div class="eyebrow">Toernooi</div><h2 class="h-title">Eén kampioen</h2>
         <p class="sheet-text">Kies wie er meedoet. Elke match telt als gewone vergelijking.</p>
         <div class="mode-list">
-          <button class="mode" data-k="random"><b>Willekeurig</b><span>Zestien banen die in je ranking bij elkaar staan.</span><em>›</em></button>
+          <button class="mode" data-k="random"><b>Knock-out</b><span>Zestien banen uit een willekeurig stuk van je ranking, in een bracket.</span><em>›</em></button>
           <button class="mode" data-k="manufacturer"><b>Per fabrikant</b><span>De beste van één fabrikant (8 of 16).</span><em>›</em></button>
           <button class="mode" data-k="park"><b>Per park</b><span>De beste van één park.</span><em>›</em></button>
+          <button class="mode" data-k="koning"><b>Koning van de heuvel</b><span>Begint ergens willekeurig in je ranking. De winnaar blijft staan, de uitdagers komen uit de buurt. ${KING_LEN} duels.</span><em>›</em></button>
         </div></div>`;
       root.querySelectorAll('.mode').forEach(b => b.onclick = () => {
         buzz(5); const k = b.dataset.k;
+        if (k === 'koning') { if (model().ranking.length < 6) { toast('Je hebt minstens zes banen nodig.'); return; } return king(); }
         if (k === 'random') {
           if (model().ranking.length < 4) { toast('Je hebt minstens vier banen nodig voor een toernooi.'); return; }
           // een willekeurig blok van 16 aangrenzende banen uit je ranking
@@ -105,13 +112,69 @@ export default {
       rounds.push(nr); ri++; mi = 0; bracket();
     }
 
+
+    // ---------- Koning van de heuvel ----------
+    // Uitdagers komen uit de buurt van de koning (binnen 12 plekken, anders 25), onzekere banen en banen met weinig
+    // battles iets vaker. Elke baan doet per ronde maar één keer mee als uitdager.
+    function king() {
+      const m = withBonus(model()), rk = m.ranking;
+      const used = new Set();
+      // begin bij een willekeurige plek in je ranking; de uitdagers komen daarna steeds uit de buurt van de koning
+      let cur = rk[Math.floor(Math.random() * rk.length)], streak = 0, best = { id: cur, n: 0 };
+      used.add(cur);
+      const challenger = () => {
+        const at = m.position[m.idx.get(cur)];
+        for (const w of [12, 25, rk.length]) {
+          const cands = rk.filter((id, p) => Math.abs(p - at) <= w && !used.has(id));
+          if (!cands.length) continue;
+          const wts = cands.map(id => Math.pow(m.variance[m.idx.get(id)], 1.5) / (1 + Math.abs(m.position[m.idx.get(id)] - at) / 6));
+          let r = Math.random() * wts.reduce((a, b) => a + b, 0);
+          for (let k = 0; k < cands.length; k++) { r -= wts[k]; if (r <= 0) return cands[k]; }
+          return cands.at(-1);
+        }
+        return null;
+      };
+      total = KING_LEN; played = 0;
+      s = startSession('toernooi', { mode: 'koning', label: 'Koning van de heuvel', length: KING_LEN });
+      s.tLabel = 'Koning van de heuvel'; sound.liftHill(); prog();
+      let next = challenger(); warm([cur, next]);
+      const duel = keepKing => {
+        const ch = next; used.add(ch);
+        root.innerHTML = `<div class="d-head"><div class="eyebrow">Koning van de heuvel · duel ${played + 1} van ${KING_LEN}</div></div>
+          <div class="d-wrap"><div class="d-stage" id="stage">${cardHtml(coaster(cur), 'a king' + (keepKing ? '' : ' enter'), 320, 240)}${cardHtml(coaster(ch), 'b enter', 320, 240)}<div class="or">of</div></div></div>
+          <div class="d-line">${streak ? `De koning staat al ${streak} ${streak === 1 ? 'duel' : 'duels'}. Wie wint?` : 'Een nieuwe koning. Wie wint?'}</div>`;
+        const st = root.querySelector('#stage'); const [A, B] = st.querySelectorAll('.card'); busy = false;
+        A.insertAdjacentHTML('beforeend', `<i class="crown">${CROWN}</i>`);
+        deal(keepKing ? [B] : [A, B], { stagger: 60 });
+        const t0 = performance.now();
+        const pickW = (w, el, other) => {
+          if (busy) return; busy = true; played++; prog();
+          commit([{ a: cur, b: ch, outcome: w === cur ? 'a' : 'b' }], 'koning', { type: 'duel', ids: [cur, ch], ms: performance.now() - t0, meta: { streak } });
+          el.classList.add('win'); other.classList.add('lose'); buzz(8); sound.bell();
+          if (w === cur) streak++; else { cur = ch; streak = 0; }
+          if (streak > best.n) best = { id: cur, n: streak };
+          next = played < KING_LEN ? challenger() : null; if (next) warm([next]);
+          advT = setTimeout(() => {
+            if (!alive) return;
+            if (!next) return champion(best.n ? best.id : cur, best.n ? `Langst op de troon: ${best.n} ${best.n === 1 ? 'duel' : 'duels'}` : 'Laatste koning');
+            duel(true);   // de (nieuwe) koning blijft liggen, alleen de uitdager komt binnen
+          }, 520);
+        };
+        A.onclick = () => pickW(cur, A, B); B.onclick = () => pickW(ch, B, A);
+        keyH && removeEventListener('keydown', keyH);
+        keyH = e => { if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') A.click(); else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') B.click(); };
+        addEventListener('keydown', keyH);
+      };
+      warm([cur, next], 350).then(() => alive && duel(false));
+    }
+
     // ---------- kampioen ----------
-    function champion(id) {
+    function champion(id, sub = '') {
       s.champion = id; const c = coaster(id);
       track('champion', { id, label: s.tLabel, field: rounds[0]?.length * 2 || null });
-      root.innerHTML = `<div class="champ"><div class="eyebrow">Toernooi · ${esc(s.tLabel)}</div><h2 class="champ-t">Kampioen</h2>
+      root.innerHTML = `<div class="champ"><div class="eyebrow">Toernooi · ${esc(s.tLabel)}</div><h2 class="champ-t">Kampioen</h2>${sub ? `<p class="champ-sub">${esc(sub)}</p>` : ''}
         <div class="champ-card">${cardHtml(c, 'win', 320, 420)}<div class="champ-ring"></div></div>
-        <div class="row-btns"><button class="ghost" id="again">Nog een toernooi</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
+        <div class="row-btns"><button class="ghost" id="again">${s.mode === 'koning' ? 'Nog een ronde' : 'Nog een toernooi'}</button><button class="btn" id="aff">Naar de affiche</button></div></div>`;
       const ring = root.querySelector('.champ-ring'); let h = '';
       // één lamp in de ring (rechts, halverwege) is een witte stip
       for (let i = 0; i < 22; i++) { const a = i / 22 * Math.PI * 2; const st = `left:${50 + 54 * Math.cos(a)}%;top:${50 + 50 * Math.sin(a)}%;animation-delay:${(i * .09).toFixed(2)}s`; h += i === 0 ? dot('kampioen', 'ringdot', 'span').replace('class=', `style="${st}" class=`) : `<i style="${st}"></i>`; }

@@ -35,7 +35,11 @@ export const remaining = key => {
   const r = remainingEstimate(m);
   // plus de battles die nog nodig zijn tot elke baan zijn minimum heeft (elk duel telt voor twee banen)
   const extra = Math.ceil((m.missingBattles || 0) / 2);
-  return { ...r, duels: r.duels + extra, rows: r.rows + Math.ceil(extra / 3), stable: r.stable && !extra };
+  // "je ranking staat" pas als bijna elke baan zelf zeker is (niet alleen gemiddeld), anders een schatting:
+  // minstens ongeveer één duel per baan die nog niet zeker is
+  const unsure = Math.round(m.n * (1 - (m.certainty || 0)));
+  const duels = Math.max(r.duels + extra, unsure);
+  return { ...r, duels, rows: Math.ceil(duels / 3), stable: r.stable && !extra && (m.certainty || 0) >= .9 };
 };
 
 // Zekerheid. Je Excel-volgorde is een startpunt, geen bewijs: hij telt zwakker mee (de helft van de ankersterkte uit Meer)

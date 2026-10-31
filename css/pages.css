@@ -117,6 +117,14 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
 .b-slot.out{color:var(--cream-dim);opacity:.5;text-decoration:line-through;text-decoration-color:rgba(203,185,148,.4)}
 .champ{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 22px calc(26px + var(--safe-b));gap:6px}
 .champ-t{font-family:var(--logo);font-weight:400;font-size:46px;color:#fff1d2;text-shadow:0 0 22px rgba(255,190,110,.9),0 0 60px rgba(255,150,80,.4);animation:lightsOn 1.6s .2s ease-out both}
+.champ-sub{margin-top:4px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--cream-dim);text-align:center}
+/* Koning van de heuvel: kroon boven de koning */
+.card.king .front{box-shadow:0 0 0 1px var(--gold),0 0 30px rgba(255,190,110,.35),0 22px 40px rgba(0,0,0,.6)}
+.card .crown{position:absolute;left:50%;top:-20px;z-index:6;width:42px;height:32px;margin-left:-21px;pointer-events:none;filter:drop-shadow(0 0 8px rgba(255,200,120,.8));animation:crownIn .5s .15s cubic-bezier(.3,1.6,.5,1) both}
+.card .crown svg{width:100%;height:100%;fill:#e8b866;stroke:#fff3d6;stroke-width:1.2;stroke-linejoin:round}
+.card.lose .crown{opacity:0;transition:opacity .3s}
+.d-wrap:has(.card.king){padding-top:30px}   /* ruimte voor de kroon onder de titelregel */
+@keyframes crownIn{from{transform:translateY(8px) scale(.6);opacity:0}to{transform:none;opacity:1}}
 .champ-card{position:relative;width:min(240px,60vw);aspect-ratio:3/4;margin:18px 0 22px}
 .champ-card .card{inset:0;cursor:default;animation:champIn 1s .3s cubic-bezier(.2,.8,.2,1) both}
 @keyframes champIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1.025)}}

@@ -68,7 +68,7 @@
 .lite .scene .rays,.lite .backdrop .bd-rays{animation:none}
 .lite .backdrop .bd-beam::after{display:none}
 .lite .vb-panel{-webkit-backdrop-filter:none;backdrop-filter:none;background:linear-gradient(180deg,rgba(34,22,44,.93),rgba(16,10,22,.97))}
-.lite .ph{filter:none}
+.lite .ph{filter:none;transition:none}   /* geen tijdelijke laag per foto die binnenkomt: op Android gaf dat geflikker */
 
 /* telefoon en smal scherm: alle zes spelvormen in beeld, drie naast elkaar, niets valt buiten het paneel */
 @media (max-width:899px), (max-aspect-ratio:5/4){

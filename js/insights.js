@@ -2,7 +2,7 @@
 import { model, compsOf, entriesOf, coaster } from './state.js';
 import { TICKETS } from './copy.js';
 
-export const MODE_NAMES = { duel: 'Le Duel', rangee: 'La Rangée', twijfel: 'Twijfelzone', park: 'Park-avond', rematch: 'Rematch', toernooi: 'Toernooi', plaatsing: 'Plaatsing', check: 'Controle' };
+export const MODE_NAMES = { duel: 'Le Duel', rangee: 'La Rangée', twijfel: 'Twijfelzone', park: 'Park-avond', rematch: 'Rematch', toernooi: 'Toernooi', koning: 'Koning van de heuvel', plaatsing: 'Plaatsing', check: 'Controle' };
 const DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 const sig = x => 1 / (1 + Math.exp(-x));
 const dayKey = d => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;

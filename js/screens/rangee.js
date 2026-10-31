@@ -134,10 +134,12 @@ export default {
       const finished = s.rows >= s.length;
       const next = !finished ? choose() : null;   // direct kiezen met het vorige model; de nieuwe fit loopt in de worker
       warm(next);
-      later(() => {
+      later(async () => {
         flash.classList.remove('show');
         if (finished) return finish();
-        render(next || choose());
+        const ids = next || choose();
+        await warm(ids, 450);   // zelfde als bij Le Duel: liever heel even wachten dan een foto die na de kaart binnen flitst
+        if (fg.isConnected && !fg.closest('.out')) render(ids);
       }, tempo.slow ? 560 : 300);
     }
 
