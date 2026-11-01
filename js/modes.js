@@ -1,5 +1,5 @@
 // De spelvormen op het Spelen-scherm. Le Duel is de standaard.
-import { entriesOf, meKey, coaster, model, compsOf } from './state.js';
+import { entriesOf, meKey, coaster, model, compsOf, DUELS_PER_BAAN } from './state.js';
 import { contradictions } from './model.js';
 import { openSheet, closeSheetThen, esc, buzz, toast } from './ui.js';
 import * as sound from './sound.js';
@@ -41,13 +41,14 @@ export function focusSet(k, key = meKey()) {
 /** Zekerheid en geschatte duels voor alleen de kern van een focus. */
 export function focusStatus(k, key = meKey()) {
   const fs = focusSet(k, key); const m = model(key); if (!fs || !m) return null;
-  let stable = 0, excess = 0, missing = 0;
+  let stable = 0, missing = 0;
   for (const id of fs.core) {
     const i = m.idx.get(id), hw = (m.hi[i] - m.lo[i]) / 2, b = m.battles?.get(id) || 0;
     if (hw <= m.stableHW && b >= 3) stable++;
-    excess += Math.max(0, hw - m.stableHW); missing += Math.max(0, 3 - b);
+    missing += Math.max(0, 3 - b);
   }
-  const duels = Math.ceil(excess / 2.2) + Math.ceil(missing / 2);
+  // zelfde maat als de hoofdschatting (state.js): zo'n 13,5 duels per baan die nog niet zeker is
+  const duels = stable >= fs.core.length ? 0 : Math.max(Math.ceil(missing / 2), Math.ceil((fs.core.length - stable) * DUELS_PER_BAAN));
   return { pct: Math.round(stable / fs.core.length * 100), duels, rows: Math.ceil(duels / 3) };
 }
 const LAST_FOCUS = 'dispatch.focus';

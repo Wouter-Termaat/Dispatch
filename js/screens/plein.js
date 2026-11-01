@@ -73,7 +73,7 @@ export default {
         st = `${esc(f.t)}: ${fst.pct}% zeker · nog ± ${sel === 'rij' ? fst.rows + ' rijen' : fst.duels + ' duels'}`;
       } else if (m && rem) {
         const pct = Math.round((m.certainty || 0) * 100);
-        st = rem.stable ? PLEIN.stabiel : `<span class="pct">${pct}% zeker · </span>nog ± ${sel === 'rij' ? rem.rows + ' rijen' : rem.duels + ' duels'}`;
+        st = rem.stable ? PLEIN.stabiel : `<span class="pct">${pct}% zeker · </span>nog ± ${sel === 'rij' ? rem.rows + ' rijen' : rem.duels + ' duels'} tot ${Math.round(rem.target * 100)}%`;
       }
       const stEl = fg.querySelector('#status'); if (stEl) stEl.innerHTML = st;
       if (m && fg.querySelector('#xpct')) {

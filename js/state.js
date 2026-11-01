@@ -1,5 +1,5 @@
 // App-staat: store, catalogus, profielen en het model per persoon (gefit in een worker).
-import { fitModel, remainingEstimate } from './model.js';
+import { fitModel } from './model.js';
 
 export const DEFAULT_SETTINGS = { sound: true, music: 'orgel', musicUnlocked: false, showCertainty: false, sessionLength: 10, rowLength: 5 };
 
@@ -30,16 +30,16 @@ export const compsOf = key => {
 export const settingsOf = key => ({ ...DEFAULT_SETTINGS, ...(profileByKey(key)?.settings || {}) });
 export const mySettings = () => settingsOf(meKey());
 export const model = key => S.models[key || meKey()];
+// Hoeveel duels nog tot de volgende mijlpaal (60%, 70%, 80%, 90%, 95%, 100% zeker). Een dichtbij doel motiveert meer dan
+// "nog 900", en 100% blijft echt een prestatie. Uit de simulatie (tools/simulate, 169 banen, dezelfde instellingen):
+// een baan zeker maken kost gemiddeld zo'n 13,5 duels (50% naar 90% zeker was ongeveer 900 duels).
+export const DUELS_PER_BAAN = 13.5, MILESTONES = [.1, .2, .3, .4, .5, .6, .7, .8, .9, .95, 1];
 export const remaining = key => {
   const m = model(key); if (!m) return null;
-  const r = remainingEstimate(m);
-  // plus de battles die nog nodig zijn tot elke baan zijn minimum heeft (elk duel telt voor twee banen)
-  const extra = Math.ceil((m.missingBattles || 0) / 2);
-  // "je ranking staat" pas als bijna elke baan zelf zeker is (niet alleen gemiddeld), anders een schatting:
-  // minstens ongeveer één duel per baan die nog niet zeker is
-  const unsure = Math.round(m.n * (1 - (m.certainty || 0)));
-  const duels = Math.max(r.duels + extra, unsure);
-  return { ...r, duels, rows: Math.ceil(duels / 3), stable: r.stable && !extra && (m.certainty || 0) >= .9 };
+  const c = m.certainty || 0;
+  const target = MILESTONES.find(t => t > c + 1e-9) ?? 1;
+  const duels = c >= 1 ? 0 : Math.max(1, Math.ceil((target - c) * m.n * DUELS_PER_BAAN));
+  return { duels, rows: Math.ceil(duels / 3), target, stable: c >= 1 };
 };
 
 // Zekerheid. Je Excel-volgorde is een startpunt, geen bewijs: hij telt zwakker mee (de helft van de ankersterkte uit Meer)
