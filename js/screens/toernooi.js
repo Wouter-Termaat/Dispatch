@@ -157,7 +157,8 @@ export default {
           next = played < KING_LEN ? challenger() : null; if (next) warm([next]);
           advT = setTimeout(() => {
             if (!alive) return;
-            if (!next) return champion(best.id, `Langst op de troon: ${best.n} ${best.n === 1 ? 'duel' : 'duels'} gewonnen`);
+            // de kampioen is wie na het laatste duel op de troon zit (de langste reeks telt alleen voor de stempel Koningsmaker)
+            if (!next) return champion(cur, `Koning na ${KING_LEN} duels, ${streak} op rij gewonnen`);
             duel(true);   // de (nieuwe) koning blijft liggen, alleen de uitdager komt binnen
           }, 520);
         };
